@@ -62,11 +62,9 @@ A partir do semestre 2026.1 padronizamos o ferramental de runtime e pacotes em t
 
 - **Github Action** Action customizada do Github que permite realizar a análise de um certo repositorio. Esta aplicação é responsável por se comunicar com o serviço `Service` e fornecer todos os dados necessários para a aplicação web.
 
-- **MCP Server** Servidor que expõe os dados e operações do MeasureSoftGram via [Model Context Protocol](https://modelcontextprotocol.io), permitindo que clientes de IA (ex.: Claude Desktop, Claude Code) consultem qualidade de software diretamente em fluxos conversacionais. Reside em repositório separado, comunica-se com o `Service` via API HTTP e não altera o esquema do banco de dados nem depende do `Frontend Web`.
+- **MCP Server** Servidor que conecta clientes de inteligência artificial (como o Claude Desktop e o Claude Code) ao MeasureSoftGram. Por meio dele, o usuário consulta os indicadores de qualidade do software em uma conversa com a IA, sem precisar abrir a interface web ou rodar a CLI. Comunica-se com o `Service` por HTTP e fica em um repositório separado.
 
 ## Diagrama Arquitetural
-
-> **Nota (R1 2026.1):** o diagrama abaixo é mantido em [Mermaid](https://mermaid.js.org) — texto puro versionado neste repositório, renderizado nativamente pelo MkDocs. Substitui o PNG anterior, que não possuía fonte editável versionada e exigia recriação manual em ferramenta externa a cada mudança arquitetural. Para editar, basta abrir um PR alterando o bloco abaixo.
 
 ```mermaid
 flowchart TB
@@ -103,6 +101,8 @@ flowchart TB
     class Container container
     class MCP,AI novo
 ```
+
+*Diagrama mantido em [Mermaid](https://mermaid.js.org), versionado em texto neste arquivo. Para editar, basta alterar o bloco acima.*
 
 ## Diagrama de Implantação
 Um diagrama de implantação especifica os construtos que podem ser usados para definir a arquitetura de execução de sistemas e a atribuição de artefatos de software aos elementos do sistema.Para descrever um site, por exemplo, um diagrama de implantação mostraria quais componentes de hardware ("nós") existem (por exemplo, um servidor web, um servidor de aplicação e um servidor de banco de dados), quais componentes de software ("artefatos") rodam em cada nó (por exemplo, aplicação web, banco de dados) e como as diferentes peças estão conectadas (por exemplo, HTTP, GRPC).
@@ -216,4 +216,4 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 |13/09/2024| Christian Siqueira | Adicioanndo diagrama de implantação |1.2|
 |13/09/2024| Christian Siqueira | Atualizando o diagrama de arquitetura|1.3|
 |27/04/2026| Giovanni A. C. Giampauli | Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com `compose watch`. Diagramas permanecem vigentes (sem mudança topológica). |1.4|
-|03/05/2026| Giovanni A. C. Giampauli | Adiciona o **MCP Server** na lista de serviços e no diagrama arquitetural, refletindo a integração com clientes de IA via Model Context Protocol — atende ao pedido do cliente Hilmer durante a R1 de documentar o microserviço de integração com IA. **Substitui o diagrama arquitetural em PNG por bloco Mermaid** versionado em texto: o PNG anterior não tinha fonte editável no repositório, dificultando atualizações colaborativas; com Mermaid, o diagrama vive como texto neste markdown, qualquer integrante pode propor mudanças via PR e o diff fica explícito. Diagrama de Implantação e Diagrama de Pacotes do MCP ficam pendentes para a R2 (gap visual sinalizado). |1.5|
+|03/05/2026| Giovanni A. C. Giampauli | Adiciona o MCP Server na lista de serviços e migra o diagrama arquitetural de PNG para Mermaid (texto versionado). |1.5|
