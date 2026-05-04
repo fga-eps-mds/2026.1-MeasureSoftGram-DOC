@@ -37,14 +37,14 @@
 
 #### Gerenciamento de pacotes e runtime (decisão R1 2026.1)
 
-A partir do semestre 2026.1 padronizamos o ferramental de runtime e pacotes em todos os repositórios do MSGram. As decisões abaixo estão registradas nos PRs de modernização da stack Docker (Service [#1](https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1) e Front [#5](https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front/pull/5), ambos *merged*):
+<p align = "justify"> &emsp;&emsp; A partir do semestre 2026.1 o time padronizou o ferramental de runtime e pacotes em todos os repositórios do MSGram. As decisões abaixo estão registradas nos pull requests de modernização da stack Docker do Service (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1">#1</a>) e do Front (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front/pull/5">#5</a>). </p>
 
-- **uv** — gerenciador único de pacotes Python (Service, Core, Parser, CLI). Substitui pip/pipenv/poetry. Lockfile reprodutível e instalação ~10× mais rápida em CI.
-- **pnpm** — gerenciador de pacotes JavaScript no Front. Substitui npm/yarn. Cache global por content-hash reduz tempo de build e disco.
-- **Python 3.12** — versão fixada nos repos Python (Service, Core, Parser, CLI), via `pyproject.toml` e imagem Docker oficial.
-- **Node 20 LTS** — versão fixada no Front, via `.nvmrc` e imagem Docker oficial.
-- **Versões pinadas em todas as imagens Docker** — sem `:latest`. Cada `Dockerfile` e `docker-compose.yml` referencia tag explícita (ex.: `python:3.12-slim`, `node:20-alpine`, `postgres:18-alpine`). Decisão tomada para garantir reprodutibilidade entre desenvolvimento, CI e homologação.
-- **Docker Compose v2 com `compose watch`** — substitui o antigo `docker-compose` v1. Hot reload nativo durante desenvolvimento.
+- **uv**: gerenciador de pacotes Python utilizado no Service, Core, Parser e CLI, em substituição ao pip e ao poetry.
+- **pnpm**: gerenciador de pacotes JavaScript utilizado no Front, em substituição ao npm.
+- **Python 3.12**: versão fixada nos repositórios em Python, via `pyproject.toml` e imagem Docker oficial.
+- **Node 20 LTS**: versão fixada no Front, via `.nvmrc` e imagem Docker oficial.
+- **Imagens Docker** com tags fixas (como `python:3.12-slim` ou `postgres:18-alpine`), em vez de `:latest`.
+- **Docker Compose v2** com `compose watch`, em substituição ao `docker-compose` v1.
 
 #### Banco de dados
 
@@ -62,9 +62,11 @@ A partir do semestre 2026.1 padronizamos o ferramental de runtime e pacotes em t
 
 - **Github Action** Action customizada do Github que permite realizar a análise de um certo repositorio. Esta aplicação é responsável por se comunicar com o serviço `Service` e fornecer todos os dados necessários para a aplicação web.
 
-- **MCP Server** Servidor que conecta clientes de inteligência artificial (como o Claude Desktop e o Claude Code) ao MeasureSoftGram. Por meio dele, o usuário consulta os indicadores de qualidade do software em uma conversa com a IA, sem precisar abrir a interface web ou rodar a CLI. Comunica-se com o `Service` por HTTP e fica em um repositório separado.
+- **MCP Server** Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o `Service` via HTTP e fica em repositório separado.
 
 ## Diagrama Arquitetural
+
+<p align = "justify"> &emsp;&emsp; O diagrama abaixo apresenta os principais componentes do sistema MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
 
 ```mermaid
 flowchart TB
@@ -101,8 +103,6 @@ flowchart TB
     class Container container
     class MCP,AI novo
 ```
-
-*Diagrama mantido em [Mermaid](https://mermaid.js.org), versionado em texto neste arquivo. Para editar, basta alterar o bloco acima.*
 
 ## Diagrama de Implantação
 Um diagrama de implantação especifica os construtos que podem ser usados para definir a arquitetura de execução de sistemas e a atribuição de artefatos de software aos elementos do sistema.Para descrever um site, por exemplo, um diagrama de implantação mostraria quais componentes de hardware ("nós") existem (por exemplo, um servidor web, um servidor de aplicação e um servidor de banco de dados), quais componentes de software ("artefatos") rodam em cada nó (por exemplo, aplicação web, banco de dados) e como as diferentes peças estão conectadas (por exemplo, HTTP, GRPC).
@@ -146,16 +146,12 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 
 ### Metas
 
-<center>
-
 |     Metas      |                                                                           |
 | :------------: | :-----------------------------------------------------------------------: |
 | Escalabilidade | A aplicação deverá ser escalável                                          |
 |   Segurança    | A aplicação deverá tratar de forma segura os dados sensíveis dos usuários |
 |     Deploy     | A aplicação deverá possuir deploy automatizado                            |
 |     Usabilidade     | A aplicação deverá ter uma boa usabilidade para o usuário                           |
-
-</center>
 
 ### Restrições
 
@@ -216,4 +212,4 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 |13/09/2024| Christian Siqueira | Adicioanndo diagrama de implantação |1.2|
 |13/09/2024| Christian Siqueira | Atualizando o diagrama de arquitetura|1.3|
 |27/04/2026| Giovanni A. C. Giampauli | Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com `compose watch`. Diagramas permanecem vigentes (sem mudança topológica). |1.4|
-|03/05/2026| Giovanni A. C. Giampauli | Adiciona o MCP Server na lista de serviços e migra o diagrama arquitetural de PNG para Mermaid (texto versionado). |1.5|
+|03/05/2026| Giovanni A. C. Giampauli | Adiciona MCP Server e migra diagrama arquitetural para Mermaid. |1.5|
