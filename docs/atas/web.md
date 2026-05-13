@@ -103,3 +103,54 @@ A reunião teve como foco a organização administrativa e técnica da equipa de
 | Organização do backlog da Sprint seguindo o novo padrão | Raquel Andrade | 08/05/2026 | Em curso |
 
 ---
+
+## Índice Rápido
+
+| # | Tipo | Título | Data |
+| --- | --- | --- | --- |
+| Nº2 | Alinhamento | Planejamento de Atividades Front-end | 13/05/2026 |
+
+---
+
+### Nº2 — Planejamento de Atividades Front-end
+
+| Campo | Detalhe |
+| --- | --- |
+| **Data** | 13 de Maio de 2026 |
+| **Horário** | 10:00 – 11:00 |
+| **Local** | Reunião Online |
+| **Sprint** | Sprint Atual |
+
+**Participantes**
+
+- **Raquel Andrade** — Desenvolvedora Front-end
+- **Luciano Freitas** — Desenvolvedor Front-end
+- **Davi Pierre** — Desenvolvedor Front-end
+
+**Pauta**
+
+1. Priorização: Implementação de testes para cobertura Sonar.
+2. Monitoramento de métricas (Kibana/Grafana).
+3. Melhorias no gráfico Semáforo do MeasureSoftGram.
+
+**Resumo da Reunião**
+A equipe definiu que o esforço imediato será voltado para a qualidade de código, colocando a cobertura de testes do Sonar como prioridade absoluta. Todas as atividades listadas serão executadas de forma colaborativa pelos três desenvolvedores para garantir agilidade e disseminação de conhecimento.
+
+**O que foi discutido**
+
+- **Prioridade Máxima:** Implementação imediata de testes unitários e de integração para sanar os gaps apontados pelo Sonar.
+- **Métricas:** Estudo e visualização de dashboards no Kibana ou Grafana para monitorar o comportamento da aplicação em tempo real.
+- **MeasureSoftGram:** Ajustes na lógica e no visual do gráfico Semáforo para melhorar a experiência do usuário.
+
+**Decisões Tomadas**
+
+- O time atuará em conjunto em todas as frentes (Pair Programming ou forças-tarefa).
+- Nenhuma nova feature será iniciada antes de atingir a meta de cobertura de testes.
+
+**Ações e Responsáveis**
+
+| Ação | Responsável | Prazo | Status |
+| --- | --- | --- | --- |
+| Implementar testes e aumentar cobertura Sonar (Prioridade 1) | Raquel, Luciano e Davi | Final da Sprint | Em andamento |
+| Analisar e configurar métricas (Kibana/Grafana) | Raquel, Luciano e Davi | Final da Sprint | Planejado |
+| Otimizar gráfico Semáforo (MeasureSoftGram) | Raquel, Luciano e Davi | Final da Sprint | Planejado |
