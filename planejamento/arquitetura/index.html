@@ -1,0 +1,1904 @@
+<!DOCTYPE html>
+<html class="no-js" lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Documentação oficial do MeasureSoftGram para a disciplina de Engenharia de Produto de Software do semestre 2026.1 da UnB." name="description"/>
+<link href="../../produto/eap/" rel="prev"/>
+<link href="../../post-mortem/post-mortem/" rel="next"/>
+<link href="../../assets/logo.svg" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<title>Arquitetura - MSGram Documentação</title>
+<link href="../../assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../assets/stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+<link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style></head>
+<body data-md-color-accent="custom" data-md-color-primary="custom" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#documento-de-arquitetura">
+          Pular para conteúdo
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+<nav aria-label="Cabeçalho" class="md-header__inner md-grid">
+<a aria-label="MSGram Documentação" class="md-header__button md-logo" data-md-component="logo" href="../.." title="MSGram Documentação">
+<img alt="logo" src="../../assets/logo_branca.svg"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            MSGram Documentação
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Arquitetura
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="custom" data-md-color-media="" data-md-color-primary="custom" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="custom" data-md-color-media="" data-md-color-primary="custom" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Buscar" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Buscar" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Pesquisar" class="md-search__options">
+<button aria-label="Limpar" class="md-search__icon md-icon" tabindex="-1" title="Limpar" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-DOC" title="Ir para repositório">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    MeasureSoftGram-DOC
+  </div>
+</a>
+</div>
+</nav>
+<nav aria-label="Abas" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../main/">
+          
+  
+  
+  Gestão
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../../produto/eap/">
+          
+  
+  
+  Produto
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-action/">
+          
+  
+  
+  Action
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-cli/">
+          
+  
+  
+  CLI
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-core/">
+          
+  
+  
+  Core
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-front/">
+          
+  
+  
+  Front
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-parser/">
+          
+  
+  
+  Parser
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../manual-de-instalacao/guia-service/">
+          
+  
+  
+  Service
+
+        </a>
+</li>
+</ul>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navegação" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="MSGram Documentação" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="MSGram Documentação">
+<img alt="logo" src="../../assets/logo_branca.svg"/>
+</a>
+    MSGram Documentação
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-DOC" title="Ir para repositório">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    MeasureSoftGram-DOC
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Gestão
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_1_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Gestão
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../main/">
+<span class="md-ellipsis">
+    
+  
+    Quem somos?
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Equipe
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_1_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_1_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Equipe
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../comunicacao/">
+<span class="md-ellipsis">
+    
+  
+    Comunicação
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../ferramentas/">
+<span class="md-ellipsis">
+    
+  
+    Ferramentas
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../lideranca/">
+<span class="md-ellipsis">
+    
+  
+    Lideranças Rotativas
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../clas/">
+<span class="md-ellipsis">
+    
+  
+    Metodologias de Clãs
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../metodologias/">
+<span class="md-ellipsis">
+    
+  
+    Metodologias de Desenvolvimento
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../conhecimentos/">
+<span class="md-ellipsis">
+    
+  
+    Tabela de Conhecimentos
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de contribuição
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_1_3_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_1_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de contribuição
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guia-de-contribuicao/codigo-de-conduta/">
+<span class="md-ellipsis">
+    
+  
+    Código de Conduta
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guia-de-contribuicao/politica-de-commits/">
+<span class="md-ellipsis">
+    
+  
+    Política de Commits
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../guia-de-contribuicao/politica-de-branch/">
+<span class="md-ellipsis">
+    
+  
+    Política de Branches
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_1_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Planejamento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_1_4_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_1_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Planejamento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../custos/">
+<span class="md-ellipsis">
+    
+  
+    Custos
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../agileEVM/">
+<span class="md-ellipsis">
+    
+  
+    AgileEVM
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../riscos/">
+<span class="md-ellipsis">
+    
+  
+    Plano de Riscos
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../decisoes-r1/">
+<span class="md-ellipsis">
+    
+  
+    Decisões da R1
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../atas/">
+<span class="md-ellipsis">
+    
+  
+    Atas
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Produto
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Produto
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../produto/eap/">
+<span class="md-ellipsis">
+    
+  
+    EAP
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Arquitetura
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Arquitetura
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Índice" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducao">
+<span class="md-ellipsis">
+      
+        Introdução
+      
+    </span>
+</a>
+<nav aria-label="Introdução" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#visao-geral">
+<span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#representacao-de-arquitetura">
+<span class="md-ellipsis">
+      
+        Representação de Arquitetura
+      
+    </span>
+</a>
+<nav aria-label="Representação de Arquitetura" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#linguagens">
+<span class="md-ellipsis">
+      
+        Linguagens
+      
+    </span>
+</a>
+<nav aria-label="Linguagens" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tecnologias">
+<span class="md-ellipsis">
+      
+        Tecnologias
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gerenciamento-de-pacotes-e-runtime">
+<span class="md-ellipsis">
+      
+        Gerenciamento de pacotes e runtime
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#banco-de-dados">
+<span class="md-ellipsis">
+      
+        Banco de dados
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#servicos">
+<span class="md-ellipsis">
+      
+        Serviços
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-arquitetural">
+<span class="md-ellipsis">
+      
+        Diagrama Arquitetural
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-de-implantacao">
+<span class="md-ellipsis">
+      
+        Diagrama de Implantação
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-de-pacotes">
+<span class="md-ellipsis">
+      
+        Diagrama de Pacotes
+      
+    </span>
+</a>
+<nav aria-label="Diagrama de Pacotes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#web">
+<span class="md-ellipsis">
+      
+        Web
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#core">
+<span class="md-ellipsis">
+      
+        Core
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cli">
+<span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parser">
+<span class="md-ellipsis">
+      
+        Parser
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#action">
+<span class="md-ellipsis">
+      
+        Action
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metas-e-restricoes-de-arquitetura">
+<span class="md-ellipsis">
+      
+        Metas e Restrições de Arquitetura
+      
+    </span>
+</a>
+<nav aria-label="Metas e Restrições de Arquitetura" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metas">
+<span class="md-ellipsis">
+      
+        Metas
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#restricoes">
+<span class="md-ellipsis">
+      
+        Restrições
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-entidade-relacionamento">
+<span class="md-ellipsis">
+      
+        Diagrama Entidade-Relacionamento
+      
+    </span>
+</a>
+<nav aria-label="Diagrama Entidade-Relacionamento" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducao_1">
+<span class="md-ellipsis">
+      
+        Introdução
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#referencias">
+<span class="md-ellipsis">
+      
+        Referências
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#versionamento">
+<span class="md-ellipsis">
+      
+        Versionamento
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../post-mortem/post-mortem/">
+<span class="md-ellipsis">
+    
+  
+    Post-Mortem (2024.1)
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../idv/identidade-visual/">
+<span class="md-ellipsis">
+    
+  
+    Documento de Identidade Visual
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Action
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Action
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-action/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_3_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_3_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Action">
+<span class="md-ellipsis">
+    
+  
+    Repositório
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-cli/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_4_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_4_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-CLI">
+<span class="md-ellipsis">
+    
+  
+    Repositório
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Core
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Core
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-core/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_5_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_5_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Core">
+<span class="md-ellipsis">
+    
+  
+    Repositório
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Front
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_6">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Front
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-front/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_6_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_6_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_6_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front">
+<span class="md-ellipsis">
+    
+  
+    Repositório
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Parser
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_7">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Parser
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-parser/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_7_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_7_2" id="__nav_7_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_7_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_7_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Parser">
+<span class="md-ellipsis">
+    
+  
+    Parser
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_8" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Service
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_8">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Service
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../manual-de-instalacao/guia-service/">
+<span class="md-ellipsis">
+    
+  
+    Manual de Uso
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle" id="__nav_8_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_8_2" id="__nav_8_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Guia de Desenvolvimento
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_8_2_label" class="md-nav" data-md-level="2">
+<label class="md-nav__title" for="__nav_8_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Guia de Desenvolvimento
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../onboarding/actionLocal/">
+<span class="md-ellipsis">
+    
+  
+    Onboarding
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service">
+<span class="md-ellipsis">
+    
+  
+    Repositório
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Índice" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducao">
+<span class="md-ellipsis">
+      
+        Introdução
+      
+    </span>
+</a>
+<nav aria-label="Introdução" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#visao-geral">
+<span class="md-ellipsis">
+      
+        Visão Geral
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#representacao-de-arquitetura">
+<span class="md-ellipsis">
+      
+        Representação de Arquitetura
+      
+    </span>
+</a>
+<nav aria-label="Representação de Arquitetura" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#linguagens">
+<span class="md-ellipsis">
+      
+        Linguagens
+      
+    </span>
+</a>
+<nav aria-label="Linguagens" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#tecnologias">
+<span class="md-ellipsis">
+      
+        Tecnologias
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#gerenciamento-de-pacotes-e-runtime">
+<span class="md-ellipsis">
+      
+        Gerenciamento de pacotes e runtime
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#banco-de-dados">
+<span class="md-ellipsis">
+      
+        Banco de dados
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#servicos">
+<span class="md-ellipsis">
+      
+        Serviços
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-arquitetural">
+<span class="md-ellipsis">
+      
+        Diagrama Arquitetural
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-de-implantacao">
+<span class="md-ellipsis">
+      
+        Diagrama de Implantação
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-de-pacotes">
+<span class="md-ellipsis">
+      
+        Diagrama de Pacotes
+      
+    </span>
+</a>
+<nav aria-label="Diagrama de Pacotes" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#web">
+<span class="md-ellipsis">
+      
+        Web
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#core">
+<span class="md-ellipsis">
+      
+        Core
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#cli">
+<span class="md-ellipsis">
+      
+        CLI
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#parser">
+<span class="md-ellipsis">
+      
+        Parser
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#action">
+<span class="md-ellipsis">
+      
+        Action
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metas-e-restricoes-de-arquitetura">
+<span class="md-ellipsis">
+      
+        Metas e Restrições de Arquitetura
+      
+    </span>
+</a>
+<nav aria-label="Metas e Restrições de Arquitetura" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#metas">
+<span class="md-ellipsis">
+      
+        Metas
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#restricoes">
+<span class="md-ellipsis">
+      
+        Restrições
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#diagrama-entidade-relacionamento">
+<span class="md-ellipsis">
+      
+        Diagrama Entidade-Relacionamento
+      
+    </span>
+</a>
+<nav aria-label="Diagrama Entidade-Relacionamento" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#introducao_1">
+<span class="md-ellipsis">
+      
+        Introdução
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#referencias">
+<span class="md-ellipsis">
+      
+        Referências
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#versionamento">
+<span class="md-ellipsis">
+      
+        Versionamento
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="documento-de-arquitetura">Documento de Arquitetura</h1>
+<h2 id="introducao">Introdução</h2>
+<p align="justify">    A finalidade este documento é apresentar de forma geral os aspectos mais significativos da arquitetura do projeto MeasureSoftwareGram. </p>
+<p align="justify">    Neste documento são apresentados os seguintes pontos: os serviços e as tecnologias utilizadas em cada parte do projeto, modelo de arquitetura seguido atualmente e as motivações que guiam essas escolhas. </p>
+<p align="justify">    Através desse documento, é possível obter um melhor entendimento da arquitetura do projeto, permitindo ao leitor a compreensão do funcionamento do sistema e as abordagens utilizadas para o seu desenvolvimento.</p>
+<h3 id="visao-geral">Visão Geral</h3>
+<ul>
+<li>Introdução: Apresenta uma visão geral sobre o conteúdo dessa documentação;</li>
+<li>Representação de Arquitetura: Descreve os serviços, tecnologias e os padrões de arquitetura utilizados e informa as razões que motivaram tais escolhas;</li>
+<li>Metas e Restrições de Arquitetura: Fala sobre objetivos que buscam ser alcançados dentro da arquitetura escolhida;</li>
+<li>Referências: Emprega as fontes utilizadas nas pesquisas para relacionar as publicações que foram consultadas e citadas.</li>
+</ul>
+<h2 id="representacao-de-arquitetura">Representação de Arquitetura</h2>
+<h3 id="linguagens">Linguagens</h3>
+<ul>
+<li>
+<p><strong>Python</strong>: Uma linguagem de programação poderosa, flexível e de fácil aprendizado, que é amplamente utilizada devido à sua legibilidade, produtividade e capacidade de integração com outros sistemas. [<a href="./#referencia">1</a>]</p>
+</li>
+<li>
+<p><strong>JavaScript/TypeScript</strong>: Uma linguagem de programação que permite a você implementar itens complexos em páginas web, como conteúdos que se atualiza em um intervalo de tempo, mapas interativos ou gráficos 2D/3D animados, etc. É a terceira camada do bolo das tecnologias padrões da web (HTML, CSS e Javascript). TypeScript por sua vez é uma linguagem de programação fortemente tipada que se baseia em JavaScript, oferecendo melhores ferramentas em qualquer escala. [<a href="./#referencia">2</a>] [<a href="./#referencia">3</a>]</p>
+</li>
+</ul>
+<h4 id="tecnologias">Tecnologias</h4>
+<ul>
+<li>
+<p><strong>React</strong>: Uma biblioteca utilizada para desenvolvimento de interfaces de usuário nativas e web. Essa ferramenta proporciona o desenvolvimento de sites com mais facilidade e rapidez em relação aos tradicionais HTML, CSS e JavaScript. [<a href="./#referencia">4</a>]</p>
+</li>
+<li>
+<p><strong>Next.js</strong>: Um framework de código aberto criado pela Vercel que estende os recursos do React. Com essa ferramenta, é possível usufruir de recursos como geração de páginas estáticas e renderização do lado do servidor, otimizando o desenvolvimento Web. [<a href="./#referencia">5</a>]</p>
+</li>
+<li>
+<p><strong>Django</strong>: Um framework web Python de alto nível que incentiva o desenvolvimento rápido e um design limpo e pragmático. Construído por desenvolvedores experientes, ele cuida de grande parte do incômodo do desenvolvimento da Web, para que você possa se concentrar em escrever seu aplicativo sem precisar reinventar a roda. É gratuito e de código aberto. [<a href="./#referencia">6</a>]</p>
+</li>
+<li>
+<p><strong>Jupyter Notebook</strong>: Um aplicativo baseado na Web para a criação de documentos que combinam código (Python) ao vivo com texto narrativo, equações e visualizações. [<a href="./#referencia">7</a>]</p>
+</li>
+<li>
+<p><strong>PyPI</strong>: O Python Package Index é um repositório para armazenar pacotes de código escritos na linguagem de programação Python. [<a href="./#referencia">8</a>]</p>
+</li>
+</ul>
+<h4 id="gerenciamento-de-pacotes-e-runtime">Gerenciamento de pacotes e runtime</h4>
+<p align="justify">    A partir do semestre 2026.1 o time padronizou o ferramental de runtime e pacotes em todos os repositórios do MSGram. As decisões abaixo estão registradas nos pull requests de modernização da stack Docker do Service (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1">#1</a>) e do Front (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front/pull/5">#5</a>). </p>
+<ul>
+<li><strong>uv</strong>: gerenciador de pacotes Python utilizado no Service, Core, Parser e CLI, em substituição ao pip e ao poetry.</li>
+<li><strong>pnpm</strong>: gerenciador de pacotes JavaScript utilizado no Front, em substituição ao npm.</li>
+<li><strong>Python 3.12</strong>: versão fixada nos repositórios em Python, via <code>pyproject.toml</code> e imagem Docker oficial.</li>
+<li><strong>Node 20 LTS</strong>: versão fixada no Front, via <code>.nvmrc</code> e imagem Docker oficial.</li>
+<li><strong>Imagens Docker</strong> com tags fixas (como <code>python:3.12-slim</code> ou <code>postgres:18-alpine</code>), em vez de <code>:latest</code>.</li>
+<li><strong>Docker Compose v2</strong> com <code>compose watch</code>, em substituição ao <code>docker-compose</code> v1.</li>
+</ul>
+<h4 id="banco-de-dados">Banco de dados</h4>
+<ul>
+<li><strong>PostgreSQL 18</strong>: atualização do PG12/14 herdado para a versão estável mais recente do PostgreSQL, com tag fixada (<code>postgres:18-alpine</code>). Registrada no PR de modernização da stack Docker do Service (<a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1">#1</a>). [<a href="./#referencia">9</a>]</li>
+</ul>
+<h4 id="servicos">Serviços</h4>
+<ul>
+<li>
+<p><strong>CLI</strong> Abreviação de "interface de linha de comando". Este é um programa que permite aos usuários criar comandos para funções específicas passando instruções para o computador.</p>
+</li>
+<li>
+<p><strong>Frontend Web</strong> Esta é a aplicação interface web que permite aos usuários analisar e acompanhar os produtos pelo navegador. </p>
+</li>
+<li>
+<p><strong>Service</strong> Este é o programa responsável por se comunicar com a aplicação <code>Frontend Web</code> e fornecer todos os dados necessários para a aplicação web.</p>
+</li>
+<li>
+<p><strong>Parser</strong> Este repositório possui a capacidade de interpretar a estrutura gramatical ou sintática dos dados de entrada, a fim de transformá-los em uma representação interna mais adequada para processamento pelos demais serviços.</p>
+</li>
+<li>
+<p><strong>Github Action</strong> Action customizada do Github que permite realizar a análise de um certo repositorio. Esta aplicação é responsável por se comunicar com o serviço <code>Service</code> e fornecer todos os dados necessários para a aplicação web.</p>
+</li>
+<li>
+<p><strong>MCP Server</strong> Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o <code>Service</code> via HTTP e fica em repositório separado.</p>
+</li>
+</ul>
+<h2 id="diagrama-arquitetural">Diagrama Arquitetural</h2>
+<p align="justify">    O diagrama abaixo apresenta os principais componentes do sistema MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
+<pre class="mermaid"><code>flowchart TB
+    subgraph Cliente["Clientes"]
+        FE["💻 Frontend Web&lt;br/&gt;(React + Next.js)"]
+        AI["🧠 Cliente de IA&lt;br/&gt;(Claude Desktop / Code)"]
+    end
+
+    subgraph Container["Ambiente containerizado"]
+        direction TB
+        RP["🐳 Reverse Proxy&lt;br/&gt;(nginx)"]
+        SVC["🐳 Service&lt;br/&gt;(Django + PostgreSQL 18)"]
+        RP &lt;--&gt; SVC
+    end
+
+    CLI["⌨️ CLI&lt;br/&gt;(Python 3.12)"]
+    Core["⚙️ Core&lt;br/&gt;(Python 3.12)"]
+    Parser["📊 Parser&lt;br/&gt;(Python + pandas)"]
+    Action["🤖 GitHub Action&lt;br/&gt;(TypeScript)"]
+    MCP["🔌 MCP Server&lt;br/&gt;(Python)"]
+
+    FE &lt;--&gt;|HTTPS| RP
+    AI &lt;--&gt;|MCP| MCP
+    MCP &lt;--&gt;|HTTP| SVC
+    CLI &lt;--&gt;|HTTP| SVC
+    Core &lt;--&gt;|HTTP| SVC
+    Parser &lt;--&gt;|HTTP| SVC
+    Action &lt;--&gt;|HTTPS| SVC
+
+    classDef cliente fill:#e8f8e8,stroke:#2a8c3a,stroke-dasharray:5 5
+    classDef container fill:#f0e8f8,stroke:#6a3a8c,stroke-dasharray:5 5
+    classDef novo fill:#fff4d6,stroke:#b07c00,stroke-width:2px
+    class Cliente cliente
+    class Container container
+    class MCP,AI novo</code></pre>
+<h2 id="diagrama-de-implantacao">Diagrama de Implantação</h2>
+<p>Um diagrama de implantação especifica os construtos que podem ser usados para definir a arquitetura de execução de sistemas e a atribuição de artefatos de software aos elementos do sistema.Para descrever um site, por exemplo, um diagrama de implantação mostraria quais componentes de hardware ("nós") existem (por exemplo, um servidor web, um servidor de aplicação e um servidor de banco de dados), quais componentes de software ("artefatos") rodam em cada nó (por exemplo, aplicação web, banco de dados) e como as diferentes peças estão conectadas (por exemplo, HTTP, GRPC).</p>
+<p>Os nós aparecem como caixas tridimensionais, e os componentes alocados a cada nó aparecem como retângulos dentro das caixas. Os nós podem ter subnós, que aparecem como caixas aninhadas. Um único nó em um diagrama de implantação pode representar conceitualmente vários nós físicos, como um cluster de servidores de banco de dados.</p>
+<p>Existem dois tipos de nós:</p>
+<ul>
+<li><strong>Nó de Dispositivo (device)</strong> </li>
+<li><strong>Nó de Ambiente de Execução (execution environment)</strong></li>
+</ul>
+<p>Os nós de dispositivo são recursos físicos de computação com memória de processamento e serviços para executar software, como computadores típicos ou telefones celulares. Um nó de ambiente de execução é um recurso de computação de software que roda dentro de um nó externo e que, por sua vez, fornece um serviço para hospedar e executar outros elementos de software executáveis.</p>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_implantacao.png"><img alt="Diagrama de Implantação" src="../../assets/images/diagrama_implantacao.png"/></a></p>
+<h2 id="diagrama-de-pacotes">Diagrama de Pacotes</h2>
+<h3 id="web">Web</h3>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_pacotes_front_web.png"><img alt="Diagrama de pacotes - Web" src="../../assets/images/diagrama_pacotes_front_web.png"/></a></p>
+<h3 id="core">Core</h3>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_pacotes_core.png"><img alt="Diagrama de pacotes - Core" src="../../assets/images/diagrama_pacotes_core.png"/></a></p>
+<h3 id="cli">CLI</h3>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_pacotes_cli.png"><img alt="Diagrama de pacotes - CLI" src="../../assets/images/diagrama_pacotes_cli.png"/></a></p>
+<h3 id="parser">Parser</h3>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_pacotes_parser.png"><img alt="Diagrama de pacotes - Parser" src="../../assets/images/diagrama_pacotes_parser.png"/></a></p>
+<h3 id="action">Action</h3>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_pacotes_action.png"><img alt="Diagrama de pacotes - Action" src="../../assets/images/diagrama_pacotes_action.png"/></a></p>
+<h2 id="metas-e-restricoes-de-arquitetura">Metas e Restrições de Arquitetura</h2>
+<h3 id="metas">Metas</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Metas</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Escalabilidade</td>
+<td style="text-align: center;">A aplicação deverá ser escalável</td>
+</tr>
+<tr>
+<td style="text-align: center;">Segurança</td>
+<td style="text-align: center;">A aplicação deverá tratar de forma segura os dados sensíveis dos usuários</td>
+</tr>
+<tr>
+<td style="text-align: center;">Deploy</td>
+<td style="text-align: center;">A aplicação deverá possuir deploy automatizado</td>
+</tr>
+<tr>
+<td style="text-align: center;">Usabilidade</td>
+<td style="text-align: center;">A aplicação deverá ter uma boa usabilidade para o usuário</td>
+</tr>
+</tbody>
+</table>
+<h3 id="restricoes">Restrições</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Restrições</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Conectividade</td>
+<td style="text-align: center;">Para utilização do <b>Frontend</b> é preciso ter conexão com a internet. Para utilizar o <b>CLI</b> isso será necessário apenas para extrações do GitHub, e não para o Sonarqube</td>
+</tr>
+<tr>
+<td style="text-align: center;">Plataforma</td>
+<td style="text-align: center;">A aplicação possuirá suporte WEB e para linha de comando</td>
+</tr>
+<tr>
+<td style="text-align: center;">Público</td>
+<td style="text-align: center;">A aplicação será desenvolvida com foco em empresas de tecnologia e desenvolvedores</td>
+</tr>
+<tr>
+<td style="text-align: center;">Linguagem</td>
+<td style="text-align: center;">O inglês foi escolhido por conta das integrações com plataformas que já utilizam essa linguagem</td>
+</tr>
+<tr>
+<td style="text-align: center;">Equipe</td>
+<td style="text-align: center;">A equipe possui 10 integrantes</td>
+</tr>
+<tr>
+<td style="text-align: center;">Prazo</td>
+<td style="text-align: center;">O prazo é até o final do semestre 2024.1 (29/09/2024) da Universidade de Brasília</td>
+</tr>
+</tbody>
+</table>
+<h2 id="diagrama-entidade-relacionamento">Diagrama Entidade-Relacionamento</h2>
+<h3 id="introducao_1">Introdução</h3>
+<p align="justify">    Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
+<p align="justify">    No cerne de um DER estão as entidades, que são objetos do mundo real ou conceitual que possuem atributos e características distintas. Os relacionamentos indicam as interações e conexões entre essas entidades, proporcionando uma compreensão clara dos fluxos de dados e informações dentro de um sistema. O DER não apenas representa as entidades e seus relacionamentos, mas também os atributos associados a cada entidade e como esses atributos se relacionam entre si. Essa representação gráfica facilita a comunicação entre as partes interessadas, permitindo uma compreensão abrangente e uma base sólida para o desenvolvimento e otimização do sistema. </p>
+<p align="justify">    O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do *django-extensions*, usando o comando *graph-models*, essa ferramenta cria um diagrama do banco de dados da aplicação, como a imagem abaixo: </p>
+<p><a class="glightbox" data-desc-position="bottom" data-height="auto" data-type="image" data-width="auto" href="../../assets/images/diagrama_banco.png"><img alt="Diagrama de Implantação" src="../../assets/images/diagrama_banco.png"/></a></p>
+<h2 id="referencias">Referências</h2>
+<blockquote>
+<p>[1] <b>What is Python? Executive Summary</b>. Disponível em: &lt; <a href="https://www.python.org/doc/essays/blurb/">https://www.python.org/doc/essays/blurb/</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[2] <b>O que é JavaScript?</b>. Disponível em: &lt; <a href="https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript/First_steps/What_is_JavaScript">https://developer.mozilla.org/pt-BR/docs/Learn/JavaScript/First_steps/What_is_JavaScript</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[3] <b>TypeScript is JavaScript with syntax for types</b>. Disponível em: &lt; <a href="https://www.typescriptlang.org">https://www.typescriptlang.org</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[4] <b>React</b>. Disponível em: &lt; <a href="https://react.dev">https://react.dev</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[5] <b>What is Next.js?</b>. Disponível em: &lt; <a href="https://nextjs.org/learn/foundations/about-nextjs/what-is-nextjs">https://nextjs.org/learn/foundations/about-nextjs/what-is-nextjs</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[6] <b>Django</b>. Disponível em: &lt; <a href="https://www.djangoproject.com">https://www.djangoproject.com</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[7] <b>The Jupyter Notebook</b>. Disponível em: &lt; <a href="https://jupyter-notebook.readthedocs.io/en/latest/notebook.html">https://jupyter-notebook.readthedocs.io/en/latest/notebook.html</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[8] <b>PyPI - Python Package Index</b>. Disponível em: &lt; <a href="https://pypi.org">https://pypi.org</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p>[9] <b>PostgreSQL: The World's Most Advanced Open Source Relational Database</b>. Disponível em: &lt; <a href="https://www.postgresql.org">https://www.postgresql.org</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p><b>Tudo sobre diagramas de pacotes UML</b>. Disponível em: &lt; <a href="https://www.lucidchart.com/pages/pt/diagrama-de-pacotes-uml">https://www.lucidchart.com/pages/pt/diagrama-de-pacotes-uml</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+<p><b>Arquitetura do Sistema (MeasureSoftGram-2023-1)</b>. Disponível em: &lt; <a href="https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/documentos_de_projeto/arquitetura_do_projeto">https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/documentos_de_projeto/arquitetura_do_projeto</a> &gt; Acesso em: 4 de Outubro de 2023</p>
+</blockquote>
+<h2 id="versionamento">Versionamento</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Data</th>
+<th style="text-align: center;">Autor</th>
+<th style="text-align: center;">Descrição</th>
+<th style="text-align: center;">Versão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">01/08/2024</td>
+<td style="text-align: center;">Gabriel Moretti</td>
+<td style="text-align: center;">Adicionando documento</td>
+<td style="text-align: center;">1.0</td>
+</tr>
+<tr>
+<td style="text-align: center;">13/09/2024</td>
+<td style="text-align: center;">Christian Siqueira</td>
+<td style="text-align: center;">Atualizando o diagrama de banco de dados</td>
+<td style="text-align: center;">1.1</td>
+</tr>
+<tr>
+<td style="text-align: center;">13/09/2024</td>
+<td style="text-align: center;">Christian Siqueira</td>
+<td style="text-align: center;">Adicioanndo diagrama de implantação</td>
+<td style="text-align: center;">1.2</td>
+</tr>
+<tr>
+<td style="text-align: center;">13/09/2024</td>
+<td style="text-align: center;">Christian Siqueira</td>
+<td style="text-align: center;">Atualizando o diagrama de arquitetura</td>
+<td style="text-align: center;">1.3</td>
+</tr>
+<tr>
+<td style="text-align: center;">27/04/2026</td>
+<td style="text-align: center;">Giovanni A. C. Giampauli</td>
+<td style="text-align: center;">Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com <code>compose watch</code>. Diagramas permanecem vigentes (sem mudança topológica).</td>
+<td style="text-align: center;">1.4</td>
+</tr>
+<tr>
+<td style="text-align: center;">03/05/2026</td>
+<td style="text-align: center;">Giovanni A. C. Giampauli</td>
+<td style="text-align: center;">Adiciona MCP Server e migra diagrama arquitetural para Mermaid.</td>
+<td style="text-align: center;">1.5</td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Voltar para o topo
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+<script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>
