@@ -99,6 +99,12 @@ nav:
           - Onboarding: onboarding/actionLocal.md
           - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Action
 
+  - AI:
+      - Manual de Uso - MCP: manual-de-instalacao/guia-mcp.md
+      - Guia de Desenvolvimento:
+          - Onboarding: onboarding/mcpLocal.md
+          - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-AI
+
   - CLI:
       - Manual de Uso: manual-de-instalacao/guia-cli.md
       - Guia de Desenvolvimento:
