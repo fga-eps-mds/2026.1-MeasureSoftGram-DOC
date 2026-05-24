@@ -48,6 +48,8 @@ markdown_extensions:
   - pymdownx.snippets # Permite importar trechos de código de outros arquivos
   - attr_list
   - md_in_html
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.arithmatex:
       generic: true
 
@@ -79,6 +81,7 @@ nav:
           - AgileEVM: planejamento/agileEVM.md
           - Plano de Riscos: planejamento/riscos.md
           - Decisões da R1: planejamento/decisoes-r1.md
+          - Atas: atas/index.md
 #      - EAP: planejamento/eap.md
 #      - Lean Inception:
 #      - Plano de Qualidade:

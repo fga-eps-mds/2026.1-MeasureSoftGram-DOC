@@ -2,8 +2,9 @@
 
 Planilha de custos do projeto disponível em [Custos de desenvolvimento do MeasureSoftGram](https://docs.google.com/spreadsheets/d/1vEGKl1ZxSeijZwuVfzDAaH6eT9NllpKnPJGDVQK7TP0/edit?usp=sharing) nas páginas "Custos" e "Planejamento".
 
+> Informações sobre formulas, referências de custos estão documentados nos comentários das células da planilha.
 
-<iframe width="1080" height="600" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSED4-5a6wIobEZoLeUEp9c_m33F4sDQ-nccbVYp-TnuJ3nGKN-yZmfib63sUS85PYEK291O26W79zz/pubhtml"></iframe>
+<iframe width="1080" height="800" src="https://docs.google.com/spreadsheets/d/1vEGKl1ZxSeijZwuVfzDAaH6eT9NllpKnPJGDVQK7TP0/edit?usp=sharing"></iframe>
 
 <center>
 
@@ -17,17 +18,9 @@ Planilha de custos do projeto disponível em [Custos de desenvolvimento do Measu
 ### Deploy
 
 <div align="justify">&emsp;&emsp;
-O custo do deploy foi estimado a partir do valor do serviço de hospedagem em nuvem da Hostinger, um VPS (Virtual Private Server) com:
+O custo do deploy foi zerado, pois, o LAPPIS irá fornecer a infraestrutura necessária para o desenvolvimento do projeto, sem custo adicional para a equipe.
 </div>
 
-* 1 vCPU
-* 50GB de espaço em disco NVMe
-* 4GB de RAM
-
-
-<div align="justify">&emsp;&emsp;
-Isso é o mais próximo da infraestrutura necessária para o projeto inteiro, incluindo todos os microsserviços com custo de R$29,99 por mês. Além disso, foi acrescentado um adicional de R$16,99 por mês a fim de garantir o backup automático dos dados, o que é essencial para a segurança do projeto. Sendo assim, o custo semanal (por sprint) do deploy é de R$16,33.
-</div>
 
 ### Domínio
 
@@ -81,6 +74,7 @@ O custo semanal por membro foi calculado somando o custo por cursar EPS na Unive
 
 ## Histórico de Versão
 
-| Versao | Data       | Descricao            | Autor                                    | Revisor |
-|--------|------------|----------------------|------------------------------------------|---------|
-| 1.0    | 18/04/2026 | Criação do documento | [João Antonio](https://github.com/i-JSS) |         |
+| Versao | Data       | Descricao                      | Autor                                    | Revisor |
+|--------|------------|--------------------------------|------------------------------------------|---------|
+| 1.0    | 18/04/2026 | Criação do documento           | [João Antonio](https://github.com/i-JSS) |         |
+| 1.1    | 03/05/2026 | Atualiza custos - Correções R1 | [João Antonio](https://github.com/i-JSS)                                          |         |
