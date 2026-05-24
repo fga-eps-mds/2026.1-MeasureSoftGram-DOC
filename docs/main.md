@@ -14,7 +14,7 @@ e ministrada pelo professor Hilmer Rodrigues Neri da Universidade de Brasília -
 <table style="margin-left: auto; margin-right: auto;">
     <tr>
         <td align="center">
-            <a href="https://github.com/DaniloNavesS ">
+            <a href="https://github.com/DaniloNavesS">
                 <img style="border-radius: 50%;" src="https://github.com/DaniloNavesS.png" width="150px;"/>
                 <h5 class="text-center">Danilo Naves do Nascimento</h5>
             </a>
@@ -24,8 +24,6 @@ e ministrada pelo professor Hilmer Rodrigues Neri da Universidade de Brasília -
                 <img style="border-radius: 50%;" src="https://github.com/DaviPierre.png" width="150px;"/>
                 <h5 class="text-center">Davi Gonçalves Akegawa Pierre</h5>
             </a>
-        </td>
-        <td align="center">
         </td>
         <td align="center">
             <a href="https://github.com/giovanniacg">
@@ -39,29 +37,18 @@ e ministrada pelo professor Hilmer Rodrigues Neri da Universidade de Brasília -
                 <h5 class="text-center">Guilherme Aguera de la Fuente Vilela</h5>
             </a>
         </td>
-        </tr>
-        <td align="center">
-            <a href="https://github.com/ian-dcg">
-                <img style="border-radius: 50%;" src="https://github.com/ian-dcg.png" width="150px;"/>
-                <h5 class="text-center">Ian da Costa Gama</h5>
-            </a>
-        </td>
-        <td align="center">
-            <a href="https://github.com/ingrdsoares">
-                <img style="border-radius: 50%;" src="https://github.com/ingrdsoares.png" width="150px;"/>
-                <h5 class="text-center">Ingrid da Cruz Galvão S Soares</h5>
-            </a>
-        </td>
+    </tr>
+    <tr>
         <td align="center">
             <a href="https://github.com/i-JSS">
                 <img style="border-radius: 50%;" src="https://github.com/i-JSS.png" width="150px;"/>
-                <h5 class="text-center">João Antonio Ginuino Carvaho</h5>
+                <h5 class="text-center">João Antonio Ginuino Carvalho</h5>
             </a>
         </td>
         <td align="center">
             <a href="https://github.com/jpanacleto2">
                 <img style="border-radius: 50%;" src="https://github.com/jpanacleto2.png" width="150px;"/>
-                <h5 class="text-center">João Pedro Anacleto Ferreira Machado </h5>
+                <h5 class="text-center">João Pedro Anacleto Ferreira Machado</h5>
             </a>
         </td>
         <td align="center">
@@ -70,18 +57,18 @@ e ministrada pelo professor Hilmer Rodrigues Neri da Universidade de Brasília -
                 <h5 class="text-center">Luciano de Freitas Melo</h5>
             </a>
         </td>
-    </tr>
-    <tr>
         <td align="center">
             <a href="https://github.com/luishenrrique">
                 <img style="border-radius: 50%;" src="https://github.com/luishenrrique.png" width="150px;"/>
                 <h5 class="text-center">Luis Henrique Luz Costa</h5>
             </a>
         </td>
+    </tr>
+    <tr>
         <td align="center">
             <a href="https://github.com/DeM4rcio">
                 <img style="border-radius: 50%;" src="https://github.com/DeM4rcio.png" width="150px;"/>
-                <h5 class="text-center">Márcio Henrique de sousa costa</h5>
+                <h5 class="text-center">Márcio Henrique de Sousa Costa</h5>
             </a>
         </td>
         <td align="center">
@@ -99,7 +86,7 @@ e ministrada pelo professor Hilmer Rodrigues Neri da Universidade de Brasília -
         <td align="center">
             <a href="https://github.com/raquel-andrade">
                 <img style="border-radius: 50%;" src="https://github.com/raquel-andrade.png" width="150px;"/>
-                <h5 class="text-center">Raquel Ferreira Andrade </h5>
+                <h5 class="text-center">Raquel Ferreira Andrade</h5>
             </a>
         </td>
     </tr>
