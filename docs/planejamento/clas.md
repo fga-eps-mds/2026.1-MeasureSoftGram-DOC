@@ -25,11 +25,11 @@ Cada clã é responsável por uma camada da arquitetura e possui um **líder** r
 
 A tabela abaixo apresenta a distribuição dos membros por **função técnica** (Chapter) dentro de cada Clã:
 
-| Clã        | Actions                           | CLI                   | Core / Parser            | Service                | Front                           |
-|------------|-----------------------------------|-----------------------|--------------------------|------------------------|---------------------------------|
-| **Action** | • Guilherme<br>• **João Antonio** | —                     | —                        | • Nicollas<br>• Márcio | —                               |
-| **CLI**    | —                                 | • Murilo<br>• **Ian** | • João Pedro<br>• Ingrid | —                      | —                               |
-| **Web**    | —                                 | —                     | • Giovanni               | • Danilo<br>• **Luis** | • Raquel<br>• Luciano<br>• Davi |
+| Clã        | Actions                           | CLI                 | Core / Parser          | Service                | Front                           |
+|------------|-----------------------------------|---------------------|------------------------|------------------------|---------------------------------|
+| **Action** | • Guilherme<br>• **João Antonio** | —                   | —                      | • Nicollas<br>• Márcio | —                               |
+| **CLI**    | —                                 | • **Murilo<br>**| • João Pedro<br> | —                      | —                               |
+| **Web**    | —                                 | —                   | • Giovanni             | • Danilo<br>• **Luis** | • Raquel<br>• Luciano<br>• Davi |
 
 ---
 
@@ -60,15 +60,13 @@ O **Clã Action** é responsável pela camada de **ações e serviços de negóc
 
 O **Clã CLI** é responsável pela interface de linha de comando do projeto, além do desenvolvimento dos módulos de **Core** e **Parser**.
 
-**Líder:** [Ian da Costa Gama](https://github.com/ian-dcg)
+**Líder:** [Murilo Perazzo Barbosa Souto ](https://github.com/murilopbs)
 
 ### Membros
 
 | Membro                               | Função        | GitHub                                         |
 |--------------------------------------|---------------|------------------------------------------------|
-| Ian da Costa Gama                    | Líder / CLI   | [@ian-dcg](https://github.com/ian-dcg)         |
-| Murilo Perazzo Barbosa Souto         | CLI           | [@murilopbs](https://github.com/murilopbs)     |
-| Ingrid da Cruz Galvão S Soares       | Core / Parser | [@ingrdsoares](https://github.com/ingrdsoares) |
+| Murilo Perazzo Barbosa Souto         | Líder / CLI            | [@murilopbs](https://github.com/murilopbs)     |
 | João Pedro Anacleto Ferreira Machado | Core / Parser | [@jpanacleto2](https://github.com/jpanacleto2) |
 
 ### Cerimônias da equipe
