@@ -10,3 +10,5 @@ matplotlib
 typing
 datetime
 openpyxl
+streamlit
+plotly
