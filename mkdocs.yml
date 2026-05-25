@@ -76,6 +76,7 @@ nav:
           - Código de Conduta: guia-de-contribuicao/codigo-de-conduta.md
           - Política de Commits: guia-de-contribuicao/politica-de-commits.md
           - Política de Branches: guia-de-contribuicao/politica-de-branch.md
+          - Política do DockerHub: guia-de-contribuicao/politica-do-dockerhub.md
       - Planejamento:
           - Custos: planejamento/custos.md
           - AgileEVM: planejamento/agileEVM.md
