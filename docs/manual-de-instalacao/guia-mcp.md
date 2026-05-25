@@ -3,7 +3,7 @@
 ## Pré-requisitos
 
 - Ter o [Docker](https://docs.docker.com/get-docker/) instalado na sua máquina.
-- Ter um agente de IA compatível com o protocolo MCP (ex: Claude Desktop, Cursor, VS Code com extensão MCP).
+- Ter um agente de IA compatível com o protocolo MCP que **suporte MCPs locais** (ex: Claude Desktop, Cursor, VS Code com extensão MCP) e uma **conta ativa** nesse agente.
 - Ter uma conta e credenciais de acesso ao MeasureSoftGram Service.
 
 ---
