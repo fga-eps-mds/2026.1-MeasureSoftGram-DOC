@@ -1,0 +1,16 @@
+{
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 0
+  },
+  "baseComponent": {
+    "id": "AZ3RfqMspN94pbd_V5X5",
+    "key": "fga-eps-mds_2026.1-MeasureSoftGram-Core",
+    "name": "2026.1-MeasureSoftGram-Core",
+    "qualifier": "TRK",
+    "measures": [],
+    "branch": "develop"
+  },
+  "components": []
+}
