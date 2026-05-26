@@ -1342,23 +1342,39 @@ with tab4:
             horiz_tables = parse_custos_horizontal(evm_df)
             if horiz_tables:
                 st.markdown("### Detalhamento da Planilha")
-                for htitle, htbl in horiz_tables:
-                    def _fmt_horiz(v):
-                        if v is None or (isinstance(v, float) and v != v):
-                            return ""
-                        if isinstance(v, (int, float)):
-                            return _brl(float(v))
-                        s = str(v).strip()
-                        num = _to_float_br(s)
-                        return _brl(num) if num is not None else s
+                # Column names that indicate integer (count/duration) values
+                _INT_COL_NAMES = {"#", "nº", "nro", "numero", "número", "horas", "hora", "h"}
+                # Row description substrings that indicate integer values
+                _INT_DESC_KW   = ("vida util", "quantidade de", "qtd de", "nº de", "número de")
 
+                for htitle, htbl in horiz_tables:
                     display_htbl = htbl.copy()
                     desc_col_h = display_htbl.columns[0]
+
+                    # Convert description column to strings first
+                    display_htbl[desc_col_h] = display_htbl[desc_col_h].fillna("").astype(str)
+
                     for col in display_htbl.columns:
                         if col == desc_col_h:
-                            display_htbl[col] = display_htbl[col].fillna("").astype(str)
-                        else:
-                            display_htbl[col] = display_htbl[col].apply(_fmt_horiz)
+                            continue
+                        col_is_int = str(col).lower().strip() in _INT_COL_NAMES
+                        formatted = []
+                        for i in range(len(display_htbl)):
+                            v = display_htbl[col].iloc[i]
+                            if pd.isna(v) or v is None:
+                                formatted.append("")
+                                continue
+                            desc_v = display_htbl[desc_col_h].iloc[i].lower()
+                            row_is_int = col_is_int or any(k in desc_v for k in _INT_DESC_KW)
+                            try:
+                                f = float(v)
+                                if row_is_int and f == int(f):
+                                    formatted.append(str(int(f)))
+                                else:
+                                    formatted.append(_brl(f))
+                            except (ValueError, TypeError):
+                                formatted.append(str(v) if v else "")
+                        display_htbl[col] = formatted
 
                     st.markdown(f"**{htitle}**")
                     st.dataframe(display_htbl, use_container_width=True, hide_index=True)
