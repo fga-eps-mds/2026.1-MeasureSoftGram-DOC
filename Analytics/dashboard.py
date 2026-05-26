@@ -1254,36 +1254,46 @@ with tab4:
                     k in all_str_vals for k in ("quantidade de membro", "qtd de membro")
                 )
 
-                _INT_COL_NAMES_PLAN = {
-                    "#", "nº", "nro", "numero", "número",
-                    "horas", "hora", "h", "sprint", "pp", "pontos", "us",
-                }
+                # Substrings that mark a column as non-monetary (integer or plain decimal)
+                _NO_CURRENCY_COL_KW = (
+                    "pontos", "sprint", "velocity", "velocit",
+                    "spi", "cpi", "média", "media", "mean",
+                    "horas", "hora", " us", " pp", " pc",
+                )
+                # Row description substrings that mark a row as integer values
                 _INT_DESC_KW_PLAN = (
                     "vida util", "quantidade de", "qtd de", "nº de", "número de",
                     "sprint", "pontos planejados", "pontos real", "pontos concluí",
-                    "user stor", "pp",
+                    "user stor",
                 )
 
                 # Ensure description column is string before per-row detection
                 display_df[desc_col] = display_df[desc_col].fillna("").astype(str)
 
                 for col in display_df.columns:
-                    col_is_int = str(col).lower().strip() in _INT_COL_NAMES_PLAN
+                    col_lower = str(col).lower().strip()
+                    col_no_currency = any(k in col_lower for k in _NO_CURRENCY_COL_KW)
                     formatted = []
                     for i, v in enumerate(display_df[col]):
                         if col == desc_col:
                             formatted.append(str(v) if v else "")
                             continue
                         if pd.isna(v) or v is None:
-                            formatted.append("" if is_member_count else "R$ 0,00")
+                            formatted.append("" if (is_member_count or col_no_currency) else "R$ 0,00")
                             continue
                         try:
                             f = float(v)
                             if is_member_count:
                                 formatted.append(str(int(f)))
+                            elif col_no_currency:
+                                # Non-monetary metric: integer if whole number, plain decimal otherwise
+                                if f == int(f):
+                                    formatted.append(str(int(f)))
+                                else:
+                                    formatted.append(f"{f:.2f}".replace(".", ","))
                             else:
                                 desc_v = display_df[desc_col].iloc[i].lower()
-                                row_is_int = col_is_int or any(k in desc_v for k in _INT_DESC_KW_PLAN)
+                                row_is_int = any(k in desc_v for k in _INT_DESC_KW_PLAN)
                                 if row_is_int and f == int(f):
                                     formatted.append(str(int(f)))
                                 else:
@@ -1365,36 +1375,49 @@ with tab4:
             horiz_tables = parse_custos_horizontal(evm_df)
             if horiz_tables:
                 st.markdown("### Detalhamento da Planilha")
-                # Column names that indicate integer (count/duration) values
-                _INT_COL_NAMES = {"#", "nº", "nro", "numero", "número", "horas", "hora", "h"}
+                # Substrings in column name that mean the column is never monetary
+                _NO_CURRENCY_COL_KW = (
+                    "pontos", "sprint", "velocity", "velocit",
+                    "spi", "cpi", "média", "media", "mean",
+                    "horas", "hora", " us", " pp", " pc",
+                )
                 # Row description substrings that indicate integer values
-                _INT_DESC_KW   = ("vida util", "quantidade de", "qtd de", "nº de", "número de")
+                _INT_DESC_KW = (
+                    "vida util", "quantidade de", "qtd de", "nº de", "número de",
+                    "sprint", "pontos",
+                )
 
                 for htitle, htbl in horiz_tables:
                     display_htbl = htbl.copy()
                     desc_col_h = display_htbl.columns[0]
 
-                    # Convert description column to strings first
                     display_htbl[desc_col_h] = display_htbl[desc_col_h].fillna("").astype(str)
 
                     for col in display_htbl.columns:
                         if col == desc_col_h:
                             continue
-                        col_is_int = str(col).lower().strip() in _INT_COL_NAMES
+                        col_lower = str(col).lower().strip()
+                        col_no_currency = any(k in col_lower for k in _NO_CURRENCY_COL_KW)
                         formatted = []
                         for i in range(len(display_htbl)):
                             v = display_htbl[col].iloc[i]
                             if pd.isna(v) or v is None:
                                 formatted.append("")
                                 continue
-                            desc_v = display_htbl[desc_col_h].iloc[i].lower()
-                            row_is_int = col_is_int or any(k in desc_v for k in _INT_DESC_KW)
                             try:
                                 f = float(v)
-                                if row_is_int and f == int(f):
-                                    formatted.append(str(int(f)))
+                                if col_no_currency:
+                                    if f == int(f):
+                                        formatted.append(str(int(f)))
+                                    else:
+                                        formatted.append(f"{f:.2f}".replace(".", ","))
                                 else:
-                                    formatted.append(_brl(f))
+                                    desc_v = display_htbl[desc_col_h].iloc[i].lower()
+                                    row_is_int = any(k in desc_v for k in _INT_DESC_KW)
+                                    if row_is_int and f == int(f):
+                                        formatted.append(str(int(f)))
+                                    else:
+                                        formatted.append(_brl(f))
                             except (ValueError, TypeError):
                                 formatted.append(str(v) if v else "")
                         display_htbl[col] = formatted
@@ -1576,28 +1599,3 @@ with tab5:
         risk_mon_df = risk_sheets[selected_risk_sheet]
         st.dataframe(risk_mon_df, use_container_width=True)
 
-        # Se a primeira coluna parecer risco (R01…) e as demais colunas forem sprints/datas, plota evolução
-        first_col = risk_mon_df.columns[0] if len(risk_mon_df.columns) > 0 else None
-        if first_col and risk_mon_df[first_col].astype(str).str.match(r"R\d{2}").any():
-            numeric_cols = [c for c in risk_mon_df.columns[1:] if pd.to_numeric(risk_mon_df[c], errors="coerce").notna().any()]
-            if numeric_cols:
-                st.markdown("#### Evolução do Score de Risco por Sprint")
-                fig_risk_evo = go.Figure()
-                for _, row in risk_mon_df.iterrows():
-                    risk_id = str(row[first_col])
-                    y_vals = pd.to_numeric(pd.Series([row[c] for c in numeric_cols]), errors="coerce")
-                    fig_risk_evo.add_trace(go.Scatter(
-                        x=numeric_cols, y=y_vals,
-                        name=risk_id, mode="lines+markers",
-                        hovertemplate=f"{risk_id}: %{{y}}<extra></extra>",
-                    ))
-                fig_risk_evo.add_hrect(y0=0, y1=5,   fillcolor="#4CAF50", opacity=0.08, line_width=0, annotation_text="Baixo")
-                fig_risk_evo.add_hrect(y0=6, y1=12,  fillcolor="#FFC107", opacity=0.08, line_width=0, annotation_text="Médio")
-                fig_risk_evo.add_hrect(y0=13, y1=25, fillcolor="#F44336", opacity=0.08, line_width=0, annotation_text="Elevado")
-                fig_risk_evo.update_layout(
-                    xaxis_title="Sprint",
-                    yaxis_title="Score (P × I)",
-                    yaxis_range=[0, 25],
-                    hovermode="x unified",
-                )
-                st.plotly_chart(fig_risk_evo, use_container_width=True)
