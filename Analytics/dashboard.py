@@ -688,25 +688,25 @@ def parse_custos_horizontal(df: pd.DataFrame) -> list[tuple[str, pd.DataFrame]]:
             data_str = " ".join(str(v) for row in rows for v in row.values() if v is not None).lower()
 
             if "deploy" in col_str and "domínio" in col_str:
-                title = "💰 Custo de Infraestrutura"
+                title = "Custo de Infraestrutura"
             elif "serviços" in col_str or "hospedagem" in col_str:
-                title = "🚀 Custos Deploy"
+                title = "Custos Deploy"
             elif "atividade" in col_str or ("horas" in col_str and "semana" in col_str):
-                title = "📅 Planejamento do Projeto"
+                title = "Planejamento do Projeto"
             elif "kwh" in data_str or "cons." in data_str:
-                title = "⚡ Energia Individual"
+                title = "Energia Individual"
             elif "valor médio" in data_str:
-                title = "🌐 Internet Individual"
+                title = "Internet Individual"
             elif ("unidf" in data_str or "- uf" in data_str or "crédito" in data_str
                   or "eps" in data_str):
-                title = "🎓 Estudante"
+                title = "Estudante"
             elif "computador" in data_str and ("vida util" in data_str or "depreciação" in data_str):
-                title = "💻 Depreciação Computador"
+                title = "Depreciação Computador"
             elif "release" in data_str and "custo" in data_str:
-                title = "💰 Custos Totais"
+                title = "Custos Totais"
             else:
                 cols_preview = ", ".join(list(col_names.values())[:2])
-                title = f"📋 {cols_preview}"
+                title = cols_preview
 
             tables.append((title, tbl))
 
@@ -1214,18 +1214,18 @@ with tab4:
 
             _TABLE_TITLES = [
                 (lambda v, _: "quantidade" in v or ("membros" in v and "danilo" not in v),
-                 "📊 Quantidade de Membros por Semana"),
+                 "Quantidade de Membros por Semana"),
                 (lambda v, _: "infraestrutura" in v or "equipamento" in v,
-                 "💻 Custos de Infraestrutura e Equipamentos"),
+                 "Custos de Infraestrutura e Equipamentos"),
                 (lambda v, _: any(n in v for n in ("danilo", "davi", "giovanni", "guilherme",
                     "ian", "ingrid", "joão", "luciano", "luis", "márcio",
                     "maria", "murilo", "nicollas", "raphael", "raquel", "felipe")),
-                 "👥 Planejamento de Membros"),
+                 "Planejamento de Membros"),
                 (lambda v, cols: "total" in v and any("semana" in c.lower() for c in cols) and len(v.split()) <= 10,
-                 "🧾 Custo Total por Sprint"),
+                 "Custo Total por Sprint"),
                 (lambda v, cols: ("release" in v or "custo" in v) and any(
                     c.lower() in ("valor", "value") for c in cols),
-                 "📈 Custos por Release e Etapas"),
+                 "Custos por Release e Etapas"),
             ]
 
             raw_tables = _split_raw_tables(evm_df)
@@ -1234,7 +1234,7 @@ with tab4:
                     str(v).lower() for v in tbl_df.iloc[:, 0] if v is not None
                 )
                 col_names = list(tbl_df.columns)
-                title = f"📋 Tabela {idx + 1}"
+                title = f"Tabela {idx + 1}"
                 for matcher, label in _TABLE_TITLES:
                     if matcher(first_col_text, col_names):
                         title = label
