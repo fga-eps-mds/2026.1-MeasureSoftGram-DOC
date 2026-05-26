@@ -1,0 +1,478 @@
+{
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 7
+  },
+  "baseComponent": {
+    "id": "AZ2n1ebTZWvnZiBKJ5Ag",
+    "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action",
+    "name": "2026.1-MeasureSoftGram-Action",
+    "qualifier": "TRK",
+    "measures": []
+  },
+  "components": [
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3d",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/github/github-comment.ts",
+      "name": "github-comment.ts",
+      "qualifier": "FIL",
+      "path": "src/github/github-comment.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "7.4",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "6"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "4"
+        },
+        {
+          "metric": "ncloc",
+          "value": "50"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3g",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/github.ts",
+      "name": "github.ts",
+      "qualifier": "FIL",
+      "path": "src/github.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "20"
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "9"
+        },
+        {
+          "metric": "ncloc",
+          "value": "179"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3l",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/index.ts",
+      "name": "index.ts",
+      "qualifier": "FIL",
+      "path": "src/index.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "3"
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "1"
+        },
+        {
+          "metric": "ncloc",
+          "value": "49"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3h",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/service/request-service.ts",
+      "name": "request-service.ts",
+      "qualifier": "FIL",
+      "path": "src/service/request-service.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.6",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "16"
+        },
+        {
+          "metric": "coverage",
+          "value": "90.9",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "10"
+        },
+        {
+          "metric": "ncloc",
+          "value": "170"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3i",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/service/service.ts",
+      "name": "service.ts",
+      "qualifier": "FIL",
+      "path": "src/service/service.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "15"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "6"
+        },
+        {
+          "metric": "ncloc",
+          "value": "93"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3k",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/sonarqube.ts",
+      "name": "sonarqube.ts",
+      "qualifier": "FIL",
+      "path": "src/sonarqube.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "7"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "2"
+        },
+        {
+          "metric": "ncloc",
+          "value": "87"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    },
+    {
+      "id": "AZ2n1ng2dnLmPxB3ir3f",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Action:src/utils.ts",
+      "name": "utils.ts",
+      "qualifier": "FIL",
+      "path": "src/utils.ts",
+      "language": "ts",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "3"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "2"
+        },
+        {
+          "metric": "ncloc",
+          "value": "35"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ]
+    }
+  ]
+}
