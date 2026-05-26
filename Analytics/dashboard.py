@@ -1254,19 +1254,42 @@ with tab4:
                     k in all_str_vals for k in ("quantidade de membro", "qtd de membro")
                 )
 
+                _INT_COL_NAMES_PLAN = {
+                    "#", "nº", "nro", "numero", "número",
+                    "horas", "hora", "h", "sprint", "pp", "pontos", "us",
+                }
+                _INT_DESC_KW_PLAN = (
+                    "vida util", "quantidade de", "qtd de", "nº de", "número de",
+                    "sprint", "pontos planejados", "pontos real", "pontos concluí",
+                    "user stor", "pp",
+                )
+
+                # Ensure description column is string before per-row detection
+                display_df[desc_col] = display_df[desc_col].fillna("").astype(str)
+
                 for col in display_df.columns:
+                    col_is_int = str(col).lower().strip() in _INT_COL_NAMES_PLAN
                     formatted = []
-                    for v in display_df[col]:
+                    for i, v in enumerate(display_df[col]):
                         if col == desc_col:
-                            formatted.append("" if pd.isna(v) or v is None else str(v))
-                        elif pd.isna(v) or v is None:
+                            formatted.append(str(v) if v else "")
+                            continue
+                        if pd.isna(v) or v is None:
                             formatted.append("" if is_member_count else "R$ 0,00")
-                        else:
-                            try:
-                                f = float(v)
-                                formatted.append(str(int(f)) if is_member_count else _brl(f))
-                            except (ValueError, TypeError):
-                                formatted.append(str(v))
+                            continue
+                        try:
+                            f = float(v)
+                            if is_member_count:
+                                formatted.append(str(int(f)))
+                            else:
+                                desc_v = display_df[desc_col].iloc[i].lower()
+                                row_is_int = col_is_int or any(k in desc_v for k in _INT_DESC_KW_PLAN)
+                                if row_is_int and f == int(f):
+                                    formatted.append(str(int(f)))
+                                else:
+                                    formatted.append(_brl(f))
+                        except (ValueError, TypeError):
+                            formatted.append(str(v))
                     display_df[col] = formatted
 
                 st.markdown(f"**{title}**")
