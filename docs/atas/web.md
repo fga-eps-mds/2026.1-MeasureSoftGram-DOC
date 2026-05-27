@@ -1,4 +1,4 @@
-
+<!--
 ## Índice Rápido
 
 | # | Tipo | Título | Data |
@@ -51,12 +51,15 @@
 | [Ação 3] | [Responsável] | [Prazo] | [Status] |
 
 ---
+-->
 
 ## Índice Rápido
 
 | # | Tipo | Título | Data |
 | --- | --- | --- | --- |
-| Nº1 | Semanal | Definição de Padrões e Alocação de Tarefas | 06/05/2026 |
+| Nº1 | Alinhamento | Definição de Padrões e Alocação de Tarefas | 06/05/2026 |
+| Nº2 | Alinhamento | Planejamento de Atividades Front-end | 13/05/2026 |
+| Nº3 | Alinhamento | Integração do Grafana e Resolução de Débitos Técnicos | 27/05/2026 |
 
 ---
 ### Nº1 — Definição de Padrões e Alocação de Tarefas
@@ -104,14 +107,6 @@ A reunião teve como foco a organização administrativa e técnica da equipa de
 
 ---
 
-## Índice Rápido
-
-| # | Tipo | Título | Data |
-| --- | --- | --- | --- |
-| Nº2 | Alinhamento | Planejamento de Atividades Front-end | 13/05/2026 |
-
----
-
 ### Nº2 — Planejamento de Atividades Front-end
 
 | Campo | Detalhe |
@@ -154,3 +149,54 @@ A equipe definiu que o esforço imediato será voltado para a qualidade de códi
 | Implementar testes e aumentar cobertura Sonar (Prioridade 1) | Raquel, Luciano e Davi | Final da Sprint | Em andamento |
 | Analisar e configurar métricas (Kibana/Grafana) | Raquel, Luciano e Davi | Final da Sprint | Planejado |
 | Otimizar gráfico Semáforo (MeasureSoftGram) | Raquel, Luciano e Davi | Final da Sprint | Planejado |
+
+---
+
+### Nº3 — Integração do Grafana e Resolução de Débitos Técnicos
+
+| Campo | Detalhe |
+| --- | --- |
+| **Data** | 27 de maio de 2026 |
+| **Horário** | 10:23 – 10:57 |
+| **Local** | Reunião Remota (Online) |
+| **Sprint** | Sprint 25/05 - 01/06 |
+
+**Participantes**
+
+- **Danilo** — Service 
+- **Luciano** — Web
+- **Raquel** — Web
+
+**Pauta**
+
+- Resolução de débitos técnicos (cobertura de testes no Sonar e ajuste do gráfico de semáforo).
+- Estratégia de integração automática e arquitetura de contêineres para o Grafana.
+- Divisão da User Story (US) do Grafana em subtarefas e alocação da equipe.
+
+**Resumo da Reunião**
+A reunião teve como foco principal a resolução de pendências técnicas que impactavam o fluxo de integração contínua e o planejamento estratégico para a implementação do Grafana. Foram definidas as diretrizes de arquitetura para a ferramenta de métricas e estabelecida a divisão da User Story em duas frentes de trabalho distintas. Por fim, alinhou-se que a distribuição final de tarefas para o restante da equipe dependerá da validação dos requisitos com o cliente.
+
+**O que foi discutido**
+
+- **Débitos Técnicos:** Alinhamento sobre a ausência de cobertura de testes no Sonar que está impedindo a aprovação do Pull Request (PR) no CI. Também foi discutido que o ajuste pendente no gráfico de semáforo será incorporado ao escopo da US do Grafana.
+- **Automação e Integração da Web:** Análise técnica de como realizar a integração automática do Grafana com a interface web, garantindo que os dados sejam extraídos do banco de dados e os gráficos atualizados em tempo real.
+- **Arquitetura e Infraestrutura:** Discussão sobre a preparação do ambiente técnico para receber a ferramenta, englobando a configuração do contêiner e as etapas de deploy. Ficou definido que o Grafana será mantido no repositório do Front-end.
+- **Divisão da US06 (Grafana):** Planejamento para desmembrar a US do Grafana em duas frentes de atuação para otimizar o desenvolvimento do grupo durante a sprint.
+- **Alinhamento com o Cliente:** Decisão de aguardar o retorno da reunião com o cliente para verificar possíveis alterações na US06 antes de concluir a alocação dos demais membros.
+
+**Decisões Tomadas**
+
+- O Grafana será implementado e integrado diretamente no repositório do Front-end.
+- A US do Grafana (US06) será dividida em duas equipes de trabalho distintas: uma voltada para o setup, integração e estruturação de consultas ao banco; outra voltada para a lógica de atualização automática dos gráficos na interface.
+- O clã fará o detalhamento visual e técnico da nova página até o dia 03/06 (reunião do clã).
+
+**Ações e Responsáveis**
+
+| Ação | Responsável | Prazo | Status |
+| --- | --- | --- | --- |
+| Resolver cobertura de testes no Sonar e corrigir falha do PR no CI | Luciano | 01/06/2026 | Em curso |
+| Estruturar a subdivisão da US06 para ser implementado pela equipe | Raquel e Danilo | 29/05/2026 | Em curso |
+| Auxiliar na criação das subtarefas da US06 e selecionar uma atividade para desenvolvimento | Restante da equipe | Durante a sprint | Em curso |
+| Finalizar o planejamento detalhado da implementação visual e técnica da US do Grafana | Todo o clã | 03/06/2026 | Planejado |
+
+---
