@@ -32,14 +32,14 @@
             "site_admin": false
         },
         "labels": [],
-        "state": "open",
+        "state": "closed",
         "locked": false,
         "assignees": [],
         "milestone": null,
         "comments": 2,
         "created_at": "2026-06-01T20:15:21Z",
-        "updated_at": "2026-06-01T20:17:07Z",
-        "closed_at": null,
+        "updated_at": "2026-06-01T22:05:17Z",
+        "closed_at": "2026-06-01T22:05:17Z",
         "assignee": null,
         "author_association": "NONE",
         "issue_field_values": [],
@@ -51,10 +51,30 @@
             "html_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Action/pull/17",
             "diff_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Action/pull/17.diff",
             "patch_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Action/pull/17.patch",
-            "merged_at": null
+            "merged_at": "2026-06-01T22:05:17Z"
         },
         "body": "## Resumo\n\n- **BUG013**: Atualiza `name` em `action.yml` de `'2024.1 Action MeasureSoftGram'` para `'2026.1 Action MeasureSoftGram'`\n- **BUG012**: Move `axios.defaults.timeout` (global) para o campo `timeout` dentro do `AxiosRequestConfig` da requisi\u00e7\u00e3o, isolando o timeout do cliente MSG Service e evitando efeito colateral no cliente SonarCloud\n\n## Issues fechadas\n\nCloses #13\nCloses #12",
-        "closed_by": null,
+        "closed_by": {
+            "login": "i-JSS",
+            "id": 109870486,
+            "node_id": "U_kgDOBox9lg",
+            "avatar_url": "https://avatars.githubusercontent.com/u/109870486?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/i-JSS",
+            "html_url": "https://github.com/i-JSS",
+            "followers_url": "https://api.github.com/users/i-JSS/followers",
+            "following_url": "https://api.github.com/users/i-JSS/following{/other_user}",
+            "gists_url": "https://api.github.com/users/i-JSS/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/i-JSS/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/i-JSS/subscriptions",
+            "organizations_url": "https://api.github.com/users/i-JSS/orgs",
+            "repos_url": "https://api.github.com/users/i-JSS/repos",
+            "events_url": "https://api.github.com/users/i-JSS/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/i-JSS/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
         "reactions": {
             "url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Action/issues/17/reactions",
             "total_count": 0,
@@ -445,7 +465,7 @@
                 "description": "Something isn't working"
             }
         ],
-        "state": "open",
+        "state": "closed",
         "locked": false,
         "assignees": [
             {
@@ -473,8 +493,8 @@
         "milestone": null,
         "comments": 0,
         "created_at": "2026-05-04T16:55:10Z",
-        "updated_at": "2026-05-04T16:55:11Z",
-        "closed_at": null,
+        "updated_at": "2026-06-01T22:05:18Z",
+        "closed_at": "2026-06-01T22:05:18Z",
         "assignee": {
             "login": "giovanniacg",
             "id": 63993401,
@@ -512,7 +532,27 @@
             "total_blocking": 0
         },
         "body": "## Descreva o bug\n\nEm `action.yml:1`, o campo `name` declara:\n\n```yaml\nname: '2024.1 Action MeasureSoftGram'\n```\n\nO ciclo letivo da disciplina EPS \u00e9 **2026.1** (o reposit\u00f3rio est\u00e1 nomeado `2026.1-MeasureSoftGram-Action`). O nome dentro do `action.yml` ficou no ano antigo (provavelmente herdado do fork de 2024.1).\n\nQuando algu\u00e9m usa esta action no GitHub Actions, v\u00ea \"2024.1 Action MeasureSoftGram\" no log \u2014 informa\u00e7\u00e3o contradit\u00f3ria com o ciclo atual.\n\n## Como reproduzir\n\n1. Abrir `action.yml` na raiz do repo.\n2. Ler o campo `name` na linha 1.\n3. Comparar com o ano declarado em outros lugares (README, package.json, repo name).\n\n## Comportamento esperado\n\nAtualizar o `name` para refletir o ciclo atual:\n\n```yaml\nname: '2026.1 Action MeasureSoftGram'\n```\n\nConsiderar adotar nome desacoplado do semestre (ex: `'MeasureSoftGram Action'`) para evitar repetir o ajuste a cada novo ciclo.\n\n## Informa\u00e7\u00f5es adicionais\n\n- Local: `action.yml:1`\n- Severidade: cosm\u00e9tica, mas afeta logs vis\u00edveis ao usu\u00e1rio da action.\n- Achado durante auditoria sistem\u00e1tica do Giovanni pelos reposit\u00f3rios em 2026-05-04.",
-        "closed_by": null,
+        "closed_by": {
+            "login": "i-JSS",
+            "id": 109870486,
+            "node_id": "U_kgDOBox9lg",
+            "avatar_url": "https://avatars.githubusercontent.com/u/109870486?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/i-JSS",
+            "html_url": "https://github.com/i-JSS",
+            "followers_url": "https://api.github.com/users/i-JSS/followers",
+            "following_url": "https://api.github.com/users/i-JSS/following{/other_user}",
+            "gists_url": "https://api.github.com/users/i-JSS/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/i-JSS/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/i-JSS/subscriptions",
+            "organizations_url": "https://api.github.com/users/i-JSS/orgs",
+            "repos_url": "https://api.github.com/users/i-JSS/repos",
+            "events_url": "https://api.github.com/users/i-JSS/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/i-JSS/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
         "reactions": {
             "url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Action/issues/13/reactions",
             "total_count": 0,
@@ -527,7 +567,7 @@
         },
         "timeline_url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Action/issues/13/timeline",
         "performed_via_github_app": null,
-        "state_reason": null,
+        "state_reason": "completed",
         "pinned_comment": null
     },
     {
@@ -573,7 +613,7 @@
                 "description": "Something isn't working"
             }
         ],
-        "state": "open",
+        "state": "closed",
         "locked": false,
         "assignees": [
             {
@@ -601,8 +641,8 @@
         "milestone": null,
         "comments": 0,
         "created_at": "2026-05-04T16:54:59Z",
-        "updated_at": "2026-05-04T16:55:00Z",
-        "closed_at": null,
+        "updated_at": "2026-06-01T22:05:19Z",
+        "closed_at": "2026-06-01T22:05:19Z",
         "assignee": {
             "login": "giovanniacg",
             "id": 63993401,
@@ -640,7 +680,27 @@
             "total_blocking": 0
         },
         "body": "## Descreva o bug\n\nEm `src/service/request-service.ts:131`, h\u00e1 a linha:\n\n```typescript\naxios.defaults.timeout = 50000;  // await for heroku to wake up\n```\n\n`axios.defaults.timeout` \u00e9 uma propriedade **global do m\u00f3dulo axios**, n\u00e3o da inst\u00e2ncia de cliente do MSG Service. Set\u00e1-la aqui afeta **qualquer outra requisi\u00e7\u00e3o axios** feita no mesmo processo Node \u2014 inclusive o cliente do SonarCloud em `src/sonarqube.ts`, que tem seu pr\u00f3prio timeout (10000ms) na inst\u00e2ncia mas pode ser sobrescrito pelo default global se a op\u00e7\u00e3o de request n\u00e3o vier expl\u00edcita.\n\nResultado: chamadas ao SonarCloud podem demorar at\u00e9 50s para timeout (vs 10s esperado), atrasando relatos de falha de coleta.\n\n## Como reproduzir\n\n1. Em ambiente com SonarCloud lento/inacess\u00edvel, observar tempo at\u00e9 timeout das requisi\u00e7\u00f5es Sonar.\n2. Comparar com o esperado (10s por inst\u00e2ncia) vs o real (50s por default global).\n3. Confirmar via inspe\u00e7\u00e3o do `axios.defaults` no in\u00edcio e depois de `makeRequest()` ser chamado.\n\n## Comportamento esperado\n\nSetar timeout na **inst\u00e2ncia** do cliente do MSG Service em vez do default global:\n\n```typescript\n// Em vez de:\naxios.defaults.timeout = 50000;\n\n// Usar inst\u00e2ncia dedicada:\nconst client = axios.create({ timeout: 50000, baseURL: 'https://epsmsg.shop/api/v1/' });\nreturn client.request(...);\n```\n\nMant\u00e9m isolamento entre clientes e elimina o efeito colateral global.\n\n## Informa\u00e7\u00f5es adicionais\n\n- Local: `src/service/request-service.ts:131`\n- Coment\u00e1rio do c\u00f3digo menciona \"await for heroku to wake up\" \u2014 sugere que o timeout alto era pra cold start do Heroku. Hoje o Service roda em EC2; revisar se 50s ainda faz sentido.\n- Achado durante auditoria sistem\u00e1tica do Giovanni pelos reposit\u00f3rios em 2026-05-04.",
-        "closed_by": null,
+        "closed_by": {
+            "login": "i-JSS",
+            "id": 109870486,
+            "node_id": "U_kgDOBox9lg",
+            "avatar_url": "https://avatars.githubusercontent.com/u/109870486?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/i-JSS",
+            "html_url": "https://github.com/i-JSS",
+            "followers_url": "https://api.github.com/users/i-JSS/followers",
+            "following_url": "https://api.github.com/users/i-JSS/following{/other_user}",
+            "gists_url": "https://api.github.com/users/i-JSS/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/i-JSS/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/i-JSS/subscriptions",
+            "organizations_url": "https://api.github.com/users/i-JSS/orgs",
+            "repos_url": "https://api.github.com/users/i-JSS/repos",
+            "events_url": "https://api.github.com/users/i-JSS/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/i-JSS/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
         "reactions": {
             "url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Action/issues/12/reactions",
             "total_count": 0,
@@ -655,7 +715,7 @@
         },
         "timeline_url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Action/issues/12/timeline",
         "performed_via_github_app": null,
-        "state_reason": null,
+        "state_reason": "completed",
         "pinned_comment": null
     },
     {
