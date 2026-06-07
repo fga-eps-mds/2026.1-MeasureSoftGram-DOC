@@ -56,6 +56,21 @@ MSGRAM_PASSWORD=admin
 
 > Os valores acima correspondem às credenciais padrão do `msgram-service`. Caso você tenha alterado as credenciais do serviço, atualize-as aqui também.
 
+### Escolhendo o transport (opcional)
+
+O servidor MCP suporta dois transports. O padrão é `streamable-http`, mas pode ser alterado via variável de ambiente:
+
+| Transport                  | Variável                                  | Rota disponível             |
+|----------------------------|-------------------------------------------|-----------------------------|
+| `streamable-http` (padrão) | `MCP_TRANSPORT=streamable-http` ou omitir | `http://localhost:8000/mcp` |
+| `sse`                      | `MCP_TRANSPORT=sse`                       | `http://localhost:8000/sse` |
+
+Para alterar, adicione ao arquivo `env-vars/.mcp.env`:
+
+```env
+MCP_TRANSPORT=sse  # ou streamable-http
+```
+
 ---
 
 ## Subindo o Projeto
@@ -72,7 +87,11 @@ Aguarde os containers inicializarem. Após isso, os serviços estarão disponív
 
 ## Vinculando ao seu Agente de IA
 
-Com o projeto rodando localmente, adicione o MCP ao seu agente através da seguinte configuração:
+Com o projeto rodando localmente, a forma de configurar depende do agente que você usa.
+
+### Agentes com suporte nativo a HTTP (Cursor, VS Code com extensão MCP, etc.)
+
+Alguns agentes aceitam conexão HTTP diretamente no arquivo de configuração, sem necessidade de proxy:
 
 ```json
 {
@@ -84,6 +103,53 @@ Com o projeto rodando localmente, adicione o MCP ao seu agente através da segui
   }
 }
 ```
+
+> Consulte a documentação do seu agente para saber onde inserir esta configuração.
+
+### Claude Desktop  (requer proxy stdio)
+
+O **Claude Desktop** e  aceitam apenas o transport `stdio` no arquivo de configuração — eles não conseguem se conectar a servidores HTTP diretamente.
+
+Para contornar isso, utilize o `mcp-remote`, uma ferramenta que age como proxy: o agente se comunica via `stdio` com o `mcp-remote`, que por sua vez encaminha as mensagens ao servidor HTTP.
+
+```
+Agente (Claude Desktop / Claude Code)
+    ↓ stdio
+mcp-remote
+    ↓ streamable-http
+Servidor MeasureSoftGram AI (localhost:8000/mcp)
+```
+
+**Pré-requisito:** ter o [Node.js](https://nodejs.org) instalado (o `npx` vem junto com ele). Para verificar:
+
+```bash
+node --version
+npx --version
+```
+
+**Configuração no `claude_desktop_config.json`** (Claude Desktop):
+
+```json
+{
+  "mcpServers": {
+    "measuresoftgram": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "http://localhost:8000/mcp"]
+    }
+  }
+}
+```
+
+**Onde fica o arquivo de configuração do Claude Desktop:**
+
+| Sistema Operacional | Caminho |
+|---|---|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+
+> Após editar o arquivo, **feche e reabra o Claude Desktop** para carregar o novo MCP.
+
+---
 
 Com o MCP conectado, o LLM será capaz de:
 
@@ -140,6 +206,7 @@ tests/msgram_mcp/
 
 ## Versionamento
 
-| Versão | Data       | Descrição            | Autor                                    | Revisor |
-|--------|------------|----------------------|------------------------------------------|---------|
-| 1.0    | 24/05/2026 | Criação do documento | [João Antonio](https://github.com/i-JSS) |         |
+| Versão | Data       | Descrição                                                         | Autor                                    | Revisor |
+|--------|------------|-------------------------------------------------------------------|------------------------------------------|---------|
+| 1.0    | 24/05/2026 | Criação do documento                                              | [João Antonio](https://github.com/i-JSS) |         |
+| 1.1    | 07/06/2026 | Adição de instruções para Claude Desktop e transport configurável | [João Antonio](https://github.com/i-JSS) |         |
