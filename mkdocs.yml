@@ -84,7 +84,7 @@ nav:
           - Atas: atas/index.md
 #      - EAP: planejamento/eap.md
 #      - Lean Inception:
-#      - Plano de Qualidade:
+      - Plano de Qualidade: planejamento/qualidade.md
 
   - Produto:
        - EAP: produto/eap.md

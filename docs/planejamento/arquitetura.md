@@ -10,10 +10,15 @@
 
 ### Visão Geral
 
-* Introdução: Apresenta uma visão geral sobre o conteúdo dessa documentação;
-* Representação de Arquitetura: Descreve os serviços, tecnologias e os padrões de arquitetura utilizados e informa as razões que motivaram tais escolhas;
-* Metas e Restrições de Arquitetura: Fala sobre objetivos que buscam ser alcançados dentro da arquitetura escolhida;
-* Referências: Emprega as fontes utilizadas nas pesquisas para relacionar as publicações que foram consultadas e citadas.
+A arquitetura do projeto está documentada seguindo o modelo **4+1 de Philippe Kruchten**, que organiza a descrição arquitetural em cinco perspectivas complementares:
+
+* **Visão Lógica:** Principais componentes do sistema, suas responsabilidades e como se comunicam;
+* **Visão de Processo:** Aspectos de concorrência, distribuição e comunicação entre processos em tempo de execução;
+* **Visão de Desenvolvimento:** Organização do código-fonte em módulos e pacotes;
+* **Visão Física:** Mapeamento dos componentes de software nos nós de infraestrutura;
+* **Visão de Casos de Uso (+1):** Cenários-chave que exercitam e validam as demais visões.
+
+Além das visões arquiteturais, este documento também apresenta o modelo de dados do sistema e as metas e restrições de arquitetura.
 
 ## Representação de Arquitetura
 
@@ -54,7 +59,7 @@
 
 - **CLI** Abreviação de "interface de linha de comando". Este é um programa que permite aos usuários criar comandos para funções específicas passando instruções para o computador.
 
-- **Frontend Web** Esta é a aplicação interface web que permite aos usuários analisar e acompanhar os produtos pelo navegador. 
+- **Frontend Web** Esta é a aplicação interface web que permite aos usuários analisar e acompanhar os produtos pelo navegador.
 
 - **Service** Este é o programa responsável por se comunicar com a aplicação `Frontend Web` e fornecer todos os dados necessários para a aplicação web.
 
@@ -64,9 +69,13 @@
 
 - **MCP Server** Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o `Service` via HTTP e fica em repositório separado.
 
-## Diagrama Arquitetural
+---
 
-<p align = "justify"> &emsp;&emsp; O diagrama abaixo apresenta os principais componentes do sistema MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
+## Visões Arquiteturais (4+1)
+
+### Visão Lógica
+
+<p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
 
 ```mermaid
 flowchart TB
@@ -104,43 +113,86 @@ flowchart TB
     class MCP,AI novo
 ```
 
-## Diagrama de Implantação
-Um diagrama de implantação especifica os construtos que podem ser usados para definir a arquitetura de execução de sistemas e a atribuição de artefatos de software aos elementos do sistema.Para descrever um site, por exemplo, um diagrama de implantação mostraria quais componentes de hardware ("nós") existem (por exemplo, um servidor web, um servidor de aplicação e um servidor de banco de dados), quais componentes de software ("artefatos") rodam em cada nó (por exemplo, aplicação web, banco de dados) e como as diferentes peças estão conectadas (por exemplo, HTTP, GRPC).
+---
+
+### Visão de Processo
+
+!!! warning "Em elaboração"
+    Esta visão descreverá os aspectos de concorrência e comunicação entre processos em tempo de execução (threads, filas, eventos). Será detalhada nas próximas releases.
+
+---
+
+### Visão de Desenvolvimento
+
+<p align = "justify"> &emsp;&emsp; A visão de desenvolvimento apresenta a organização do código-fonte em módulos e pacotes para cada repositório do projeto. </p>
+
+#### Web
+
+![Diagrama de pacotes - Web](../assets/images/diagrama_pacotes_front_web.png)
+
+#### Core
+
+![Diagrama de pacotes - Core](../assets/images/diagrama_pacotes_core.png)
+
+#### CLI
+
+![Diagrama de pacotes - CLI](../assets/images/diagrama_pacotes_cli.png)
+
+#### Parser
+
+![Diagrama de pacotes - Parser](../assets/images/diagrama_pacotes_parser.png)
+
+#### Action
+
+![Diagrama de pacotes - Action](../assets/images/diagrama_pacotes_action.png)
+
+---
+
+### Visão Física
+
+<p align = "justify"> &emsp;&emsp; Um diagrama de implantação especifica os construtos que podem ser usados para definir a arquitetura de execução de sistemas e a atribuição de artefatos de software aos elementos do sistema. Para descrever um site, por exemplo, um diagrama de implantação mostraria quais componentes de hardware ("nós") existem (por exemplo, um servidor web, um servidor de aplicação e um servidor de banco de dados), quais componentes de software ("artefatos") rodam em cada nó e como as diferentes peças estão conectadas. </p>
 
 Os nós aparecem como caixas tridimensionais, e os componentes alocados a cada nó aparecem como retângulos dentro das caixas. Os nós podem ter subnós, que aparecem como caixas aninhadas. Um único nó em um diagrama de implantação pode representar conceitualmente vários nós físicos, como um cluster de servidores de banco de dados.
 
 Existem dois tipos de nós:
 
-- **Nó de Dispositivo (device)** 
+- **Nó de Dispositivo (device)**
 - **Nó de Ambiente de Execução (execution environment)**
 
 Os nós de dispositivo são recursos físicos de computação com memória de processamento e serviços para executar software, como computadores típicos ou telefones celulares. Um nó de ambiente de execução é um recurso de computação de software que roda dentro de um nó externo e que, por sua vez, fornece um serviço para hospedar e executar outros elementos de software executáveis.
 
 ![Diagrama de Implantação](../assets/images/diagrama_implantacao.png)
 
-## Diagrama de Pacotes
+---
 
-### Web
+### Visão de Casos de Uso
 
-![Diagrama de pacotes - Web](../assets/images/diagrama_pacotes_front_web.png)
+!!! warning "Em elaboração"
+    Esta visão apresentará os cenários-chave que exercitam e validam as demais visões arquiteturais. Será detalhada nas próximas releases.
 
-### Core
+---
 
-![Diagrama de pacotes - Core](../assets/images/diagrama_pacotes_core.png)
+## Modelo de Dados
 
+### Diagrama Entidade-Relacionamento (DER)
 
-### CLI
+<p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
 
-![Diagrama de pacotes - CLI](../assets/images/diagrama_pacotes_cli.png)
+<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
 
+![Diagrama Entidade-Relacionamento](../assets/images/diagrama_banco.png)
 
-### Parser
-![Diagrama de pacotes - Parser](../assets/images/diagrama_pacotes_parser.png)
+### Modelo Entidade-Relacionamento (MER)
 
+!!! warning "Em elaboração"
+    O MER textual — listando entidades, atributos e relacionamentos com cardinalidades — será adicionado em atualização futura.
 
-### Action
-![Diagrama de pacotes - Action](../assets/images/diagrama_pacotes_action.png)
+### Diagrama Lógico de Dados (DLD)
 
+!!! warning "Em elaboração"
+    O DLD — representando as tabelas, colunas, tipos e chaves do banco de dados — será adicionado em atualização futura.
+
+---
 
 ## Metas e Restrições de Arquitetura
 
@@ -162,21 +214,9 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 |    Público    | A aplicação será desenvolvida com foco em empresas de tecnologia e desenvolvedores                               |
 |   Linguagem   | O inglês foi escolhido por conta das integrações com plataformas que já utilizam essa linguagem                  |
 |    Equipe     | A equipe possui 10 integrantes                                                                                   |
-|     Prazo     | O prazo é até o final do semestre 2024.1 (29/09/2024) da Universidade de Brasília                                |
+|     Prazo     | O prazo é até o final do semestre 2026.1 da Universidade de Brasília                                            |
 
-
-## Diagrama Entidade-Relacionamento
-
-### Introdução
-
-<p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
-
-<p align = "justify"> &emsp;&emsp; No cerne de um DER estão as entidades, que são objetos do mundo real ou conceitual que possuem atributos e características distintas. Os relacionamentos indicam as interações e conexões entre essas entidades, proporcionando uma compreensão clara dos fluxos de dados e informações dentro de um sistema. O DER não apenas representa as entidades e seus relacionamentos, mas também os atributos associados a cada entidade e como esses atributos se relacionam entre si. Essa representação gráfica facilita a comunicação entre as partes interessadas, permitindo uma compreensão abrangente e uma base sólida para o desenvolvimento e otimização do sistema. </p>
-
-
-<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do *django-extensions*, usando o comando *graph-models*, essa ferramenta cria um diagrama do banco de dados da aplicação, como a imagem abaixo: </p>
-
-![Diagrama de Implantação](../assets/images/diagrama_banco.png)
+---
 
 ## Referências
 
@@ -202,6 +242,9 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 
 > <b>Arquitetura do Sistema (MeasureSoftGram-2023-1)</b>. Disponível em: < [https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/documentos_de_projeto/arquitetura_do_projeto](https://fga-eps-mds.github.io/2023-1-MeasureSoftGram-Doc/documentos_de_projeto/arquitetura_do_projeto) > Acesso em: 4 de Outubro de 2023
 
+> <b>Architectural Blueprints — The "4+1" View Model of Software Architecture</b>. Kruchten, Philippe. IEEE Software, 1995. Disponível em: < [https://www.cs.ubc.ca/~gregor/teaching/papers/4+1view-architecture.pdf](https://www.cs.ubc.ca/~gregor/teaching/papers/4+1view-architecture.pdf) >
+
+---
 
 ## Versionamento
 
@@ -213,3 +256,4 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 |13/09/2024| Christian Siqueira | Atualizando o diagrama de arquitetura|1.3|
 |27/04/2026| Giovanni A. C. Giampauli | Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com `compose watch`. Diagramas permanecem vigentes (sem mudança topológica). |1.4|
 |03/05/2026| Giovanni A. C. Giampauli | Adiciona MCP Server e migra diagrama arquitetural para Mermaid. |1.5|
+|09/06/2026| Anacleto | Reestrutura documento com modelo de visões 4+1 (Kruchten). Adiciona placeholders para Visão de Processo, Visão de Casos de Uso, MER e DLD. Corrige prazo para 2026.1. |1.6|
