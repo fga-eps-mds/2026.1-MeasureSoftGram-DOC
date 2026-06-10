@@ -184,8 +184,208 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 
 ### Modelo Entidade-Relacionamento (MER)
 
-!!! warning "Em elaboração"
-    O MER textual — listando entidades, atributos e relacionamentos com cardinalidades — será adicionado em atualização futura.
+<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. </p>
+
+#### Entidades
+
+```
+CUSTOM_USER
+ORGANIZATION
+PRODUCT
+REPOSITORY
+SUPPORTED_METRIC
+COLLECTED_METRIC
+SUPPORTED_MEASURE
+CALCULATED_MEASURE
+SUPPORTED_SUBCHARACTERISTIC
+CALCULATED_SUBCHARACTERISTIC
+SUPPORTED_CHARACTERISTIC
+CALCULATED_CHARACTERISTIC
+BALANCE_MATRIX
+TSQMI
+GOAL
+RELEASE
+RELEASE_CONFIGURATION
+```
+
+#### Atributos
+
+```
+CUSTOM_USER(
+id [PK], username, email, # first_name, # last_name,
+password, is_staff, is_active, date_joined)
+
+ORGANIZATION(
+id [PK], name, key, # description,
+admin [FK -> CUSTOM_USER])
+
+PRODUCT(
+id [PK], name, key, # description,
+gaugeRedLimit, gaugeYellowLimit,
+organization [FK -> ORGANIZATION])
+
+REPOSITORY(
+id [PK], name, key, # url, # platform, # description, imported,
+product [FK -> PRODUCT])
+
+SUPPORTED_METRIC(
+id [PK], key, name, metric_type, # description)
+
+COLLECTED_METRIC(
+id [PK], value, created_at,
+# path, # qualifier, # dynamic_key,
+metric [FK -> SUPPORTED_METRIC],
+repository [FK -> REPOSITORY])
+
+SUPPORTED_MEASURE(
+id [PK], key, name, # description)
+
+CALCULATED_MEASURE(
+id [PK], value, created_at,
+measure [FK -> SUPPORTED_MEASURE],
+repository [FK -> REPOSITORY])
+
+SUPPORTED_SUBCHARACTERISTIC(
+id [PK], key, name, # description)
+
+CALCULATED_SUBCHARACTERISTIC(
+id [PK], value, created_at,
+subcharacteristic [FK -> SUPPORTED_SUBCHARACTERISTIC],
+repository [FK -> REPOSITORY])
+
+SUPPORTED_CHARACTERISTIC(
+id [PK], key, name, # description)
+
+CALCULATED_CHARACTERISTIC(
+id [PK], value, created_at,
+characteristic [FK -> SUPPORTED_CHARACTERISTIC],
+repository [FK -> REPOSITORY],
+# release [FK -> RELEASE])
+
+BALANCE_MATRIX(
+id [PK], relation_type,
+source_characteristic [FK -> SUPPORTED_CHARACTERISTIC],
+target_characteristic [FK -> SUPPORTED_CHARACTERISTIC])
+
+TSQMI(
+id [PK], value, created_at,
+repository [FK -> REPOSITORY])
+
+GOAL(
+id [PK], data, created_at,
+created_by [FK -> CUSTOM_USER],
+product [FK -> PRODUCT])
+
+RELEASE(
+id [PK], release_name, start_at, end_at, created_at, # description,
+created_by [FK -> CUSTOM_USER],
+product [FK -> PRODUCT],
+goal [FK -> GOAL])
+
+RELEASE_CONFIGURATION(
+id [PK], # name, data, created_at,
+product [FK -> PRODUCT])
+```
+
+#### Relacionamentos
+
+```
+CUSTOM_USER - é_membro_de - ORGANIZATION
+   - Descrição: Um usuário pode ser membro de várias organizações, e uma organização pode ter vários membros.
+   - Cardinalidade: (N,M)
+
+CUSTOM_USER - administra - ORGANIZATION
+   - Descrição: Um usuário pode administrar várias organizações, mas cada organização possui no máximo um administrador.
+   - Cardinalidade: (1,N)
+
+ORGANIZATION - possui - PRODUCT
+   - Descrição: Uma organização pode possuir vários produtos, e cada produto pertence a uma única organização.
+   - Cardinalidade: (1,N)
+
+PRODUCT - possui - REPOSITORY
+   - Descrição: Um produto pode possuir vários repositórios, e cada repositório pertence a um único produto.
+   - Cardinalidade: (1,N)
+
+PRODUCT - possui - RELEASE_CONFIGURATION
+   - Descrição: Um produto pode ter várias configurações de release ao longo do tempo, e cada configuração pertence a um único produto.
+   - Cardinalidade: (1,N)
+
+PRODUCT - possui - GOAL
+   - Descrição: Um produto pode ter vários objetivos de qualidade definidos, e cada goal pertence a um único produto.
+   - Cardinalidade: (1,N)
+
+PRODUCT - possui - RELEASE
+   - Descrição: Um produto pode ter várias releases, e cada release pertence a um único produto.
+   - Cardinalidade: (1,N)
+
+CUSTOM_USER - cria - GOAL
+   - Descrição: Um usuário pode criar vários goals, e cada goal é criado por um único usuário.
+   - Cardinalidade: (1,N)
+
+CUSTOM_USER - cria - RELEASE
+   - Descrição: Um usuário pode criar várias releases, e cada release é criada por um único usuário.
+   - Cardinalidade: (1,N)
+
+GOAL - referenciado_em - RELEASE
+   - Descrição: Um goal pode ser referenciado por várias releases, e cada release referencia um único goal.
+   - Cardinalidade: (1,N)
+
+SUPPORTED_METRIC - compoe - SUPPORTED_MEASURE
+   - Descrição: Uma métrica suportada pode compor várias medidas, e uma medida pode ser composta por várias métricas.
+   - Cardinalidade: (N,M)
+
+SUPPORTED_METRIC - origina - COLLECTED_METRIC
+   - Descrição: Uma métrica suportada pode originar vários registros coletados ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+REPOSITORY - armazena - COLLECTED_METRIC
+   - Descrição: Um repositório pode armazenar vários registros de métricas coletadas ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+SUPPORTED_MEASURE - compoe - SUPPORTED_SUBCHARACTERISTIC
+   - Descrição: Uma medida suportada pode compor várias subcaracterísticas, e uma subcaracterística pode ser composta por várias medidas.
+   - Cardinalidade: (N,M)
+
+SUPPORTED_MEASURE - origina - CALCULATED_MEASURE
+   - Descrição: Uma medida suportada pode originar vários registros de valores calculados ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+REPOSITORY - armazena - CALCULATED_MEASURE
+   - Descrição: Um repositório pode armazenar vários registros de medidas calculadas ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+SUPPORTED_SUBCHARACTERISTIC - compoe - SUPPORTED_CHARACTERISTIC
+   - Descrição: Uma subcaracterística suportada pode compor várias características, e uma característica pode agrupar várias subcaracterísticas.
+   - Cardinalidade: (N,M)
+
+SUPPORTED_SUBCHARACTERISTIC - origina - CALCULATED_SUBCHARACTERISTIC
+   - Descrição: Uma subcaracterística suportada pode originar vários registros de valores calculados ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+REPOSITORY - armazena - CALCULATED_SUBCHARACTERISTIC
+   - Descrição: Um repositório pode armazenar vários registros de subcaracterísticas calculadas ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+SUPPORTED_CHARACTERISTIC - origina - CALCULATED_CHARACTERISTIC
+   - Descrição: Uma característica suportada pode originar vários registros de valores calculados ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+REPOSITORY - armazena - CALCULATED_CHARACTERISTIC
+   - Descrição: Um repositório pode armazenar vários registros de características calculadas ao longo do tempo.
+   - Cardinalidade: (1,N)
+
+RELEASE - associada_a - CALCULATED_CHARACTERISTIC
+   - Descrição: Uma release pode estar associada a vários registros de características calculadas. A associação é opcional (release pode ser nula).
+   - Cardinalidade: (1,N)
+
+SUPPORTED_CHARACTERISTIC - relaciona_se_com - SUPPORTED_CHARACTERISTIC
+   - Descrição: Uma característica pode se relacionar com várias outras através da BALANCE_MATRIX, e pode ser impactada por várias outras (auto-relacionamento com atributo relation_type: + positivo / - negativo).
+   - Cardinalidade: (N,M)
+
+REPOSITORY - armazena - TSQMI
+   - Descrição: Um repositório pode acumular vários registros de nota TSQMI ao longo do tempo.
+   - Cardinalidade: (1,N)
+```
 
 ### Diagrama Lógico de Dados (DLD)
 
@@ -257,3 +457,4 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 |27/04/2026| Giovanni A. C. Giampauli | Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com `compose watch`. Diagramas permanecem vigentes (sem mudança topológica). |1.4|
 |03/05/2026| Giovanni A. C. Giampauli | Adiciona MCP Server e migra diagrama arquitetural para Mermaid. |1.5|
 |09/06/2026| Anacleto | Reestrutura documento com modelo de visões 4+1 (Kruchten). Adiciona placeholders para Visão de Processo, Visão de Casos de Uso, MER e DLD. Corrige prazo para 2026.1. |1.6|
+|09/06/2026| Anacleto | Preenche seção MER com entidades, atributos e relacionamentos do Service. |1.7|
