@@ -174,14 +174,6 @@ Os nós de dispositivo são recursos físicos de computação com memória de pr
 
 ## Modelo de Dados
 
-### Diagrama Entidade-Relacionamento (DER)
-
-<p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
-
-<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
-
-![Diagrama Entidade-Relacionamento](../assets/images/diagrama_banco.png)
-
 ### Modelo Entidade-Relacionamento (MER)
 
 <p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. </p>
@@ -386,6 +378,14 @@ REPOSITORY - armazena - TSQMI
    - Descrição: Um repositório pode acumular vários registros de nota TSQMI ao longo do tempo.
    - Cardinalidade: (1,N)
 ```
+
+### Diagrama Entidade-Relacionamento (DER)
+
+<p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
+
+<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
+
+![Diagrama Entidade-Relacionamento](../assets/images/diagrama_banco.png)
 
 ### Diagrama Lógico de Dados (DLD)
 
