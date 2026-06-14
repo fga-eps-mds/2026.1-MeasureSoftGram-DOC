@@ -385,7 +385,7 @@ REPOSITORY - armazena - TSQMI
 
 <p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
 
-![Diagrama Entidade-Relacionamento](../assets/images/diagrama_banco.png)
+![Diagrama Entidade-Relacionamento](../assets/images/diagrama_entidade_relacionamento.png)
 
 ### Diagrama Lógico de Dados (DLD)
 
