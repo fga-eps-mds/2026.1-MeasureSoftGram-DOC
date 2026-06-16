@@ -1,0 +1,419 @@
+{
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 6
+  },
+  "baseComponent": {
+    "id": "AZ3Rm57cpN94pbd_V5g6",
+    "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service",
+    "name": "fga-eps-mds_2026.1-MeasureSoftGram-Service",
+    "qualifier": "TRK",
+    "measures": [],
+    "branch": "develop"
+  },
+  "components": [
+    {
+      "id": "AZ31fEvhOnjndbA-HH8n",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/releases/apps.py",
+      "name": "apps.py",
+      "qualifier": "FIL",
+      "path": "src/releases/apps.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "2"
+        },
+        {
+          "metric": "coverage",
+          "value": "72.7",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "1"
+        },
+        {
+          "metric": "ncloc",
+          "value": "9"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    },
+    {
+      "id": "AZ31fEviOnjndbA-HH9Z",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/config/asgi.py",
+      "name": "asgi.py",
+      "qualifier": "FIL",
+      "path": "src/config/asgi.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "66.7",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "0"
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "0"
+        },
+        {
+          "metric": "ncloc",
+          "value": "4"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    },
+    {
+      "id": "AZ31gj19q6rrprTGaHSj",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/math_model/services.py",
+      "name": "services.py",
+      "qualifier": "FIL",
+      "path": "src/math_model/services.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "14.7",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "45"
+        },
+        {
+          "metric": "coverage",
+          "value": "94.1",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "11"
+        },
+        {
+          "metric": "ncloc",
+          "value": "313"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    },
+    {
+      "id": "AZ31gj19q6rrprTGaHSk",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/math_model/views.py",
+      "name": "views.py",
+      "qualifier": "FIL",
+      "path": "src/math_model/views.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "5.9",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "1"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "1"
+        },
+        {
+          "metric": "ncloc",
+          "value": "48"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    },
+    {
+      "id": "AZ4ZwxMEN8V99na9zzbu",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/accounts/views.py",
+      "name": "views.py",
+      "qualifier": "FIL",
+      "path": "src/accounts/views.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "22.4",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "8"
+        },
+        {
+          "metric": "coverage",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "5"
+        },
+        {
+          "metric": "ncloc",
+          "value": "83"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    },
+    {
+      "id": "AZ31fEviOnjndbA-HH9c",
+      "key": "fga-eps-mds_2026.1-MeasureSoftGram-Service:src/config/wsgi.py",
+      "name": "wsgi.py",
+      "qualifier": "FIL",
+      "path": "src/config/wsgi.py",
+      "language": "py",
+      "measures": [
+        {
+          "metric": "comment_lines_density",
+          "value": "66.7",
+          "bestValue": false
+        },
+        {
+          "metric": "complexity",
+          "value": "0"
+        },
+        {
+          "metric": "coverage",
+          "value": "0.0",
+          "bestValue": false
+        },
+        {
+          "metric": "files",
+          "value": "1"
+        },
+        {
+          "metric": "functions",
+          "value": "0"
+        },
+        {
+          "metric": "ncloc",
+          "value": "4"
+        },
+        {
+          "metric": "reliability_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "security_rating",
+          "value": "1.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_failures",
+          "value": "0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_success_density",
+          "value": "100.0",
+          "bestValue": true
+        },
+        {
+          "metric": "duplicated_lines_density",
+          "value": "0.0",
+          "bestValue": true
+        },
+        {
+          "metric": "test_errors",
+          "value": "0",
+          "bestValue": true
+        }
+      ],
+      "branch": "develop"
+    }
+  ]
+}

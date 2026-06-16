@@ -85,10 +85,11 @@ nav:
           - Atas: atas/index.md
 #      - EAP: planejamento/eap.md
 #      - Lean Inception:
-#      - Plano de Qualidade:
+      - Plano de Qualidade: planejamento/qualidade.md
 
   - Produto:
        - EAP: produto/eap.md
+       - Planejado x Realizado: produto/planejado-realizado.md
        - Arquitetura: planejamento/arquitetura.md
        - Post-Mortem (2024.1): post-mortem/post-mortem.md
        - Documento de Identidade Visual: idv/identidade-visual.md
