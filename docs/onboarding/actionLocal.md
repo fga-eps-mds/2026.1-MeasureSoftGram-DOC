@@ -81,9 +81,9 @@ GITHUB_TOKEN=ghp_SEU_TOKEN_AQUI
 
 ### Configurando o OAuth App do GitHub (autenticação web)
 
-Para habilitar o login via GitHub na interface web do MeasureSoftGram, é necessário criar um **OAuth App** na sua conta do GitHub e configurar as credenciais nos serviços.
+Para habilitar o login via GitHub na interface web do MeasureSoftGram, é necessário criar um **OAuth App** e configurar as credenciais nos serviços. O app pode ser criado de duas formas: via conta pessoal ou via organização. Para ambientes de desenvolvimento individual, a conta pessoal é suficiente. Para ambientes compartilhados ou corporativos, recomenda-se criar pelo nível da organização.
 
-#### 1. Criar o OAuth App
+#### Opção A — OAuth App via conta pessoal
 
 1. Acesse **GitHub → Settings → Developer settings → OAuth Apps → New OAuth App**
    (ou diretamente em `https://github.com/settings/applications/new`)
@@ -104,7 +104,44 @@ Para habilitar o login via GitHub na interface web do MeasureSoftGram, é necess
 
 > **Atenção:** o client secret é exibido apenas uma vez. Guarde-o em local seguro.
 
-#### 2. Configurar as credenciais no Service
+---
+
+#### Opção B — OAuth App via organização (recomendado para times)
+
+Criar o OAuth App pelo nível da organização garante que as credenciais pertençam ao time e não a um membro individual, evitando problemas caso alguém saia da organização.
+
+> **Pré-requisito:** você precisa ter permissão de **Owner** ou **Admin** na organização do GitHub.
+
+1. Acesse a página da organização no GitHub e vá em:
+   **Organization Settings → Developer settings → OAuth Apps → New OAuth App**
+   
+   A URL segue o padrão:
+   ```
+   https://github.com/organizations/<nome-da-org>/settings/applications/new
+   ```
+
+2. Preencha os campos:
+
+   | Campo | Valor |
+   |---|---|
+   | Application name | `MeasureSoftGram` |
+   | Homepage URL | `http://localhost:3000` |
+   | Authorization callback URL | `http://127.0.0.1:3000` |
+
+3. Clique em **Register application**
+
+4. Na página do app criado:
+   - Copie o **Client ID**
+   - Clique em **Generate a new client secret** e copie o secret
+
+5. Para que membros da organização consigam autenticar via esse OAuth App, pode ser necessário solicitar aprovação da organização. Caso apareça a mensagem **"Organization access"** durante o login, o owner da org precisa aprovar em:
+   **Organization Settings → OAuth Application Policy**
+
+> **Atenção:** o client secret é exibido apenas uma vez. Guarde-o em local seguro ou utilize um gerenciador de segredos (ex: GitHub Secrets, Vault).
+
+---
+
+#### Configurar as credenciais no Service
 
 Edite `Service/env-vars/.service.env`:
 
@@ -113,7 +150,7 @@ GITHUB_CLIENT_ID=<seu_client_id>
 GITHUB_SECRET=<seu_client_secret>
 ```
 
-#### 3. Configurar o Client ID no Front
+#### Configurar o Client ID no Front
 
 Adicione ao arquivo `Front/.env`:
 
@@ -123,7 +160,7 @@ GITHUB_CLIENT_ID=<seu_client_id>
 
 > O `GITHUB_CLIENT_ID` no Front é uma variável de **build-time** — é embutida na imagem durante o build. Sempre que alterar esse valor, execute `docker compose up --build` no diretório `Front/`.
 
-#### 4. Reiniciar os serviços
+#### Reiniciar os serviços
 
 **Backend:**
 ```bash
