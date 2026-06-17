@@ -248,7 +248,11 @@ def build_sonar_metrics(sonar_df: pd.DataFrame) -> dict:
                 "ncloc": _ncloc(vdf),
             })
 
-        df = pd.DataFrame(rows).sort_values("datetime").reset_index(drop=True)
+        df = pd.DataFrame(rows)
+        # Datetime real (não string) — evita eixo categórico com datas repetidas/embaralhadas
+        # entre repositórios diferentes nos gráficos de série temporal.
+        df["datetime"] = pd.to_datetime(df["datetime"], format="%m-%d-%Y-%H-%M-%S", errors="coerce")
+        df = df.sort_values("datetime").reset_index(drop=True)
         df["code_quality"] = (df["complexity"] * 0.33 + df["comments"] * 0.33 + df["duplication"] * 0.33)
         df["testing_status"] = (df["test_success"] * 0.25 + df["fast_tests"] * 0.25 + df["coverage"] * 0.5)
         df["Maintainability"] = df["code_quality"] * 0.5
@@ -257,6 +261,41 @@ def build_sonar_metrics(sonar_df: pd.DataFrame) -> dict:
         metrics[repo] = df
 
     return metrics
+
+
+# ---------------------------------------------------------------------------
+# Datas de release — linhas verticais nos gráficos de qualidade
+# ---------------------------------------------------------------------------
+
+RELEASE_DATES = ["27/04/2026", "25/05/2026", "22/06/2026"]
+
+
+def _quality_rating(value: float) -> tuple:
+    """Mapeia um valor [0,1] para um rating estilo SonarCloud (A-E) com cor de semáforo."""
+    if value >= 0.8:
+        return "A", "#00AA00"
+    elif value >= 0.6:
+        return "B", "#B0D513"
+    elif value >= 0.4:
+        return "C", "#EABE06"
+    elif value >= 0.2:
+        return "D", "#ED7D20"
+    else:
+        return "E", "#D4333F"
+
+
+def _add_release_lines(fig: go.Figure) -> go.Figure:
+    """Adiciona linhas verticais pontilhadas marcando as datas de release."""
+    for d in RELEASE_DATES:
+        ts = pd.to_datetime(d, dayfirst=True)
+        fig.add_vline(
+            x=ts.timestamp() * 1000,
+            line_dash="dot",
+            line_color="#FF9800",
+            annotation_text=ts.strftime("%d/%m"),
+            annotation_position="top",
+        )
+    return fig
 
 
 # ---------------------------------------------------------------------------
@@ -733,20 +772,18 @@ us_status = load_us_github_status()
 all_repos_sonar = sorted(sonar_metrics.keys()) if sonar_metrics else []
 all_repos_github = sorted(runs_df["Repository Name"].dropna().unique().tolist()) if not runs_df.empty else []
 
-tab_principal, tab_produtividade, tab_qualidade, tab_geral = st.tabs([
-    "🎯 Visão Principal",
-    "🚀 Produtividade",
-    "🔬 Visão Interna do Produto",
-    "📈 Visão Geral do Produto",
+tab_processo, tab_qualidade_produto = st.tabs([
+    "⚙️ Processo",
+    "🔍 Qualidade do Produto",
 ])
 
 # ---------------------------------------------------------------------------
-# TAB – Produtividade
+# TAB – Processo
 # ---------------------------------------------------------------------------
-with tab_produtividade:
-    st.subheader("Produtividade do Time")
+with tab_processo:
+    st.subheader("Processo")
 
-    # ── Filtro de Sprint ──────────────────────────────────────────────────────
+    # ── Filtro de Sprint (compartilhado entre Gantt e Velocity) ────────────────
     if not velocity_df.empty:
         v_min = int(velocity_df["sprint"].min())
         v_max = int(velocity_df["sprint"].max())
@@ -769,6 +806,93 @@ with tab_produtividade:
                 key="t1_sprint_end",
             )
 
+    st.markdown("---")
+
+    # ── Gantt ──────────────────────────────────────────────────────────────────
+    st.markdown("### Cronograma de User Stories (Gantt)")
+    today = datetime.date.today()
+    today_ts = pd.Timestamp(today)
+
+    if sprint_df.empty:
+        st.info("Não foi possível carregar dados da planilha de sprints.")
+    else:
+        if not velocity_df.empty:
+            gantt_sprint_filtered = sprint_df[
+                (sprint_df["sprint"] >= v_sprint_start) &
+                (sprint_df["sprint"] <= v_sprint_end)
+            ].copy()
+        else:
+            gantt_sprint_filtered = sprint_df.copy()
+
+        gantt_df = build_gantt_df(gantt_sprint_filtered, us_status, today)
+
+        if gantt_df.empty:
+            st.info("Sem User Stories no período selecionado.")
+        else:
+            fig_gantt = px.timeline(
+                gantt_df,
+                x_start="Início",
+                x_end="Fim",
+                y="US",
+                color="Status",
+                color_discrete_map={
+                    "Planejado":    "#5f7ea3",  # azul claro — período planejado
+                    "Concluído":    "#4CAF50",  # verde     — executado e fechado
+                    "Em Andamento": "#FF9800",  # laranja   — executado e em aberto
+                },
+                category_orders={"Status": ["Planejado", "Em Andamento", "Concluído"]},
+                hover_data={"Sprint Inicial": True, "Repositórios": True,
+                            "Início": "|%d/%m/%Y", "Fim": "|%d/%m/%Y"},
+                labels={"US": "User Story"},
+            )
+            fig_gantt.update_yaxes(autorange="reversed")
+            fig_gantt.update_layout(
+                xaxis_title="",
+                yaxis_title="",
+                legend_title="Status",
+                hovermode="closest",
+                bargap=0.3,
+                bargroupgap=0.05,
+            )
+            fig_gantt.add_vline(
+                x=today_ts.timestamp() * 1000,
+                line_dash="dash",
+                line_color="red",
+                annotation_text="Hoje",
+                annotation_position="top right",
+            )
+            st.plotly_chart(fig_gantt, use_container_width=True)
+
+    st.markdown("---")
+
+    # ── Andamento das US's (GitHub Issues) ───────────────────────────────────
+    st.markdown("### Andamento das US's (GitHub)")
+    if not issues_df.empty:
+        us_rows = []
+        for _, row in issues_df.iterrows():
+            m = re.search(r"US(\d+)", str(row.get("Issue Title", "")), re.IGNORECASE)
+            if m:
+                us_key = f"US{int(m.group(1)):02d}"
+                us_rows.append({
+                    "US": us_key,
+                    "Título": row["Issue Title"],
+                    "Repositório": row.get("Repository Name", "-"),
+                    "Status": "Fechada" if pd.notna(row["Closed at"]) else "Aberta",
+                    "Abertura": row["Created at"].strftime("%d/%m/%Y") if pd.notna(row["Created at"]) else "-",
+                    "Fechamento": row["Closed at"].strftime("%d/%m/%Y") if pd.notna(row["Closed at"]) else "-",
+                })
+        if us_rows:
+            us_table = pd.DataFrame(us_rows).sort_values("US").reset_index(drop=True)
+            st.dataframe(us_table, use_container_width=True)
+        else:
+            st.info("Nenhuma issue com padrão US encontrada nos dados.")
+    else:
+        st.info("Nenhum dado de issues GitHub encontrado em `data/`.")
+
+    st.markdown("---")
+
+    # ── Velocity: cards + gráficos ────────────────────────────────────────────
+    if not velocity_df.empty:
         vf = velocity_df[
             (velocity_df["sprint"] >= v_sprint_start) &
             (velocity_df["sprint"] <= v_sprint_end)
@@ -950,10 +1074,10 @@ with tab_produtividade:
         st.plotly_chart(fig4, use_container_width=True)
 
 # ---------------------------------------------------------------------------
-# TAB – Visão Interna do Produto
+# TAB – Qualidade do Produto
 # ---------------------------------------------------------------------------
-with tab_qualidade:
-    st.subheader("Visão Interna do Produto – SonarCloud")
+with tab_qualidade_produto:
+    st.subheader("Qualidade do Produto – SonarCloud")
 
     # ── Filtro de repositórios ────────────────────────────────────────────────
     selected_sonar_repos = st.multiselect(
@@ -967,39 +1091,126 @@ with tab_qualidade:
     if not sonar_metrics:
         st.info("Nenhum dado do SonarCloud encontrado em `data/`.")
     else:
-        METRIC_LABELS = {
-            "complexity": "Complexidade",
-            "comments": "Comentários",
-            "duplication": "Duplicação",
-            "test_success": "Testes Passando",
-            "fast_tests": "Testes Rápidos",
-            "coverage": "Cobertura",
-        }
+        # ── 1. Cards: qualidade geral atual por repositório (semáforo estilo SonarCloud) ──
+        st.markdown("### Qualidade Geral por Repositório")
+        quality_cols = st.columns(max(len(selected_sonar_repos), 1))
+        for col, repo in zip(quality_cols, selected_sonar_repos):
+            df = sonar_metrics.get(repo)
+            if df is None or df.empty:
+                letter, color = "—", "#5f7ea3"
+            else:
+                last = df.iloc[-1]
+                letter, color = _quality_rating(last["total"])
+            col.markdown(f"""
+            <div style="text-align:center; padding:14px 8px; background-color:#1a3251;
+                        border-radius:10px; border:2px solid {color};">
+                <div style="font-size:14px; color:#a0b8d0; margin-bottom:6px;">{repo}</div>
+                <div style="font-size:38px; font-weight:800; color:{color}; line-height:1;">{letter}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-        selected_metric = st.selectbox(
-            "Métrica individual",
-            options=list(METRIC_LABELS.keys()),
-            format_func=lambda x: METRIC_LABELS[x],
+        legend_items = [
+            ("A", "#00AA00", "≥ 80%"),
+            ("B", "#B0D513", "60–79%"),
+            ("C", "#EABE06", "40–59%"),
+            ("D", "#ED7D20", "20–39%"),
+            ("E", "#D4333F", "< 20%"),
+        ]
+        legend_html = "".join(
+            f"""<span style="display:inline-flex; align-items:center; margin-right:18px;">
+                    <span style="display:inline-block; width:16px; height:16px; border-radius:3px;
+                                 background-color:{color}; margin-right:6px;"></span>
+                    <span style="color:#a0b8d0; font-size:13px;"><b>{letter}</b> {rng}</span>
+                </span>"""
+            for letter, color, rng in legend_items
+        )
+        st.markdown(
+            f'<div style="margin-top:4px;">{legend_html}</div>',
+            unsafe_allow_html=True,
         )
 
-        fig5 = go.Figure()
+        st.markdown("---")
+
+        # ── 2. Indicador Total de Qualidade por Repositório ─────────────────────
+        st.markdown("### Indicador Total de Qualidade por Repositório")
+        fig8 = go.Figure()
         for repo in selected_sonar_repos:
             df = sonar_metrics.get(repo)
             if df is None or df.empty:
                 continue
-            fig5.add_trace(go.Scatter(
-                x=df["datetime"], y=df[selected_metric],
+            fig8.add_trace(go.Scatter(
+                x=df["datetime"], y=df["total"],
                 mode="lines+markers", name=repo,
-                hovertemplate="%{x}<br>%{y:.2f}<extra></extra>",
+                hovertemplate="%{x}<br>Total: %{y:.2f}<extra></extra>",
             ))
-        fig5.update_layout(
-            title=f"{METRIC_LABELS[selected_metric]} por Versão/Data",
+        fig8.update_layout(
             yaxis_range=[0, 1],
+            xaxis_title="Data",
+            yaxis_title="Indicador Total",
             hovermode="x unified",
         )
-        st.plotly_chart(fig5, use_container_width=True)
+        _add_release_lines(fig8)
+        st.plotly_chart(fig8, use_container_width=True)
 
         st.markdown("---")
+        st.markdown("### Maintainability e Reliability ao Longo do Tempo")
+        col_mr1, col_mr2 = st.columns(2)
+        with col_mr1:
+            st.markdown("##### Maintainability")
+            fig_maint = go.Figure()
+            for repo in selected_sonar_repos:
+                df = sonar_metrics.get(repo)
+                if df is None or df.empty:
+                    continue
+                fig_maint.add_trace(go.Scatter(
+                    x=df["datetime"], y=df["Maintainability"],
+                    mode="lines+markers", name=repo,
+                    hovertemplate="%{x}<br>%{y:.2f}<extra></extra>",
+                ))
+            fig_maint.update_layout(yaxis_range=[0, 1], hovermode="x unified")
+            _add_release_lines(fig_maint)
+            st.plotly_chart(fig_maint, use_container_width=True)
+
+        with col_mr2:
+            st.markdown("##### Reliability")
+            fig_reliab = go.Figure()
+            for repo in selected_sonar_repos:
+                df = sonar_metrics.get(repo)
+                if df is None or df.empty:
+                    continue
+                fig_reliab.add_trace(go.Scatter(
+                    x=df["datetime"], y=df["Reliability"],
+                    mode="lines+markers", name=repo,
+                    hovertemplate="%{x}<br>%{y:.2f}<extra></extra>",
+                ))
+            fig_reliab.update_layout(yaxis_range=[0, 1], hovermode="x unified")
+            _add_release_lines(fig_reliab)
+            st.plotly_chart(fig_reliab, use_container_width=True)
+
+        st.markdown("---")
+
+        # ── 4. Boxplot — Distribuição de Qualidade ──────────────────────────────
+        st.markdown("### Boxplot — Distribuição de Qualidade")
+        box_data = []
+        for repo in selected_sonar_repos:
+            df = sonar_metrics.get(repo)
+            if df is None or df.empty:
+                continue
+            for _, row in df.iterrows():
+                box_data.append({"Repositório": repo, "Maintainability": row["Maintainability"], "Reliability": row["Reliability"]})
+
+        if box_data:
+            box_df = pd.DataFrame(box_data)
+            fig10 = px.box(
+                box_df.melt(id_vars="Repositório", var_name="Aspecto", value_name="Valor"),
+                x="Repositório", y="Valor", color="Aspecto",
+            )
+            fig10.update_layout(yaxis_tickformat=".0%", yaxis_range=[0, 1])
+            st.plotly_chart(fig10, use_container_width=True)
+
+        st.markdown("---")
+
+        # ── 5. Testing Status e Code Quality ─────────────────────────────────────
         col_f, col_g = st.columns(2)
 
         with col_f:
@@ -1015,6 +1226,7 @@ with tab_qualidade:
                     hovertemplate="%{x}<br>%{y:.2f}<extra></extra>",
                 ))
             fig6.update_layout(yaxis_range=[0, 1], hovermode="x unified")
+            _add_release_lines(fig6)
             st.plotly_chart(fig6, use_container_width=True)
 
         with col_g:
@@ -1030,8 +1242,12 @@ with tab_qualidade:
                     hovertemplate="%{x}<br>%{y:.2f}<extra></extra>",
                 ))
             fig7.update_layout(yaxis_range=[0, 1], hovermode="x unified")
+            _add_release_lines(fig7)
             st.plotly_chart(fig7, use_container_width=True)
 
+        st.markdown("---")
+
+        # ── 6. Snapshot Atual por Repositório ────────────────────────────────────
         st.markdown("### Snapshot Atual por Repositório")
         snapshot_rows = []
         for repo in selected_sonar_repos:
@@ -1053,264 +1269,4 @@ with tab_qualidade:
             })
         if snapshot_rows:
             st.dataframe(pd.DataFrame(snapshot_rows), use_container_width=True)
-
-# ---------------------------------------------------------------------------
-# TAB – Visão Geral do Produto
-# ---------------------------------------------------------------------------
-with tab_geral:
-    st.subheader("Visão Geral do Produto")
-
-    if not sonar_metrics:
-        st.info("Nenhum dado do SonarCloud encontrado em `data/`.")
-    else:
-        fig8 = go.Figure()
-        for repo in selected_sonar_repos:
-            df = sonar_metrics.get(repo)
-            if df is None or df.empty:
-                continue
-            fig8.add_trace(go.Scatter(
-                x=df["datetime"], y=df["total"],
-                mode="lines+markers", name=repo,
-                hovertemplate="%{x}<br>Total: %{y:.2f}<extra></extra>",
-            ))
-        fig8.update_layout(
-            title="Indicador Total de Qualidade por Repositório",
-            yaxis_range=[0, 1],
-            hovermode="x unified",
-        )
-        st.plotly_chart(fig8, use_container_width=True)
-
-        st.markdown("### Maintainability vs Reliability")
-        fig9 = go.Figure()
-        for repo in selected_sonar_repos:
-            df = sonar_metrics.get(repo)
-            if df is None or df.empty:
-                continue
-            last = df.iloc[-1]
-            fig9.add_trace(go.Bar(
-                x=["Maintainability", "Reliability"],
-                y=[last["Maintainability"], last["Reliability"]],
-                name=repo,
-            ))
-        fig9.update_layout(
-            barmode="group",
-            yaxis_range=[0, 1],
-        )
-        st.plotly_chart(fig9, use_container_width=True)
-
-        st.markdown("### Boxplot — Distribuição de Qualidade")
-        box_data = []
-        for repo in selected_sonar_repos:
-            df = sonar_metrics.get(repo)
-            if df is None or df.empty:
-                continue
-            for _, row in df.iterrows():
-                box_data.append({"Repositório": repo, "Maintainability": row["Maintainability"], "Reliability": row["Reliability"]})
-
-        if box_data:
-            box_df = pd.DataFrame(box_data)
-            fig10 = px.box(
-                box_df.melt(id_vars="Repositório", var_name="Aspecto", value_name="Valor"),
-                x="Repositório", y="Valor", color="Aspecto",
-            )
-            fig10.update_layout(yaxis_tickformat=".0%", yaxis_range=[0, 1])
-            st.plotly_chart(fig10, use_container_width=True)
-
-# ---------------------------------------------------------------------------
-# TAB – Visão Principal
-# ---------------------------------------------------------------------------
-with tab_principal:
-    st.subheader("Visão Principal")
-
-    today = datetime.date.today()
-
-    if sprint_df.empty:
-        st.error("Não foi possível carregar dados da planilha de sprints.")
-    else:
-        # ── Sprint range filter (dois selectboxes) ──────────────────────────
-        min_sprint = int(sprint_df["sprint"].min())
-        max_sprint = int(sprint_df["sprint"].max())
-        sprint_opts = list(range(min_sprint, max_sprint + 1))
-
-        col_f1, col_f2 = st.columns(2)
-        with col_f1:
-            sprint_start = st.selectbox(
-                "Sprint Inicial",
-                options=sprint_opts,
-                index=0,
-                format_func=lambda x: f"Sprint {x}",
-                key="sprint_start_sel",
-            )
-        with col_f2:
-            end_opts = [n for n in sprint_opts if n >= sprint_start]
-            sprint_end = st.selectbox(
-                "Sprint Final",
-                options=end_opts,
-                index=len(end_opts) - 1,
-                format_func=lambda x: f"Sprint {x}",
-                key="sprint_end_sel",
-            )
-
-        filtered = sprint_df[
-            (sprint_df["sprint"] >= sprint_start) &
-            (sprint_df["sprint"] <= sprint_end)
-        ].copy()
-
-        today_ts = pd.Timestamp(today)
-        past     = filtered[filtered["end_date"] <= today_ts]
-        current  = filtered[
-            (filtered["start_date"] <= today_ts) & (filtered["end_date"] > today_ts)
-        ]
-
-        # ── Cards ────────────────────────────────────────────────────────────
-        ev_exec  = float(past["ev"].max()) if not past.empty and (past["ev"] > 0).any() else 0.0
-        if not current.empty:
-            pv_plan = float(current["pv"].iloc[0])
-        elif not past.empty:
-            pv_plan = float(past["pv"].iloc[-1])
-        else:
-            pv_plan = float(filtered["pv"].iloc[0]) if not filtered.empty else 0.0
-
-        pts_exec = int(past["pc"].sum())
-        pts_plan = int(filtered["pp"].sum())
-        sv       = ev_exec - pv_plan
-        pts_delta = pts_exec - pts_plan
-
-        def _brl(val: float) -> str:
-            return f"R$ {val:,.2f}"
-
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("💰 Custo Executado (EV)", _brl(ev_exec))
-        col2.metric(
-            "📋 Custo Planejado (PV)",
-            _brl(pv_plan),
-            delta=f"SV {_brl(sv)}",
-            delta_color="normal",
-        )
-        col3.metric("✅ Pontos Executados", pts_exec)
-        col4.metric(
-            "🎯 Pontos Planejados",
-            pts_plan,
-            delta=f"{pts_delta:+d} vs plano",
-            delta_color="normal" if pts_delta >= 0 else "inverse",
-        )
-
-        st.markdown("---")
-
-        # ── Curva de Custo por Sprint (AC vs EV) ─────────────────────────────
-        st.markdown("### Curva de Custo por Sprint")
-
-        cost_df = filtered.copy()
-        cost_df["sprint_label"] = cost_df["sprint"].apply(lambda n: f"Sprint {n}")
-
-        # AC planejado: exibe apenas sprints já iniciadas
-        cost_df["ac_plot"] = cost_df.apply(
-            lambda r: r["ac"] if pd.notna(r["start_date"]) and r["start_date"] <= today_ts else None,
-            axis=1,
-        )
-        # EV executado: exibe apenas sprints com EV registrado (>0) e já iniciadas
-        cost_df["ev_plot"] = cost_df.apply(
-            lambda r: r["ev"]
-            if pd.notna(r["start_date"]) and r["start_date"] <= today_ts and r["ev"] > 0
-            else None,
-            axis=1,
-        )
-
-        fig_cost = go.Figure()
-        fig_cost.add_trace(go.Scatter(
-            x=cost_df["sprint_label"],
-            y=cost_df["ac_plot"],
-            mode="lines+markers",
-            name="Custo Planejado (AC)",
-            line=dict(color="#5f7ea3", dash="dash", width=2),
-            marker=dict(size=7, symbol="circle"),
-            hovertemplate="Sprint %{x}<br>AC: R$ %{y:,.2f}<extra></extra>",
-        ))
-        fig_cost.add_trace(go.Scatter(
-            x=cost_df["sprint_label"],
-            y=cost_df["ev_plot"],
-            mode="lines+markers",
-            name="Custo Executado (EV)",
-            line=dict(color="#4CAF50", width=2),
-            marker=dict(size=7, symbol="diamond"),
-            connectgaps=False,
-            hovertemplate="Sprint %{x}<br>EV: R$ %{y:,.2f}<extra></extra>",
-        ))
-        fig_cost.update_layout(
-            xaxis_title="Sprint",
-            yaxis_title="Custo (R$)",
-            yaxis=dict(tickformat=",.0f", tickprefix="R$ "),
-            hovermode="x unified",
-            legend_title="Legenda",
-        )
-        st.plotly_chart(fig_cost, use_container_width=True)
-
-        st.markdown("---")
-
-        # ── Gantt ────────────────────────────────────────────────────────────
-        st.markdown("### Cronograma de User Stories (Gantt)")
-        gantt_df = build_gantt_df(filtered, us_status, today)
-
-        if gantt_df.empty:
-            st.info("Sem User Stories no período selecionado.")
-        else:
-            fig_gantt = px.timeline(
-                gantt_df,
-                x_start="Início",
-                x_end="Fim",
-                y="US",
-                color="Status",
-                color_discrete_map={
-                    "Planejado":    "#5f7ea3",  # azul claro — período planejado
-                    "Concluído":    "#4CAF50",  # verde     — executado e fechado
-                    "Em Andamento": "#FF9800",  # laranja   — executado e em aberto
-                },
-                category_orders={"Status": ["Planejado", "Em Andamento", "Concluído"]},
-                hover_data={"Sprint Inicial": True, "Repositórios": True,
-                            "Início": "|%d/%m/%Y", "Fim": "|%d/%m/%Y"},
-                labels={"US": "User Story"},
-            )
-            fig_gantt.update_yaxes(autorange="reversed")
-            fig_gantt.update_layout(
-                xaxis_title="",
-                yaxis_title="",
-                legend_title="Status",
-                hovermode="closest",
-                bargap=0.3,
-                bargroupgap=0.05,
-            )
-            fig_gantt.add_vline(
-                x=today_ts.timestamp() * 1000,
-                line_dash="dash",
-                line_color="red",
-                annotation_text="Hoje",
-                annotation_position="top right",
-            )
-            st.plotly_chart(fig_gantt, use_container_width=True)
-
-        st.markdown("---")
-
-        # ── Andamento das US's (GitHub Issues) ───────────────────────────────
-        st.markdown("### Andamento das US's (GitHub)")
-        if not issues_df.empty:
-            us_rows = []
-            for _, row in issues_df.iterrows():
-                m = re.search(r"US(\d+)", str(row.get("Issue Title", "")), re.IGNORECASE)
-                if m:
-                    us_key = f"US{int(m.group(1)):02d}"
-                    us_rows.append({
-                        "US": us_key,
-                        "Título": row["Issue Title"],
-                        "Repositório": row.get("Repository Name", "-"),
-                        "Status": "Fechada" if pd.notna(row["Closed at"]) else "Aberta",
-                        "Abertura": row["Created at"].strftime("%d/%m/%Y") if pd.notna(row["Created at"]) else "-",
-                        "Fechamento": row["Closed at"].strftime("%d/%m/%Y") if pd.notna(row["Closed at"]) else "-",
-                    })
-            if us_rows:
-                us_table = pd.DataFrame(us_rows).sort_values("US").reset_index(drop=True)
-                st.dataframe(us_table, use_container_width=True)
-            else:
-                st.info("Nenhuma issue com padrão US encontrada nos dados.")
-        else:
-            st.info("Nenhum dado de issues GitHub encontrado em `data/`.")
 
