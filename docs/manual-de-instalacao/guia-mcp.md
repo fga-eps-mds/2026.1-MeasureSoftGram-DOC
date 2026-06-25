@@ -33,7 +33,7 @@ Escolha o comando de acordo com o seu sistema operacional:
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -e SERVICE=https://msgram-api.synaptha.com/api/v1/ \
+  -e SERVICE=https://msgram.lappis.rocks/api/v1/ \
   -e MSGRAM_USER=admin \
   -e MSGRAM_PASSWORD=admin \
   measuresoftgram/ai:homolog
@@ -44,7 +44,7 @@ docker run -d \
 ```powershell
 docker run -d `
   -p 8000:8000 `
-  -e SERVICE=https://msgram-api.synaptha.com/api/v1/ `
+  -e SERVICE=https://msgram.lappis.rocks/api/v1/ `
   -e MSGRAM_USER=admin `
   -e MSGRAM_PASSWORD=admin `
   measuresoftgram/ai:homolog
@@ -55,7 +55,7 @@ docker run -d `
 ```cmd
 docker run -d ^
   -p 8000:8000 ^
-  -e SERVICE=https://msgram-api.synaptha.com/api/v1/ ^
+  -e SERVICE=https://msgram.lappis.rocks/api/v1/ ^
   -e MSGRAM_USER=admin ^
   -e MSGRAM_PASSWORD=admin ^
   measuresoftgram/ai:homolog
@@ -77,7 +77,7 @@ Exemplo com `sse` no macOS / Linux:
 ```bash
 docker run -d \
   -p 8000:8000 \
-  -e SERVICE=https://msgram-api.synaptha.com/api/v1/ \
+  -e SERVICE=https://msgram.lappis.rocks/api/v1/ \
   -e MSGRAM_USER=admin \
   -e MSGRAM_PASSWORD=admin \
   -e MCP_TRANSPORT=sse \
@@ -97,7 +97,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - SERVICE=https://msgram-api.synaptha.com/api/v1/
+      - SERVICE=https://msgram.lappis.rocks/api/v1/
       - MSGRAM_USER=admin
       - MSGRAM_PASSWORD=admin
       - MCP_TRANSPORT=streamable-http  # ou sse
