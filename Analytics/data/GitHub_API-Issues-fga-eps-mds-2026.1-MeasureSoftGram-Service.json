@@ -370,7 +370,7 @@
             "site_admin": false
         },
         "labels": [],
-        "state": "open",
+        "state": "closed",
         "locked": false,
         "assignees": [
             {
@@ -396,10 +396,10 @@
             }
         ],
         "milestone": null,
-        "comments": 2,
+        "comments": 3,
         "created_at": "2026-06-17T14:36:52Z",
-        "updated_at": "2026-06-17T17:15:34Z",
-        "closed_at": null,
+        "updated_at": "2026-06-28T17:33:42Z",
+        "closed_at": "2026-06-28T17:33:42Z",
         "assignee": {
             "login": "DaniloNavesS",
             "id": 89321536,
@@ -431,10 +431,30 @@
             "html_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/28",
             "diff_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/28.diff",
             "patch_url": "https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/28.patch",
-            "merged_at": null
+            "merged_at": "2026-06-28T17:33:42Z"
         },
         "body": "# Refatora\u00e7\u00e3o de Autentica\u00e7\u00e3o para OAuth Exclusivo (GitHub) e Isolamento de Dados\r\n\r\n## Descri\u00e7\u00e3o\r\n\r\nEste Pull Request implementa a transi\u00e7\u00e3o do sistema MeasureSoftGram para utilizar exclusivamente autentica\u00e7\u00e3o via OAuth, com foco inicial na integra\u00e7\u00e3o com o GitHub. Ele substitui completamente o fluxo de login e registro manual (e-mail/senha) e consolida o espelhamento 1:1 de organiza\u00e7\u00f5es e reposit\u00f3rios diretamente das plataformas Git. Al\u00e9m disso, corrige uma vulnerabilidade cr\u00edtica de permiss\u00f5es, garantindo o isolamento correto dos dados entre diferentes usu\u00e1rios.\r\n\r\n## Porque este Pull Request \u00e9 necess\u00e1rio?\r\n\r\nEsta mudan\u00e7a \u00e9 fundamental para simplificar a gest\u00e3o de acesso dos usu\u00e1rios, garantindo maior seguran\u00e7a ao adotar o padr\u00e3o OAuth (persistindo os tokens de forma segura) e eliminando a gest\u00e3o manual de contas locais. Al\u00e9m disso, \u00e9 necess\u00e1rio para resolver um problema grave de isolamento de dados, impedindo que usu\u00e1rios visualizem reposit\u00f3rios e organiza\u00e7\u00f5es de terceiros. Com isso, garantimos que todo reposit\u00f3rio no MeasureSoftGram corresponda diretamente a um reposit\u00f3rio real na plataforma Git do usu\u00e1rio.\r\n\r\n## Crit\u00e9rios de aceita\u00e7\u00e3o\r\n\r\n1. [ ] A autentica\u00e7\u00e3o exclusiva via GitHub OAuth foi implementada (remo\u00e7\u00e3o dos formul\u00e1rios e rotas de login locais no Front e Backend)?\r\n2. [ ] A tela de onboarding para sele\u00e7\u00e3o e importa\u00e7\u00e3o de organiza\u00e7\u00f5es e reposit\u00f3rios (1:1) est\u00e1 funcionando no primeiro acesso?\r\n3. [ ] O token de acesso (`github_access_token`) est\u00e1 sendo extra\u00eddo e persistido de forma segura no banco de dados?\r\n4. [ ] O bloqueio din\u00e2mico de permiss\u00f5es e isolamento de dados est\u00e1 ativo (o usu\u00e1rio s\u00f3 v\u00ea as organiza\u00e7\u00f5es/reposit\u00f3rios aos quais tem permiss\u00e3o confirmada)?\r\n5. [ ] As telas de tratamento de erro no Frontend (redirecionamento de erro ao logar com GitHub, como 404 e erro de URL) foram implementadas?",
-        "closed_by": null,
+        "closed_by": {
+            "login": "DeM4rcio",
+            "id": 101139064,
+            "node_id": "U_kgDOBgdCeA",
+            "avatar_url": "https://avatars.githubusercontent.com/u/101139064?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/DeM4rcio",
+            "html_url": "https://github.com/DeM4rcio",
+            "followers_url": "https://api.github.com/users/DeM4rcio/followers",
+            "following_url": "https://api.github.com/users/DeM4rcio/following{/other_user}",
+            "gists_url": "https://api.github.com/users/DeM4rcio/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/DeM4rcio/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/DeM4rcio/subscriptions",
+            "organizations_url": "https://api.github.com/users/DeM4rcio/orgs",
+            "repos_url": "https://api.github.com/users/DeM4rcio/repos",
+            "events_url": "https://api.github.com/users/DeM4rcio/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/DeM4rcio/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
         "reactions": {
             "url": "https://api.github.com/repos/fga-eps-mds/2026.1-MeasureSoftGram-Service/issues/28/reactions",
             "total_count": 0,
@@ -1937,6 +1957,27 @@
         "state": "open",
         "locked": false,
         "assignees": [
+            {
+                "login": "jpanacleto2",
+                "id": 56097889,
+                "node_id": "MDQ6VXNlcjU2MDk3ODg5",
+                "avatar_url": "https://avatars.githubusercontent.com/u/56097889?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/jpanacleto2",
+                "html_url": "https://github.com/jpanacleto2",
+                "followers_url": "https://api.github.com/users/jpanacleto2/followers",
+                "following_url": "https://api.github.com/users/jpanacleto2/following{/other_user}",
+                "gists_url": "https://api.github.com/users/jpanacleto2/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/jpanacleto2/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/jpanacleto2/subscriptions",
+                "organizations_url": "https://api.github.com/users/jpanacleto2/orgs",
+                "repos_url": "https://api.github.com/users/jpanacleto2/repos",
+                "events_url": "https://api.github.com/users/jpanacleto2/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/jpanacleto2/received_events",
+                "type": "User",
+                "user_view_type": "public",
+                "site_admin": false
+            },
             {
                 "login": "giovanniacg",
                 "id": 63993401,
