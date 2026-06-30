@@ -153,6 +153,13 @@ As principais funcionalidades previstas foram entregues, porém o percentual tot
 
 ---
 
+### 2.7. Release Major 3
+
+!!! warning "Dados de backlog não fornecidos"
+    Lista de issues/US planejadas e realizadas desta release não disponível. Atualizar com os dados do ZenHub. Os dados de qualidade (SonarCloud) estão disponíveis na seção 5.
+
+---
+
 ## 3. Custo
 
 <iframe width="1080" height="800" src="https://docs.google.com/spreadsheets/d/1vEGKl1ZxSeijZwuVfzDAaH6eT9NllpKnPJGDVQK7TP0/edit?gid=398928793#gid=398928793"></iframe>
@@ -361,9 +368,39 @@ Dados coletados do dashboard do SonarCloud para a Release Minor 4:
 | Parser | Sim (89,6%) | Sim | Sim | Sim | Sim |
 | Service | Não (78,9%) | Sim | Sim | **Não (E)** | Sim |
 
+---
+
+#### Release Major 3 (29/06/2026)
+
+Dados coletados diretamente do dashboard do SonarCloud em 29/06/2026. Os repositórios Action (última análise 01/06/2026), CLI (04/05/2026), Core e Parser (26/04/2026) e Service (25/05/2026) não possuem análises novas desde releases anteriores — valores refletem o último snapshot disponível no SonarCloud (marcados com `*`). Esta release inclui pela primeira vez o repositório **Plugin**, que não constava nas releases anteriores.
+
+| Repositório | Linguagem | Linhas | Coverage | Reliability | Security | Hotspots Reviewed | Duplication | Quality Gate |
+|-------------|-----------|--------|----------|-------------|----------|:-----------------:|-------------|:------------:|
+| Action | TypeScript | 663 | 82,7% * | A (0 bugs) * | A (0) * | A (100%) * | 0,0% * | Passed * |
+| CLI | Python | 1.800 | 90,8% * | A (0 bugs) * | A (0) * | A (100%) * | 0,0% * | Passed * |
+| Core | Python | 1.400 | 91,6% * | A (3 bugs) * | A (0) * | A (100%) * | 0,0% * | Passed * |
+| Front | TypeScript | 11.000 | 82,8% | **C (12 bugs)** | A (0) | A (100%) | 1,5% | Passed |
+| Parser | Python | 252 | 89,6% * | A (0 bugs) * | A (0) * | A (100%) * | 0,0% * | — * |
+| Plugin | TypeScript, CSS | 2.900 | 90,2% | **C (20 bugs)** | **E (2)** | **E (0,0%)** | 1,6% | **Failed** |
+| Service | Python/Shell | 5.600 | 78,9% * | A (3 bugs) * | A (0) * | **E (0,0%)** * | 0,7% * | — * |
+
+**Conformidade com as metas planejadas:**
+
+| Repositório | Coverage ≥ 85% | Reliability A | Security A | Hotspots A | Duplication ≤ 3% |
+|-------------|:--------------:|:-------------:|:----------:|:----------:|:-----------------:|
+| Action | Não (82,7%) | Sim | Sim | Sim | Sim |
+| CLI | Sim (90,8%) | Sim | Sim | Sim | Sim |
+| Core | Sim (91,6%) | Sim | Sim | Sim | Sim |
+| Front | Não (82,8%) | **Não (C)** | Sim | Sim | Sim |
+| Parser | Sim (89,6%) | Sim | Sim | Sim | Sim |
+| Plugin | Sim (90,2%) | **Não (C)** | **Não (E)** | **Não (E)** | Sim |
+| Service | Não (78,9%) | Sim | Sim | **Não (E)** | Sim |
+
+> * Último snapshot disponível — repositório não reprocessado pelo SonarCloud entre a release anterior e a Major 3. Os valores refletem a última análise registrada.
+
 ### 5.3. Análise
 
-#### Tendências transversais (Major 1 → Major 2 → Minor 4)
+#### Tendências transversais (Major 1 → Major 2 → Minor 4 → Major 3)
 
 **Service — coverage inconsistente nas releases anteriores à Major 2:**
 Os arquivos persistidos de analytics registraram 0% de coverage para o Service entre as Releases Major 1 e Minor 3, reflexo da perda parcial de histórico decorrente da recriação dos repositórios no SonarCloud e de problemas de configuração do pipeline de cobertura neste período. O dashboard do SonarCloud confirmou que na data da Major 2 (25/05/2026) o Service já reportava **78,9% de coverage**, nível mantido na Release Minor 4. A causa raiz dos valores incorretos nas releases anteriores está na configuração do `sonar.properties`, onde arquivos de teste estavam sendo excluídos da análise em determinados runs do CI.
@@ -409,6 +446,38 @@ Os repositórios **CLI, Core e Parser** atenderam todas as metas definidas para 
 
 ---
 
+#### Release Major 3
+
+Na Release Major 3, o destaque é a entrada do novo repositório **Plugin**, que apresentou Quality Gate com status **Failed** e indicadores críticos de segurança:
+
+**Plugin (TypeScript, CSS — 2,9k linhas):**
+
+- Coverage de **90,2%** — acima da meta de 85%, ponto positivo do repositório.
+- Reliability classificada como **C** com 20 bugs registrados — abaixo da meta de "A".
+- Security classificada como **E** com 2 vulnerabilidades abertas.
+- Hotspots de segurança com **0,0% revisados** (classificação **E**).
+- Quality Gate: **Failed** — o repositório não passou na porta de qualidade do SonarCloud.
+- Ação necessária: corrigir vulnerabilidades de segurança, revisar todos os hotspots e reduzir os bugs de reliability.
+
+**Front (TypeScript — 11k linhas):**
+
+- Coverage evoluiu de 79,6% (Minor 4) para **82,8%**, aproximando-se da meta de 85%.
+- Duplication reduziu de 1,6% (Minor 4) para **1,5%**, dentro do limite de 3%.
+- Reliability permanece como **C** com 12 bugs — não houve progresso neste indicador.
+
+**Service (Python/Shell — 5,6k linhas):**
+
+- Hotspots de segurança permanecem com **0,0% revisados** (classificação **E**) — problema persistente desde a Major 2.
+- Coverage de **78,9%** abaixo da meta de 85%.
+
+**Action (TypeScript — 663 linhas):**
+
+- Coverage de **82,7%** ligeiramente abaixo da meta de 85%. Sem análise nova desde 01/06/2026.
+
+Os repositórios **CLI, Core e Parser** mantiveram boa aderência às metas. A principal preocupação da Major 3 é a qualidade do repositório Plugin, recém-incorporado ao ecossistema, que demanda atenção imediata para atingir os padrões definidos.
+
+---
+
 ## 6. Risco
 
 ### 6.1. Tabela de Resumo
@@ -429,3 +498,4 @@ Durante o andamento das sprints, foi observada redução na probabilidade de cer
 | 27/04/2026 | [Luis Henrique](https://github.com/luishenrrique) | Planejado e realizado 2026.1 | 1.0 |
 | 09/06/2026 | Anacleto | Expansão com dados por release e SonarCloud RM4 | 2.0 |
 | 10/06/2026 | Anacleto | Preenche seção 5.2 com métricas do SonarCloud extraídas dos snapshots de Analytics/data para Major 1, Minor 2, Minor 3 e Major 2. Adiciona análise transversal de tendências na seção 5.3. Corrige dados da Major 2 para o Service (78,9% coverage confirmado via screenshot do SonarCloud; JSON de 25/05 estava vazio). | 2.1 |
+| 29/06/2026 | Anacleto | Adiciona seção de qualidade da Release Major 3 (dados do SonarCloud de 29/06/2026) com inclusão do repositório Plugin; adiciona seção 2.7 e análise da Major 3 na seção 5.3. | 2.2 |
