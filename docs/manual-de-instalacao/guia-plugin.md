@@ -30,6 +30,10 @@ O token de autenticação **não** é uma configuração de workspace — ele é
 
 A aba **Grafana** carrega os dashboards diretamente no VS Code, já filtrados pelo produto e repositório selecionados. O plugin nunca chama o Grafana diretamente: a URL do dashboard é sempre resolvida e autorizada pelo `Service` (app `grafana_proxy`) antes de ser carregada no `iframe`.
 
-## Repositório
 
-Código-fonte em [`fga-eps-mds/2026.1-MeasureSoftGram-Plugin`](https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Plugin).
+## Histórico de Versão
+
+
+| Versao | Data       | Descricao            | Autor                                    | Revisor                                  |
+|--------|------------|----------------------|------------------------------------------|------------------------------------------|
+| 1.0    | 05/07/2026 | Criação do documento | [Anacleto](https://github.com/jpanacleto2) | [João Antonio](https://github.com/i-JSS)                                         |    

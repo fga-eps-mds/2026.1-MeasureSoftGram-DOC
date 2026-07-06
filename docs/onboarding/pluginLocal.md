@@ -82,6 +82,11 @@ npm run test:all            # os dois conjuntos de teste
 npm run test:coverage       # cobertura do Extension Host
 ```
 
-## Repositório
 
-[`fga-eps-mds/2026.1-MeasureSoftGram-Plugin`](https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Plugin)
+## Histórico de Versão
+
+
+| Versao | Data       | Descricao            | Autor                                    | Revisor                                  |
+|--------|------------|----------------------|------------------------------------------|------------------------------------------|
+| 1.0    | 05/07/2026 | Criação do documento | [Anacleto](https://github.com/jpanacleto2) | [João Antonio](https://github.com/i-JSS)                                         |    
+
