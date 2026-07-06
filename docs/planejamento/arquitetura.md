@@ -165,8 +165,52 @@ flowchart TB
 
 ### Visão de Processo
 
-!!! warning "Em elaboração"
-    Esta visão descreverá os aspectos de concorrência e comunicação entre processos em tempo de execução (threads, filas, eventos). Será detalhada nas próximas releases.
+<p align = "justify"> &emsp;&emsp; Esta visão descreve os aspectos de concorrência, distribuição e comunicação entre processos em tempo de execução. O MeasureSoftGram <strong>não usa fila de mensagens nem broker</strong> (não há Celery, Redis ou RabbitMQ na stack) — a comunicação entre os processos de rede é majoritariamente síncrona (request/response), e a única concorrência existente roda dentro do próprio processo do Service. </p>
+
+#### Processos de longa duração (sempre ativos)
+
+| Processo | Natureza | Comunicação |
+| :--- | :--- | :--- |
+| `Service` (gunicorn, WSGI síncrono) | Múltiplos workers (`GUNICORN_WORKERS`, padrão 3), modelo *prefork* — cada worker é um processo OS separado | HTTP/REST, síncrono |
+| `Grafana` | Container independente, ciclo de vida próprio | Consulta o PostgreSQL diretamente via SQL; conversa com o Service via `grafana_proxy` (HTTP) só para autorização |
+| `MCP Server (AI)` | Container HTTP de longa duração, repositório separado | Recebe chamadas MCP do agente de IA e as traduz em chamadas HTTP síncronas ao Service |
+
+#### Concorrência dentro do Service (in-process, sem fila)
+
+<p align = "justify"> &emsp;&emsp; Existem exatamente dois mecanismos de concorrência, ambos internos ao processo Django — não há execução distribuída: </p>
+
+1. **Job agendado diário (APScheduler).** O app `releases` registra, no boot de cada worker (`AppConfig.ready()`), um `BackgroundScheduler` do `django-apscheduler` que roda `get_releases_and_create_results` todo dia à meia-noite (`America/Sao_Paulo`), calculando as características das releases que terminam naquele dia. Como o gunicorn sobe múltiplos workers (processos separados), cada um tentaria iniciar seu próprio agendador — para evitar duplicação, o primeiro worker a conseguir um **advisory lock do Postgres** (`pg_try_advisory_lock`) vira o "líder" e é o único que efetivamente agenda o job; os demais detectam o lock ocupado e não agendam nada.
+2. **Thread "fire-and-forget" na criação de repositório.** Ao cadastrar um repositório pela API, o Service dispara uma `threading.Thread` (`daemon=True`) que tenta acionar o workflow de GitHub Actions do próprio usuário (via GitHub API, com o token OAuth armazenado) e, se isso falhar, gera dados de qualidade sintéticos localmente para a interface não ficar vazia. Não há fila, persistência do job nem retentativa: se o worker reiniciar no meio da execução, a thread é perdida silenciosamente.
+
+```mermaid
+sequenceDiagram
+    participant CI as Build de CI do usuário
+    participant Action as GitHub Action
+    participant Nginx as nginx
+    participant Svc as Service (worker gunicorn)
+    participant Core as Core (lib, in-process)
+    participant DB as PostgreSQL
+    participant Sched as APScheduler (líder eleito)
+
+    CI->>Action: evento workflow_run (build concluído)
+    Action->>Nginx: HTTPS POST métricas coletadas
+    Nginx->>Svc: proxy /api/
+    Svc->>Core: calculate_characteristics() (chamada de função, mesmo processo)
+    Core-->>Svc: valores calculados
+    Svc->>DB: grava CollectedMetric/CalculatedMeasure/...
+    Svc-->>Action: 200 OK
+
+    Note over Sched,DB: à meia-noite (cron), independente da requisição acima
+    Sched->>DB: pg_try_advisory_lock (só o worker líder segue)
+    Sched->>DB: busca releases que terminam hoje
+    Sched->>Core: calculate_characteristics() por repositório
+    Sched->>DB: grava CalculatedCharacteristic
+```
+
+#### Processos efêmeros / orientados a evento
+
+- **GitHub Action**: cada execução é um runner novo (hospedado no GitHub ou simulado localmente via `nektos/act`, usado pelo Plugin VS Code), que sobe, roda e termina — disparado pelo evento `workflow_run` ao final do build do usuário.
+- **CLI**: comando único que roda até concluir e encerra; não abre conexão de rede com o Service (usa as bibliotecas Parser e Core localmente e grava o resultado em arquivo).
 
 ---
 
