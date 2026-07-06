@@ -8,15 +8,15 @@ Segundo o plano de ensino de 26.1 é necessário que a equipe decida uma dupla p
 
 
 
-| Liderança | Participante 1                | Participante 2    | Data Entrada | Data Saída |
-|-----------|-------------------------------|-------------------|--------------|------------|
-| `1`       | Luciano de Freitas            | Giovanni Alvissus | 23/03/2026   | 13/04/2026 |
-| `2`       | João Antonio Ginuino Carvalho | Marcio Henrique   | 13/04/2026   | 27/04/2026 |
-| `3`       | Davi Gonçalves Akegawa Pierre |  Raquel Ferreira  | 27/04/2026   | 11/05/2026 |
-| `4`       | Luis Henrique Luz Costa       | Guilherme Aguera  | 11/05/2026   | 25/05/2026 |
-| `5`       | João Pedro Anacleto           |                   | 25/05/2026   | 08/06/2026 |
-| `6`       |                               |                   | 08/06/2026   | 22/06/2026 |
-| `7`       |                               |                   | 22/06/2026   | 06/07/2026 |
+| Liderança | Participante 1                  | Participante 2           | Data Entrada | Data Saída |
+|-----------|---------------------------------|--------------------------|--------------|------------|
+| `1`       | Luciano de Freitas              | Giovanni Alvissus        | 23/03/2026   | 13/04/2026 |
+| `2`       | João Antonio Ginuino Carvalho   | Marcio Henrique          | 13/04/2026   | 27/04/2026 |
+| `3`       | Davi Gonçalves Akegawa Pierre   | Raquel Ferreira          | 27/04/2026   | 11/05/2026 |
+| `4`       | Luis Henrique Luz Costa         | Guilherme Aguera         | 11/05/2026   | 25/05/2026 |
+| `5`       | João Pedro Anacleto             | Murilo Perazzo           | 25/05/2026   | 08/06/2026 |
+| `6`       | Nicollas Gabriel Oliveira Sousa | Danilo Naves             | 08/06/2026   | 22/06/2026 |
+| `7`       | Davi Gonçalves Akegawa Pierre   | Danilo Naves             | 22/06/2026   | 06/07/2026 |
 
 
 <center>
