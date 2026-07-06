@@ -770,9 +770,19 @@ REPOSITORY - armazena - TSQMI
 
 ### Diagrama Lógico de Dados (DLD)
 
-<p align = "justify"> &emsp;&emsp; O diagrama abaixo apresenta visualmente as entidades do banco do MeasureSoftGram Service, com suas chaves primárias e estrangeiras, as tabelas de relacionamento/junção (<code>possui</code>, <code>cria</code>, <code>armazena</code>, <code>origina</code>, <code>compoe</code>, entre outras) e as cardinalidades entre elas. Ele complementa — em forma de diagrama — as tabelas físicas detalhadas coluna a coluna logo abaixo. </p>
+<p align = "justify"> &emsp;&emsp; Esta seção traz dois diagramas complementares, seguidos das tabelas físicas detalhadas coluna a coluna. </p>
 
-![Diagrama Lógico de Dados do MeasureSoftGram](../assets/images/DLD_MEASURE_2026.1.png)
+#### 1. Diagrama feito no brModelo
+
+<p align = "justify"> &emsp;&emsp; Diagrama modelado manualmente no brModelo, restrito às entidades de domínio do MeasureSoftGram: chaves primárias e estrangeiras, tabelas de relacionamento/junção (<code>possui</code>, <code>cria</code>, <code>armazena</code>, <code>origina</code>, <code>compoe</code>, entre outras) e as cardinalidades entre elas. Não inclui as tabelas de infraestrutura de terceiros (Django, allauth, etc.). </p>
+
+![Diagrama Lógico de Dados - brModelo](../assets/images/DLD_MEASURE_2026.1.png)
+
+#### 2. Diagrama gerado automaticamente
+
+<p align = "justify"> &emsp;&emsp; Diagrama gerado por introspecção real do código, com o comando <code>python manage.py graph_models -a -g -o dld_gerado_graph_models.png</code> (django-extensions + graphviz) rodado dentro do container <code>service</code> contra os <code>models.py</code> atuais. Por ser gerado automaticamente a partir do código, não depende de transcrição manual — em contrapartida, ao usar <code>-a</code> (all applications), ele também traz as tabelas de infraestrutura de terceiros (<code>django.contrib.*</code>, <code>allauth</code>, <code>django_apscheduler</code>, <code>rest_framework.authtoken</code>) que o diagrama do brModelo e o MER textual desta seção deixam propositalmente fora de escopo. </p>
+
+![Diagrama Lógico de Dados - gerado automaticamente via django-extensions](../assets/images/dld_gerado_graph_models.png)
 
 <p align = "justify"> &emsp;&emsp; As tabelas a seguir listam as tabelas físicas do banco (nomes reais no Postgres), colunas, tipos e chaves, extraídas diretamente dos <code>models.py</code> do Service. Todas as chaves primárias <code>id</code> são <code>BIGINT</code> (<code>DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"</code>), diferente do que normalmente se assume por padrão (<code>INTEGER</code>). </p>
 
@@ -1068,3 +1078,4 @@ REPOSITORY - armazena - TSQMI
 |06/07/2026| Anacleto | Com acesso ao repositório `2026.1-MeasureSoftGram-AI` (antes indisponível): substitui o placeholder "Pendente" do MCP Server na Visão de Desenvolvimento por um diagrama de pacotes real (`server.py`, `client.py`, `auth/`, `tools/`); corrige a descrição do MCP na seção de Serviços com base no código (autenticação via conta de serviço fixa, token único reaproveitado por todas as tools) e no guia `docs/manual-de-instalacao/guia-mcp.md`. |1.9|
 |06/07/2026| Anacleto | Corrige a seção "Gerenciamento de pacotes e runtime": `uv`, Python 3.12 fixo e Docker Compose v2 são específicos do Service, não de Core/Parser/CLI — conferido contra a branch `develop` desses três repositórios, que seguem em `pip` + `tox`, `requires-python >= 3.9` e sem imagem Docker própria. |1.10|
 |06/07/2026| Anacleto | Adiciona o diagrama `DLD_MEASURE_2026.1.png` na seção do Diagrama Lógico de Dados, como complemento visual às tabelas físicas já documentadas. |1.11|
+|06/07/2026| Anacleto | Adiciona um segundo diagrama à seção do DLD, gerado automaticamente via `manage.py graph_models` (django-extensions) contra o código atual do Service, complementando o diagrama feito no brModelo. |1.12|
