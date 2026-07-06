@@ -50,14 +50,14 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 #### Gerenciamento de pacotes e runtime
 
-<p align = "justify"> &emsp;&emsp; A partir do semestre 2026.1 o time padronizou o ferramental de runtime e pacotes em todos os repositórios do MSGram. As decisões abaixo estão registradas nos pull requests de modernização da stack Docker do Service (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1">#1</a>) e do Front (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front/pull/5">#5</a>). </p>
+<p align = "justify"> &emsp;&emsp; A partir do semestre 2026.1 o time modernizou o ferramental de runtime e pacotes do <strong>Service</strong> e do <strong>Front</strong> — as decisões abaixo estão registradas nos respectivos pull requests de modernização da stack Docker (PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1">#1</a> do Service e PR <a href="https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Front/pull/5">#5</a> do Front). As bibliotecas Python publicadas no PyPI (<strong>Core</strong>, <strong>Parser</strong> e <strong>CLI</strong>) não passaram por essa modernização: continuam em <code>pip</code> + <code>requirements.txt</code>, testadas via <code>tox</code>, com <code>requires-python = ">=3.9"</code> no <code>pyproject.toml</code> e sem <code>Dockerfile</code>/<code>docker-compose.yml</code> próprio — conferido contra a branch <code>develop</code> dos três repositórios. </p>
 
-- **uv**: gerenciador de pacotes Python utilizado no Service, Core, Parser e CLI, em substituição ao pip e ao poetry.
+- **uv**: gerenciador de pacotes Python utilizado apenas no **Service**, em substituição ao pip e ao poetry. Core, Parser e CLI seguem em `pip`.
 - **pnpm**: gerenciador de pacotes JavaScript utilizado no Front, em substituição ao npm.
-- **Python 3.12**: versão fixada nos repositórios em Python, via `pyproject.toml` e imagem Docker oficial.
+- **Python 3.12**: versão fixada apenas no **Service**, via `pyproject.toml` e imagem Docker oficial. Core, Parser e CLI declaram `requires-python = ">=3.9"` e não fixam uma versão específica.
 - **Node 20 LTS**: versão fixada no Front, via `.nvmrc` e imagem Docker oficial.
-- **Imagens Docker** com tags fixas (como `python:3.12-slim` ou `postgres:18-alpine`), em vez de `:latest`.
-- **Docker Compose v2** com `compose watch`, em substituição ao `docker-compose` v1.
+- **Imagens Docker** com tags fixas (como `python:3.12-slim` ou `postgres:18-alpine`), em vez de `:latest` — aplicável aos containers do Service, Front, Grafana, banco e proxy; Core, Parser e CLI não têm imagem Docker própria, por serem bibliotecas/CLI distribuídas via PyPI.
+- **Docker Compose v2** com `compose watch`, em substituição ao `docker-compose` v1 — usado no Service.
 
 #### Banco de dados
 
@@ -1062,3 +1062,4 @@ REPOSITORY - armazena - TSQMI
 |09/06/2026| Anacleto | Preenche seção MER com entidades, atributos e relacionamentos do Service. |1.7|
 |05/07/2026| Anacleto | Resposta às considerações do professor: adiciona rich picture na Visão Geral; documenta Grafana, nginx e a estrutura evoluída de containers/imagens; corrige a Visão Lógica (Core/Parser eram desenhados como serviços de rede, na verdade são bibliotecas); preenche Visão de Processo, Visão de Casos de Uso e Visão Física com dados reais de deploy; adiciona Plugin VS Code e MCP Server à Visão de Desenvolvimento e ao glossário de Serviços; corrige o MER contra os `models.py` reais do Service e adiciona o DLD. |1.8|
 |06/07/2026| Anacleto | Com acesso ao repositório `2026.1-MeasureSoftGram-AI` (antes indisponível): substitui o placeholder "Pendente" do MCP Server na Visão de Desenvolvimento por um diagrama de pacotes real (`server.py`, `client.py`, `auth/`, `tools/`); corrige a descrição do MCP na seção de Serviços com base no código (autenticação via conta de serviço fixa, token único reaproveitado por todas as tools) e no guia `docs/manual-de-instalacao/guia-mcp.md`. |1.9|
+|06/07/2026| Anacleto | Corrige a seção "Gerenciamento de pacotes e runtime": `uv`, Python 3.12 fixo e Docker Compose v2 são específicos do Service, não de Core/Parser/CLI — conferido contra a branch `develop` desses três repositórios, que seguem em `pip` + `tox`, `requires-python >= 3.9` e sem imagem Docker própria. |1.10|
