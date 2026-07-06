@@ -135,6 +135,12 @@ nav:
           - Onboarding: onboarding/actionLocal.md
           - Parser: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Parser
 
+  - Plugin:
+      - Manual de Uso: manual-de-instalacao/guia-plugin.md
+      - Guia de Desenvolvimento:
+          - Onboarding: onboarding/pluginLocal.md
+          - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Plugin
+
   - Service:
       - Manual de Uso: manual-de-instalacao/guia-service.md
       - Guia de Desenvolvimento:
