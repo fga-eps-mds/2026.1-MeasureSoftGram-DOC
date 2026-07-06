@@ -358,7 +358,59 @@ Existem dois tipos de nós:
 
 Os nós de dispositivo são recursos físicos de computação com memória de processamento e serviços para executar software, como computadores típicos ou telefones celulares. Um nó de ambiente de execução é um recurso de computação de software que roda dentro de um nó externo e que, por sua vez, fornece um serviço para hospedar e executar outros elementos de software executáveis.
 
-![Diagrama de Implantação](../assets/images/diagrama_implantacao.png)
+!!! warning "Diagrama legado"
+    A imagem abaixo (`diagrama_implantacao.png`) é anterior à stack atual e não reflete os serviços descritos nesta seção (Grafana, nginx interno, volumes nomeados). Fica mantida como registro histórico; o diagrama vigente é o Mermaid logo em seguida.
+
+![Diagrama de Implantação (legado)](../assets/images/diagrama_implantacao.png)
+
+<p align = "justify"> &emsp;&emsp; O diagrama abaixo reflete a topologia real de produção, descrita em <code>deploy/docker-compose.prod.yml</code> do repositório Service. Um nó de dispositivo (a máquina/VM de produção) hospeda um proxy externo (openresty, fora do escopo do MeasureSoftGram, responsável por TLS e pelo domínio) e um nó de ambiente de execução Docker com a rede <code>msgram</code>, dentro da qual rodam os containers da aplicação. O MCP Server (AI) e o Plugin VS Code são nós de execução independentes, fora dessa máquina. </p>
+
+```mermaid
+flowchart TB
+    subgraph Internet["Clientes"]
+        Browser["Navegador<br/>(Frontend Web)"]
+        VSCode["VS Code<br/>+ Plugin"]
+        AIClient["Claude Desktop / Code"]
+        CIRunner["Runner de CI<br/>(GitHub-hosted ou act)"]
+    end
+
+    subgraph Box["Nó físico de produção (VM/servidor)"]
+        OpenResty["openresty<br/>(proxy externo, TLS + domínio)"]
+
+        subgraph Docker["Docker — rede bridge `msgram`"]
+            NginxC["proxy<br/>nginx:1.27-alpine<br/>publica :80"]
+            ServiceC["service<br/>imagem própria (DockerHub)<br/>gunicorn, 3 workers"]
+            FrontC["front<br/>imagem própria (DockerHub)"]
+            GrafanaC["grafana<br/>grafana/grafana:latest"]
+            DbC["db<br/>postgres:18-alpine"]
+            VolPg[("volume:<br/>service_postgres_data")]
+            VolGf[("volume:<br/>grafana_data")]
+
+            NginxC --> ServiceC
+            NginxC --> FrontC
+            NginxC --> GrafanaC
+            ServiceC --> DbC
+            GrafanaC --> DbC
+            ServiceC <--> GrafanaC
+            DbC --- VolPg
+            GrafanaC --- VolGf
+        end
+
+        OpenResty --> NginxC
+    end
+
+    subgraph AIBox["Nó de execução — MCP Server"]
+        MCPC["measuresoftgram/ai<br/>(container próprio, porta 8000)"]
+    end
+
+    Browser -->|HTTPS| OpenResty
+    VSCode -->|"HTTPS (token)"| OpenResty
+    CIRunner -->|"HTTPS (workflow_run)"| OpenResty
+    AIClient -->|MCP| MCPC
+    MCPC -->|HTTP/REST| OpenResty
+```
+
+<p align = "justify"> &emsp;&emsp; Em desenvolvimento a topologia é mais simples: não há <code>proxy</code> nginx nem openresty — cada container publica sua porta direto no host (<code>service:8080</code>, <code>grafana:5000→3000</code>, banco só em <code>127.0.0.1:5432</code>), e o código do Service é sincronizado por <code>compose watch</code> em vez de reconstruir a imagem a cada mudança. </p>
 
 ---
 
