@@ -770,7 +770,11 @@ REPOSITORY - armazena - TSQMI
 
 ### Diagrama Lógico de Dados (DLD)
 
-<p align = "justify"> &emsp;&emsp; O DLD abaixo lista as tabelas físicas do banco (nomes reais no Postgres), colunas, tipos e chaves, extraído diretamente dos <code>models.py</code> do Service. Todas as chaves primárias <code>id</code> são <code>BIGINT</code> (<code>DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"</code>), diferente do que normalmente se assume por padrão (<code>INTEGER</code>). </p>
+<p align = "justify"> &emsp;&emsp; O diagrama abaixo apresenta visualmente as entidades do banco do MeasureSoftGram Service, com suas chaves primárias e estrangeiras, as tabelas de relacionamento/junção (<code>possui</code>, <code>cria</code>, <code>armazena</code>, <code>origina</code>, <code>compoe</code>, entre outras) e as cardinalidades entre elas. Ele complementa — em forma de diagrama — as tabelas físicas detalhadas coluna a coluna logo abaixo. </p>
+
+![Diagrama Lógico de Dados do MeasureSoftGram](../assets/images/DLD_MEASURE_2026.1.png)
+
+<p align = "justify"> &emsp;&emsp; As tabelas a seguir listam as tabelas físicas do banco (nomes reais no Postgres), colunas, tipos e chaves, extraídas diretamente dos <code>models.py</code> do Service. Todas as chaves primárias <code>id</code> são <code>BIGINT</code> (<code>DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"</code>), diferente do que normalmente se assume por padrão (<code>INTEGER</code>). </p>
 
 **accounts_customuser**
 
@@ -1063,3 +1067,4 @@ REPOSITORY - armazena - TSQMI
 |05/07/2026| Anacleto | Resposta às considerações do professor: adiciona rich picture na Visão Geral; documenta Grafana, nginx e a estrutura evoluída de containers/imagens; corrige a Visão Lógica (Core/Parser eram desenhados como serviços de rede, na verdade são bibliotecas); preenche Visão de Processo, Visão de Casos de Uso e Visão Física com dados reais de deploy; adiciona Plugin VS Code e MCP Server à Visão de Desenvolvimento e ao glossário de Serviços; corrige o MER contra os `models.py` reais do Service e adiciona o DLD. |1.8|
 |06/07/2026| Anacleto | Com acesso ao repositório `2026.1-MeasureSoftGram-AI` (antes indisponível): substitui o placeholder "Pendente" do MCP Server na Visão de Desenvolvimento por um diagrama de pacotes real (`server.py`, `client.py`, `auth/`, `tools/`); corrige a descrição do MCP na seção de Serviços com base no código (autenticação via conta de serviço fixa, token único reaproveitado por todas as tools) e no guia `docs/manual-de-instalacao/guia-mcp.md`. |1.9|
 |06/07/2026| Anacleto | Corrige a seção "Gerenciamento de pacotes e runtime": `uv`, Python 3.12 fixo e Docker Compose v2 são específicos do Service, não de Core/Parser/CLI — conferido contra a branch `develop` desses três repositórios, que seguem em `pip` + `tox`, `requires-python >= 3.9` e sem imagem Docker própria. |1.10|
+|06/07/2026| Anacleto | Adiciona o diagrama `DLD_MEASURE_2026.1.png` na seção do Diagrama Lógico de Dados, como complemento visual às tabelas físicas já documentadas. |1.11|
