@@ -98,15 +98,17 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 #### Serviços
 
-- **CLI** Abreviação de "interface de linha de comando". Este é um programa que permite aos usuários criar comandos para funções específicas passando instruções para o computador.
+- **CLI** Abreviação de "interface de linha de comando". Este é um programa que permite aos usuários criar comandos para funções específicas passando instruções para o computador. Roda inteiramente local: usa a biblioteca `msgram-parser` (Parser) para interpretar os dados de entrada e a `msgram_core` (Core) para calcular o modelo de qualidade, sem se comunicar com o `Service` pela rede.
 
-- **Frontend Web** Esta é a aplicação interface web que permite aos usuários analisar e acompanhar os produtos pelo navegador.
+- **Frontend Web** Esta é a aplicação interface web que permite aos usuários analisar e acompanhar os produtos pelo navegador. Também embute, via `iframe`, os dashboards do Grafana obtidos através do `Service`.
 
-- **Service** Este é o programa responsável por se comunicar com a aplicação `Frontend Web` e fornecer todos os dados necessários para a aplicação web.
+- **Service** Este é o programa responsável por se comunicar com a aplicação `Frontend Web` e fornecer todos os dados necessários para a aplicação web. Importa `Core` (`msgram_core`) como biblioteca Python para calcular características, subcaracterísticas, medidas e o TSQMI dentro do próprio processo Django — não há chamada de rede entre `Service` e `Core`.
 
-- **Parser** Este repositório possui a capacidade de interpretar a estrutura gramatical ou sintática dos dados de entrada, a fim de transformá-los em uma representação interna mais adequada para processamento pelos demais serviços.
+- **Core** Biblioteca Python (publicada no PyPI como `msgram_core`) que implementa o modelo matemático de qualidade (características, subcaracterísticas, medidas e TSQMI). É consumida diretamente como dependência pelo `Service` e não roda como um serviço de rede próprio.
 
-- **Github Action** Action customizada do Github que permite realizar a análise de um certo repositorio. Esta aplicação é responsável por se comunicar com o serviço `Service` e fornecer todos os dados necessários para a aplicação web.
+- **Parser** Biblioteca Python (publicada no PyPI como `msgram-parser`) com a capacidade de interpretar a estrutura gramatical ou sintática dos dados de entrada, a fim de transformá-los em uma representação interna mais adequada para processamento. É consumida diretamente pela `CLI`, e não é uma dependência do `Service`.
+
+- **Github Action** Action customizada do Github que permite realizar a análise de um certo repositório. É disparada pelo evento `workflow_run` ao final do build de CI configurado pelo usuário, e se comunica com o `Service` via HTTPS para enviar os dados coletados.
 
 - **MCP Server** Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o `Service` via HTTP e fica em repositório separado.
 
