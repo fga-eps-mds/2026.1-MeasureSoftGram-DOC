@@ -112,6 +112,8 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 - **MCP Server** Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o `Service` via HTTP e fica em repositório separado.
 
+- **Plugin VS Code** Extensão para o Visual Studio Code (`fga-eps-mds/2026.1-MeasureSoftGram-Plugin`) que leva o painel de qualidade (TSQMI e características), os dashboards do Grafana (embutidos via `iframe`) e a execução local do workflow da `Github Action` (via Docker + `nektos/act`) para dentro do editor. Autentica-se no `Service` via token (`Authorization: Token <token>`), guardado no Secret Storage do VS Code, e nunca chama o Grafana diretamente — sempre por meio dos endpoints de proxy do `Service`.
+
 ---
 
 ## Visões Arquiteturais (4+1)
@@ -239,6 +241,51 @@ sequenceDiagram
 #### Action
 
 ![Diagrama de pacotes - Action](../assets/images/diagrama_pacotes_action.png)
+
+#### Plugin VS Code
+
+<p align = "justify"> &emsp;&emsp; O Plugin (repositório <code>fga-eps-mds/2026.1-MeasureSoftGram-Plugin</code>) é dividido em dois projetos: o código do host da extensão (<code>src/</code>, Node/TypeScript) e uma aplicação React/Vite independente (<code>webview-ui/</code>) que é compilada e empacotada dentro da extensão para renderizar a interface dos painéis. Os dois só se comunicam por <code>postMessage</code>/<code>acquireVsCodeApi</code> — a <code>webview-ui</code> nunca chama a API do Service diretamente. </p>
+
+```mermaid
+flowchart TB
+    subgraph ExtHost["Extension Host (src/)"]
+        EXT["extension.ts<br/>(entrypoint)"]
+        ACT["activator.ts<br/>(wiring)"]
+        SB["statusbar/<br/>MsgramStatusBar"]
+        UTIL["utilities/"]
+        subgraph Panels["panels/"]
+            BASE["measureSoftGramBase.ts<br/>(settings, roteador de mensagens,<br/>chamadas ao Grafana)"]
+            PANEL["measureSoftGramPanel.ts<br/>(WebviewPanel)"]
+            SIDE["measureSoftGramSidebar.ts<br/>(WebviewViewProvider)"]
+        end
+        API["services/msgramApi.ts<br/>(cliente HTTP)"]
+    end
+
+    subgraph WebviewApp["webview-ui/ (React + Vite, projeto separado)"]
+        APP["App.tsx"]
+        DASH["DashboardView.tsx"]
+        GRAF["GrafanaView.tsx (iframe)"]
+        SET["SettingsView.tsx"]
+        ACTIONV["ActionView.tsx"]
+    end
+
+    EXT --> ACT --> SB
+    ACT --> PANEL
+    ACT --> SIDE
+    PANEL --> BASE
+    SIDE --> BASE
+    BASE --> UTIL
+    BASE --> API
+    BASE -->|"carrega build + postMessage"| APP
+    APP --> DASH
+    APP --> GRAF
+    APP --> SET
+    APP --> ACTIONV
+    API -->|"HTTPS, Authorization: Token"| SVC[("Service")]
+    GRAF -.->|"iframe src = grafana_url"| GF[("Grafana")]
+```
+
+<p align = "justify"> &emsp;&emsp; Ponto de atenção de manutenção: <code>MeasureSoftGramPanel</code> e <code>MeasureSoftGramSidebar</code> herdam de <code>MeasureSoftGramBase</code>, mas duplicam a lógica de salvar/rodar o workflow da Action (<code>save_action</code>/<code>run_action</code>) em vez de compartilhá-la. </p>
 
 #### Grafana
 
