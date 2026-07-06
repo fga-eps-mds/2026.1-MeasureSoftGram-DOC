@@ -118,7 +118,7 @@ nav:
       - Manual de Uso: manual-de-instalacao/guia-core.md
       - Guia de Desenvolvimento:
 #          - Arquitetura:
-          - Onboarding: onboarding/actionLocal.md
+          - Onboarding: onboarding/coreLocal.md
           - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Core
 
   - Front:
