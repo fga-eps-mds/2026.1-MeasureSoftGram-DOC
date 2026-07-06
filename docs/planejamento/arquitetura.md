@@ -504,22 +504,29 @@ flowchart LR
 
 ### Modelo Entidade-Relacionamento (MER)
 
-<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. </p>
+<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. Esta versão foi conferida diretamente contra os arquivos <code>models.py</code> do repositório Service (não apenas contra uma versão anterior deste documento), para corrigir divergências encontradas — ver "Divergências corrigidas nesta revisão" logo após os Atributos. </p>
+
+!!! note "Fora do escopo deste MER"
+    Tabelas de infraestrutura de terceiros também existem fisicamente no banco (`auth_group`, `auth_permission`, `authtoken_token`, tabelas do `django.contrib.sites` e do `allauth`/`allauth.socialaccount`, do `django_apscheduler`), mas não são modelos da aplicação MeasureSoftGram — por isso não são detalhadas aqui.
 
 #### Entidades
 
 ```
 CUSTOM_USER
 ORGANIZATION
+ORGANIZATION_MEMBERS                          [tabela de junção N:M]
 PRODUCT
 REPOSITORY
 SUPPORTED_METRIC
 COLLECTED_METRIC
 SUPPORTED_MEASURE
+SUPPORTED_MEASURE_METRICS                     [tabela de junção N:M]
 CALCULATED_MEASURE
 SUPPORTED_SUBCHARACTERISTIC
+SUPPORTED_SUBCHARACTERISTIC_MEASURES          [tabela de junção N:M]
 CALCULATED_SUBCHARACTERISTIC
 SUPPORTED_CHARACTERISTIC
+SUPPORTED_CHARACTERISTIC_SUBCHARACTERISTICS   [tabela de junção N:M]
 CALCULATED_CHARACTERISTIC
 BALANCE_MATRIX
 TSQMI
@@ -528,16 +535,27 @@ RELEASE
 RELEASE_CONFIGURATION
 ```
 
+<p align = "justify"> &emsp;&emsp; Os apps Django <code>grafana_proxy</code>, <code>entity_trees</code> e <code>math_model</code> estão instalados no Service mas <strong>não possuem modelos próprios</strong> (conferido em <code>models.py</code> de cada um) — não geram tabelas e por isso não aparecem no MER. </p>
+
 #### Atributos
 
 ```
 CUSTOM_USER(
 id [PK], username, email, # first_name, # last_name,
-password, is_staff, is_active, date_joined)
+password, # last_login, is_superuser, is_staff, is_active, date_joined,
+# github_access_token)
+-- groups [M2M -> auth.Group] e user_permissions [M2M -> auth.Permission] herdados do Django, fora do escopo deste MER
 
 ORGANIZATION(
 id [PK], name, key, # description,
-admin [FK -> CUSTOM_USER])
+# admin [FK -> CUSTOM_USER],
+# github_org_id, # github_org_name, # avatar_url)
+-- membros da organização ficam em ORGANIZATION_MEMBERS (M2M), não em `admin`
+
+ORGANIZATION_MEMBERS(
+id [PK],
+organization [FK -> ORGANIZATION],
+customuser [FK -> CUSTOM_USER])
 
 PRODUCT(
 id [PK], name, key, # description,
@@ -546,6 +564,7 @@ organization [FK -> ORGANIZATION])
 
 REPOSITORY(
 id [PK], name, key, # url, # platform, # description, imported,
+# github_repo_id, # github_full_name,
 product [FK -> PRODUCT])
 
 SUPPORTED_METRIC(
@@ -560,6 +579,11 @@ repository [FK -> REPOSITORY])
 SUPPORTED_MEASURE(
 id [PK], key, name, # description)
 
+SUPPORTED_MEASURE_METRICS(
+id [PK],
+supportedmeasure [FK -> SUPPORTED_MEASURE],
+supportedmetric [FK -> SUPPORTED_METRIC])
+
 CALCULATED_MEASURE(
 id [PK], value, created_at,
 measure [FK -> SUPPORTED_MEASURE],
@@ -567,6 +591,11 @@ repository [FK -> REPOSITORY])
 
 SUPPORTED_SUBCHARACTERISTIC(
 id [PK], key, name, # description)
+
+SUPPORTED_SUBCHARACTERISTIC_MEASURES(
+id [PK],
+supportedsubcharacteristic [FK -> SUPPORTED_SUBCHARACTERISTIC],
+supportedmeasure [FK -> SUPPORTED_MEASURE])
 
 CALCULATED_SUBCHARACTERISTIC(
 id [PK], value, created_at,
@@ -576,16 +605,23 @@ repository [FK -> REPOSITORY])
 SUPPORTED_CHARACTERISTIC(
 id [PK], key, name, # description)
 
+SUPPORTED_CHARACTERISTIC_SUBCHARACTERISTICS(
+id [PK],
+supportedcharacteristic [FK -> SUPPORTED_CHARACTERISTIC],
+supportedsubcharacteristic [FK -> SUPPORTED_SUBCHARACTERISTIC])
+
 CALCULATED_CHARACTERISTIC(
 id [PK], value, created_at,
 characteristic [FK -> SUPPORTED_CHARACTERISTIC],
 repository [FK -> REPOSITORY],
 # release [FK -> RELEASE])
+-- UNIQUE(repository, release, characteristic)
 
 BALANCE_MATRIX(
 id [PK], relation_type,
 source_characteristic [FK -> SUPPORTED_CHARACTERISTIC],
 target_characteristic [FK -> SUPPORTED_CHARACTERISTIC])
+-- UNIQUE(source_characteristic, target_characteristic)
 
 TSQMI(
 id [PK], value, created_at,
@@ -601,22 +637,36 @@ id [PK], release_name, start_at, end_at, created_at, # description,
 created_by [FK -> CUSTOM_USER],
 product [FK -> PRODUCT],
 goal [FK -> GOAL])
+-- tabela física chamada explicitamente `releases` (Meta.db_table), não `releases_release`
 
 RELEASE_CONFIGURATION(
 id [PK], # name, data, created_at,
 product [FK -> PRODUCT])
 ```
 
+#### Divergências corrigidas nesta revisão
+
+<p align = "justify"> &emsp;&emsp; Comparando a versão anterior deste documento com o código atual (<code>models.py</code> de cada app do Service), foram encontradas e corrigidas as seguintes divergências: </p>
+
+- `ORGANIZATION.admin` é **opcional** (`null=True, blank=True`), não obrigatório como o texto antigo sugeria — cardinalidade corrigida para `(0,N)`.
+- `ORGANIZATION.members` (relação "é_membro_de", M2M com `CUSTOM_USER`) nunca tinha sido modelada como atributo/tabela — só citada como texto solto na seção de relacionamentos. Agora aparece como a tabela `ORGANIZATION_MEMBERS`.
+- Campos de integração com GitHub ausentes do MER antigo: `ORGANIZATION.github_org_id` (único), `github_org_name`, `avatar_url`; `REPOSITORY.github_repo_id`, `github_full_name`; `CUSTOM_USER.github_access_token`.
+- `CUSTOM_USER` não documentava `last_login` (herdado de `AbstractBaseUser`) nem `is_superuser` (herdado de `PermissionsMixin`).
+- As tabelas de junção N:M (`SUPPORTED_MEASURE_METRICS`, `SUPPORTED_SUBCHARACTERISTIC_MEASURES`, `SUPPORTED_CHARACTERISTIC_SUBCHARACTERISTICS`, além de `ORGANIZATION_MEMBERS`) nunca haviam sido listadas como entidades — só citadas como "cardinalidade N,M" no texto.
+- Restrições `UNIQUE`/`UNIQUE_TOGETHER` (`PRODUCT.key`, `REPOSITORY(key, product)`, `CALCULATED_CHARACTERISTIC(repository, release, characteristic)`, `BALANCE_MATRIX(source, target)`) não eram mencionadas.
+- A tabela física de `RELEASE` chama-se `releases` (nome customizado via `Meta.db_table`), não segue a convenção padrão `releases_release`.
+
+
 #### Relacionamentos
 
 ```
 CUSTOM_USER - é_membro_de - ORGANIZATION
-   - Descrição: Um usuário pode ser membro de várias organizações, e uma organização pode ter vários membros.
+   - Descrição: Um usuário pode ser membro de várias organizações, e uma organização pode ter vários membros. Modelada fisicamente pela tabela ORGANIZATION_MEMBERS (campo `members`).
    - Cardinalidade: (N,M)
 
 CUSTOM_USER - administra - ORGANIZATION
-   - Descrição: Um usuário pode administrar várias organizações, mas cada organização possui no máximo um administrador.
-   - Cardinalidade: (1,N)
+   - Descrição: Um usuário pode administrar várias organizações; o campo `admin` é opcional (uma organização pode não ter administrador definido).
+   - Cardinalidade: (0,N)
 
 ORGANIZATION - possui - PRODUCT
    - Descrição: Uma organização pode possuir vários produtos, e cada produto pertence a uma única organização.
@@ -715,10 +765,234 @@ REPOSITORY - armazena - TSQMI
 
 ![Diagrama Entidade-Relacionamento](../assets/images/diagrama_entidade_relacionamento.png)
 
+!!! note "Como regerar (garantir fidelidade ao schema atual)"
+    Este PNG é gerado, não desenhado à mão — para conferir se ainda reflete o schema atual (ou regenerá-lo a cada release), rode dentro do container do Service: `python manage.py graph_models -a -g -o diagrama_entidade_relacionamento.png`. Documentar esse comando aqui é o que permite validar, a qualquer momento, se a imagem bate com o MER e o DLD acima.
+
 ### Diagrama Lógico de Dados (DLD)
 
-!!! warning "Em elaboração"
-    O DLD — representando as tabelas, colunas, tipos e chaves do banco de dados — será adicionado em atualização futura.
+<p align = "justify"> &emsp;&emsp; O DLD abaixo lista as tabelas físicas do banco (nomes reais no Postgres), colunas, tipos e chaves, extraído diretamente dos <code>models.py</code> do Service. Todas as chaves primárias <code>id</code> são <code>BIGINT</code> (<code>DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"</code>), diferente do que normalmente se assume por padrão (<code>INTEGER</code>). </p>
+
+**accounts_customuser**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| password | VARCHAR(128) | N | |
+| last_login | TIMESTAMP | S | |
+| is_superuser | BOOLEAN | N | |
+| username | VARCHAR(150) | N | UNIQUE |
+| first_name | VARCHAR(150) | S | |
+| last_name | VARCHAR(150) | S | |
+| email | VARCHAR(254) | N | UNIQUE |
+| is_staff | BOOLEAN | N | |
+| is_active | BOOLEAN | N | |
+| date_joined | TIMESTAMP | N | |
+| github_access_token | VARCHAR(255) | S | |
+
+**organizations_organization**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| name | VARCHAR(128) | N | |
+| key | VARCHAR(128) | N | UNIQUE |
+| description | TEXT(512) | S | |
+| admin_id | BIGINT | S | FK → accounts_customuser |
+| github_org_id | BIGINT | S | UNIQUE |
+| github_org_name | VARCHAR(255) | S | |
+| avatar_url | VARCHAR(200) | S | |
+
+**organizations_organization_members** (M2M)
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| organization_id | BIGINT | N | FK → organizations_organization |
+| customuser_id | BIGINT | N | FK → accounts_customuser |
+
+**organizations_product**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| name | VARCHAR(128) | N | |
+| key | VARCHAR(128) | N | UNIQUE, UNIQUE_TOGETHER(key, organization_id) |
+| description | TEXT(512) | S | |
+| organization_id | BIGINT | N | FK → organizations_organization |
+| gaugeRedLimit | NUMERIC(3,2) | N | default 0.33 |
+| gaugeYellowLimit | NUMERIC(3,2) | N | default 0.66 |
+
+**organizations_repository**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| name | VARCHAR(128) | N | |
+| key | VARCHAR(128) | N | UNIQUE_TOGETHER(key, product_id) |
+| url | VARCHAR(200) | S | |
+| platform | VARCHAR(128) | S | choices |
+| description | TEXT(512) | S | |
+| product_id | BIGINT | N | FK → organizations_product |
+| imported | BOOLEAN | N | default False |
+| github_repo_id | BIGINT | S | |
+| github_full_name | VARCHAR(255) | S | |
+
+**metrics_supportedmetric**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| key | VARCHAR(128) | N | UNIQUE |
+| metric_type | VARCHAR(15) | N | choices, default FLOAT |
+| name | VARCHAR(128) | N | |
+| description | TEXT(512) | S | |
+
+**metrics_collectedmetric**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| metric_id | BIGINT | N | FK → metrics_supportedmetric |
+| value | DOUBLE PRECISION | N | |
+| path | VARCHAR(255) | S | |
+| qualifier | VARCHAR(5) | S | |
+| dynamic_key | VARCHAR(128) | S | |
+| created_at | TIMESTAMP | N | default now |
+| repository_id | BIGINT | N | FK → organizations_repository |
+
+**measures_supportedmeasure**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| key | VARCHAR(128) | N | UNIQUE |
+| name | VARCHAR(128) | N | |
+| description | TEXT(512) | S | |
+
+**measures_supportedmeasure_metrics** (M2M)
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| supportedmeasure_id | BIGINT | N | FK → measures_supportedmeasure |
+| supportedmetric_id | BIGINT | N | FK → metrics_supportedmetric |
+
+**measures_calculatedmeasure**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| measure_id | BIGINT | N | FK → measures_supportedmeasure |
+| value | DOUBLE PRECISION | N | |
+| created_at | TIMESTAMP | N | default now |
+| repository_id | BIGINT | N | FK → organizations_repository |
+
+**subcharacteristics_supportedsubcharacteristic**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| name | VARCHAR(128) | N | |
+| key | VARCHAR(128) | N | UNIQUE |
+| description | TEXT(512) | S | |
+
+**subcharacteristics_supportedsubcharacteristic_measures** (M2M)
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| supportedsubcharacteristic_id | BIGINT | N | FK → subcharacteristics_supportedsubcharacteristic |
+| supportedmeasure_id | BIGINT | N | FK → measures_supportedmeasure |
+
+**subcharacteristics_calculatedsubcharacteristic**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| subcharacteristic_id | BIGINT | N | FK → subcharacteristics_supportedsubcharacteristic |
+| value | DOUBLE PRECISION | N | |
+| created_at | TIMESTAMP | N | default now |
+| repository_id | BIGINT | N | FK → organizations_repository |
+
+**characteristics_supportedcharacteristic**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| name | VARCHAR(128) | N | |
+| key | VARCHAR(128) | N | UNIQUE |
+| description | TEXT(512) | S | |
+
+**characteristics_supportedcharacteristic_subcharacteristics** (M2M)
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| supportedcharacteristic_id | BIGINT | N | FK → characteristics_supportedcharacteristic |
+| supportedsubcharacteristic_id | BIGINT | N | FK → subcharacteristics_supportedsubcharacteristic |
+
+**characteristics_balancematrix**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| source_characteristic_id | BIGINT | N | FK → characteristics_supportedcharacteristic, UNIQUE_TOGETHER(source, target) |
+| target_characteristic_id | BIGINT | N | FK → characteristics_supportedcharacteristic |
+| relation_type | VARCHAR(1) | N | choices ('+','-') |
+
+**characteristics_calculatedcharacteristic**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| characteristic_id | BIGINT | N | FK → characteristics_supportedcharacteristic, UNIQUE_TOGETHER(repository, release, characteristic) |
+| value | DOUBLE PRECISION | N | |
+| created_at | TIMESTAMP | N | default now |
+| repository_id | BIGINT | N | FK → organizations_repository |
+| release_id | BIGINT | S | FK → releases |
+
+**tsqmi_tsqmi**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| value | DOUBLE PRECISION | N | |
+| created_at | TIMESTAMP | N | default now |
+| repository_id | BIGINT | N | FK → organizations_repository |
+
+**goals_goal**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| created_at | TIMESTAMP | N | default now |
+| data | JSONB | N | |
+| created_by_id | BIGINT | N | FK → accounts_customuser |
+| product_id | BIGINT | N | FK → organizations_product |
+
+**releases** (nome físico explícito, via `Meta.db_table`)
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| created_at | TIMESTAMP | N | default now |
+| start_at | TIMESTAMP | N | |
+| end_at | TIMESTAMP | N | |
+| release_name | VARCHAR(255) | N | |
+| created_by_id | BIGINT | N | FK → accounts_customuser |
+| product_id | BIGINT | N | FK → organizations_product |
+| goal_id | BIGINT | N | FK → goals_goal |
+| description | TEXT(512) | S | |
+
+**release_configuration_releaseconfiguration**
+
+| Coluna | Tipo | Nulo | Chave |
+| :--- | :--- | :---: | :--- |
+| id | BIGINT | N | PK |
+| created_at | TIMESTAMP | N | default now |
+| name | VARCHAR(128) | S | |
+| data | JSONB | N | |
+| product_id | BIGINT | N | FK → organizations_product |
 
 ---
 
