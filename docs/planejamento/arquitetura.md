@@ -63,6 +63,39 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 - **PostgreSQL 18**: atualização do PG12/14 herdado para a versão estável mais recente do PostgreSQL, com tag fixada (`postgres:18-alpine`). Registrada no PR de modernização da stack Docker do Service ([#1](https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Service/pull/1)). [<a href=./#referencias>9</a>]
 
+#### Containers e imagens (estrutura evoluída)
+
+<p align = "justify"> &emsp;&emsp; O Service evoluiu de um único container Django+Postgres para uma stack com cinco containers, orquestrados por dois arquivos <code>docker compose</code> distintos: um para desenvolvimento (raiz do repositório) e um para produção (<code>deploy/docker-compose.prod.yml</code>). </p>
+
+| Container | Imagem (dev) | Imagem (produção) | Observações |
+| :--- | :--- | :--- | :--- |
+| `db` | `postgres:18-alpine` | `postgres:18-alpine` | volume nomeado `service_postgres_data`; publica `5432` só em `127.0.0.1` no dev, sem publicar porta em produção |
+| `service` | build local (`Dockerfile` multi-stage: builder com `uv` + runtime `python:3.12-slim-bookworm`) | `${DOCKERHUB_USERNAME}/service:${SERVICE_IMAGE_TAG}` (pull do DockerHub, buildada no CI) | `compose watch` sincroniza `./src` em dev; produção só puxa a imagem, não builda |
+| `front` | build local (`node:20-alpine`, `pnpm`) | `${DOCKERHUB_USERNAME}/front:${FRONT_IMAGE_TAG}` | variáveis `SERVICE_URL`, `GITHUB_CLIENT_ID` etc. entram como build-arg no CI |
+| `grafana` | `grafana/grafana:latest` | `grafana/grafana:latest` | plugin `volkovlabs-echarts-panel`; volume nomeado `grafana_data`; provisionamento via bind mount de `grafana/provisioning` e `grafana/dashboards` |
+| `proxy` | — (só existe em produção) | `nginx:1.27-alpine` | único container que publica porta no host (`80:80`); ver seção "Nginx e Grafana" logo abaixo |
+
+<p align = "justify"> &emsp;&emsp; Todos os containers (exceto o proxy) ficam em uma rede <code>bridge</code> própria chamada <code>msgram</code>, isolada do host — <code>db</code> e <code>service</code> não publicam porta nenhuma em produção, só são alcançáveis pelos outros containers da mesma rede. Healthchecks (<code>pg_isready</code> no banco, <code>curl</code> no <code>/swagger/</code> do Service) controlam a ordem de subida via <code>depends_on: condition: service_healthy</code>. Segredos (tokens, senhas de banco e do Grafana) vivem em arquivos <code>.env</code> dentro de <code>deploy/env-vars/</code>, nunca versionados no repositório. </p>
+
+#### Nginx e Grafana (integração)
+
+<p align = "justify"> &emsp;&emsp; Em produção existe um proxy nginx <strong>interno</strong> à stack (container <code>proxy</code>, imagem <code>nginx:1.27-alpine</code>), que fica atrás de um proxy <strong>externo</strong> da máquina (openresty, fora do escopo deste compose) responsável por terminar o domínio e o TLS. O nginx interno publica a porta <code>80</code> do host e roteia por caminho: </p>
+
+| Rota | Destino | Observação |
+| :--- | :--- | :--- |
+| `/api/`, `/swagger/`, `/admin/`, `/static/` | `service:8080` | backend Django (DRF) |
+| `/grafana/` | `grafana:3000` | com upgrade de conexão para WebSocket (necessário para o Grafana Live) |
+| `/` | `front:3000` | frontend Next.js |
+
+<p align = "justify"> &emsp;&emsp; O Grafana roda como container independente do ciclo de vida do Django, com dashboards de qualidade provisionados automaticamente a partir de arquivos JSON (<code>grafana/dashboards/*.json</code>) e um datasource Postgres que consulta <strong>diretamente</strong> o mesmo banco do Service — sem passar pela API REST. Para permitir a incorporação via <code>iframe</code> no Frontend e no Plugin VS Code, o Grafana é configurado com acesso anônimo somente-leitura (<code>GF_AUTH_ANONYMOUS_ENABLED</code>, papel <code>Viewer</code>) e <code>GF_SECURITY_ALLOW_EMBEDDING=true</code>. </p>
+
+<p align = "justify"> &emsp;&emsp; Como o Grafana fica aberto para leitura anônima, o controle de acesso por produto/repositório é feito no lado do Service, por um app Django dedicado, o <code>grafana_proxy</code>. Ele expõe dois endpoints autenticados: </p>
+
+- `GET /api/v1/grafana/dashboards/` — lista os dashboards disponíveis;
+- `GET /api/v1/grafana/dashboard/{uid}/?product_id=...&repository_id=...` — valida se o usuário tem permissão sobre aquele produto/repositório (`CanAccessProduct`, `CanAccessDashboard`) e devolve a URL pública do dashboard já filtrada, pronta para ser usada como `src` do `iframe`.
+
+<p align = "justify"> &emsp;&emsp; Ou seja: o Frontend e o Plugin VS Code nunca chamam o Grafana diretamente para autorização — sempre pedem a URL ao <code>grafana_proxy</code> do Service, e só então carregam essa URL num <code>iframe</code>. </p>
+
 #### Serviços
 
 - **CLI** Abreviação de "interface de linha de comando". Este é um programa que permite aos usuários criar comandos para funções específicas passando instruções para o computador.
@@ -85,40 +118,47 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 <p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
 
+<p align = "justify"> &emsp;&emsp; <strong>Nota de correção:</strong> em versões anteriores este diagrama mostrava <code>Core</code> e <code>Parser</code> como serviços de rede conectados ao <code>Service</code> via HTTP. Isso não reflete o código real: <code>Core</code> (<code>msgram_core</code>) é importado como <strong>biblioteca Python dentro do próprio processo do Service</strong>, e <code>Parser</code> (<code>msgram-parser</code>) é uma biblioteca consumida apenas pela <code>CLI</code> — nenhum dos dois roda como processo de rede próprio. A CLI, por sua vez, não chama o Service pela rede: ela calcula e grava os resultados localmente. </p>
+
 ```mermaid
 flowchart TB
     subgraph Cliente["Clientes"]
         FE["💻 Frontend Web<br/>(React + Next.js)"]
+        VSC["🧩 Plugin VS Code<br/>(TypeScript)"]
         AI["🧠 Cliente de IA<br/>(Claude Desktop / Code)"]
     end
 
-    subgraph Container["Ambiente containerizado"]
+    subgraph Container["Ambiente containerizado (rede docker `msgram`)"]
         direction TB
-        RP["🐳 Reverse Proxy<br/>(nginx)"]
-        SVC["🐳 Service<br/>(Django + PostgreSQL 18)"]
-        RP <--> SVC
+        RP["🐳 nginx<br/>(reverse proxy interno)"]
+        SVC["🐳 Service<br/>(Django + Core embutido como lib)"]
+        DB[("🐘 PostgreSQL 18")]
+        GF["🐳 Grafana<br/>(dashboards)"]
+        RP -->|"/api /swagger /admin /static"| SVC
+        RP -->|"/grafana"| GF
+        SVC --> DB
+        GF -->|"SQL direto (mesmo banco)"| DB
+        SVC <-->|"grafana_proxy: HTTP<br/>(autoriza + resolve URL)"| GF
     end
 
-    CLI["⌨️ CLI<br/>(Python 3.12)"]
-    Core["⚙️ Core<br/>(Python 3.12)"]
-    Parser["📊 Parser<br/>(Python + pandas)"]
-    Action["🤖 GitHub Action<br/>(TypeScript)"]
-    MCP["🔌 MCP Server<br/>(Python)"]
+    CLI["⌨️ CLI<br/>(usa lib Parser + lib Core, local)"]
+    Action["🤖 GitHub Action<br/>(TypeScript, workflow_run)"]
+    MCP["🔌 MCP Server / AI<br/>(Python, repo separado)"]
 
     FE <-->|HTTPS| RP
+    VSC <-->|"HTTPS (token)"| RP
+    VSC -.->|"iframe (URL resolvida pelo Service)"| GF
+    FE -.->|"iframe (URL resolvida pelo Service)"| GF
     AI <-->|MCP| MCP
-    MCP <-->|HTTP| SVC
-    CLI <-->|HTTP| SVC
-    Core <-->|HTTP| SVC
-    Parser <-->|HTTP| SVC
-    Action <-->|HTTPS| SVC
+    MCP <-->|HTTP/REST| RP
+    Action <-->|HTTPS| RP
 
     classDef cliente fill:#e8f8e8,stroke:#2a8c3a,stroke-dasharray:5 5
     classDef container fill:#f0e8f8,stroke:#6a3a8c,stroke-dasharray:5 5
     classDef novo fill:#fff4d6,stroke:#b07c00,stroke-width:2px
     class Cliente cliente
     class Container container
-    class MCP,AI novo
+    class MCP,VSC,GF novo
 ```
 
 ---
@@ -153,6 +193,23 @@ flowchart TB
 #### Action
 
 ![Diagrama de pacotes - Action](../assets/images/diagrama_pacotes_action.png)
+
+#### Grafana
+
+<p align = "justify"> &emsp;&emsp; O Grafana não é um pacote de código do MeasureSoftGram — é uma ferramenta de terceiros provisionada por arquivos de configuração. Por isso, em vez de um diagrama de pacotes, documentamos a estrutura de provisionamento (dentro do repositório do Service): </p>
+
+```
+grafana/
+├── dashboards/                        # dashboards provisionados (JSON)
+│   ├── dashboard-visao-geral.json
+│   ├── dashboard-evolucao.json
+│   ├── dashboard-ecg-tsqmi.json
+│   └── dashboard-saude-qualidade-repositorio.json
+├── provisioning/
+│   ├── datasources/measuresoftgram.yml   # datasource Postgres (aponta pro mesmo banco do Service)
+│   └── dashboards/provider.yml           # provider que carrega os JSONs acima automaticamente
+└── seed_planejado_vs_realizado.sql       # dados de apoio para os dashboards
+```
 
 ---
 
