@@ -110,7 +110,7 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 - **Github Action** Action customizada do Github que permite realizar a análise de um certo repositório. É disparada pelo evento `workflow_run` ao final do build de CI configurado pelo usuário, e se comunica com o `Service` via HTTPS para enviar os dados coletados.
 
-- **MCP Server** Servidor que expõe o MeasureSoftGram a clientes de inteligência artificial (como Claude Desktop e Claude Code) por meio do protocolo MCP. Comunica-se com o `Service` via HTTP e fica em repositório separado.
+- **MCP Server (AI)** Servidor Python (biblioteca `mcp`/FastMCP) que expõe o MeasureSoftGram a clientes de inteligência artificial por meio do protocolo MCP, nos transports `streamable-http` (`/mcp`, padrão) e `sse` (`/sse`, alternativo, selecionável via `MCP_TRANSPORT=sse`) — ambos confirmados no código (`server.py`) e no guia de uso testado pela equipe (`docs/manual-de-instalacao/guia-mcp.md`). Fica em repositório separado (`fga-eps-mds/2026.1-MeasureSoftGram-AI`, publicado como imagem `measuresoftgram/ai`) e se comunica com o `Service` via HTTP/REST, autenticando-se **uma única vez na subida do processo** com uma conta de serviço fixa (`MSGRAM_USER`/`MSGRAM_PASSWORD`, endpoint `accounts/login/`) — o token obtido é reutilizado em todas as chamadas das tools, ou seja, o MCP não propaga a identidade de quem está do outro lado do agente de IA. Agentes que só suportam `stdio` (como o Claude Desktop) precisam de um proxy local (`npx mcp-remote`, ponte `stdio` ↔ `streamable-http`) entre o agente e o servidor.
 
 - **Plugin VS Code** Extensão para o Visual Studio Code (`fga-eps-mds/2026.1-MeasureSoftGram-Plugin`) que leva o painel de qualidade (TSQMI e características), os dashboards do Grafana (embutidos via `iframe`) e a execução local do workflow da `Github Action` (via Docker + `nektos/act`) para dentro do editor. Autentica-se no `Service` via token (`Authorization: Token <token>`), guardado no Secret Storage do VS Code, e nunca chama o Grafana diretamente — sempre por meio dos endpoints de proxy do `Service`.
 
@@ -286,6 +286,43 @@ flowchart TB
 ```
 
 <p align = "justify"> &emsp;&emsp; Ponto de atenção de manutenção: <code>MeasureSoftGramPanel</code> e <code>MeasureSoftGramSidebar</code> herdam de <code>MeasureSoftGramBase</code>, mas duplicam a lógica de salvar/rodar o workflow da Action (<code>save_action</code>/<code>run_action</code>) em vez de compartilhá-la. </p>
+
+#### MCP Server (AI)
+
+<p align = "justify"> &emsp;&emsp; O repositório <code>fga-eps-mds/2026.1-MeasureSoftGram-AI</code> (pacote <code>msgram_mcp</code>, distribuído em <code>src/</code>) segue um padrão simples de registro de ferramentas: <code>server.py</code> monta o <code>FastMCP</code> e chama a função <code>register_tools(mcp, client)</code> de cada módulo em <code>tools/</code>, que por sua vez usa o <code>MsgramClient</code> (<code>client.py</code>) — um wrapper fino sobre <code>httpx</code> — para consultar o <code>Service</code>. A autenticação (<code>auth/msgram_auth.py</code>) roda uma única vez, na criação das <code>Settings</code>, e gera o token reaproveitado por todas as tools. </p>
+
+```mermaid
+flowchart TB
+    subgraph Server["server.py"]
+        SET["Settings.from_env()"]
+        CREATE["create_server()"]
+    end
+
+    AUTH["auth/msgram_auth.py<br/>(login uma vez, gera token)"]
+    CLIENT["client.py<br/>MsgramClient (httpx)"]
+
+    subgraph Tools["tools/ (register_tools(mcp, client) por módulo)"]
+        T1["organizations.py"]
+        T2["repositories.py"]
+        T3["releases.py"]
+        T4["goals.py"]
+        T5["supported_characteristics.py"]
+        T6["supported_measures.py"]
+        T7["supported_metrics.py"]
+        T8["balance_matrix.py"]
+        T9["latest_values.py"]
+        T10["historical_values.py"]
+        T11["entity_relationship_tree.py"]
+    end
+
+    SET --> AUTH
+    CREATE --> CLIENT
+    CREATE --> Tools
+    T1 & T2 & T3 & T4 & T5 & T6 & T7 & T8 & T9 & T10 & T11 --> CLIENT
+    CLIENT -->|"HTTP/REST, Authorization: Token"| SVC[("Service")]
+```
+
+<p align = "justify"> &emsp;&emsp; Ponto de atenção: como o token é obtido uma única vez com uma conta de serviço fixa (<code>MSGRAM_USER</code>/<code>MSGRAM_PASSWORD</code>), todas as chamadas das tools ao <code>Service</code> acontecem com essa identidade — o MCP não tem hoje um mecanismo de repassar a identidade do usuário do agente de IA para a autorização no <code>Service</code>. </p>
 
 #### Grafana
 
