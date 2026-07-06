@@ -416,8 +416,87 @@ flowchart TB
 
 ### Visão de Casos de Uso
 
-!!! warning "Em elaboração"
-    Esta visão apresentará os cenários-chave que exercitam e validam as demais visões arquiteturais. Será detalhada nas próximas releases.
+<p align = "justify"> &emsp;&emsp; O time do MeasureSoftGram documenta requisitos como <strong>histórias de usuário</strong> (backlog em <code>docs/produto/planejado-realizado.md</code>, identificadas por <code>US-XXX</code>), não como casos de uso UML. Esta seção deriva os casos de uso a partir dessas histórias já entregues/planejadas, agrupados pelos atores que de fato aparecem no código e na documentação do produto. </p>
+
+!!! note "Limitação conhecida"
+    As personas do Lean Inception (`docs/produto/lean-inception.md`) existem apenas como imagens/board do Figma, sem texto extraível — por isso os atores abaixo foram inferidos das histórias de usuário e da integração real entre os serviços, não do material de personas. Não foi encontrada nenhuma história de usuário para o **Plugin VS Code**: ele só aparece no backlog como item de métricas de qualidade (Release Major 3), sem requisito funcional descrito. Um caso de uso para o Plugin exigiria levantamento de requisitos que ainda não existe em texto — **ação necessária: registrar as histórias de usuário do Plugin no backlog do produto.**
+
+#### Atores
+
+| Ator | Descrição |
+| :--- | :--- |
+| Desenvolvedor / dono de repositório | Configura produtos, repositórios, releases e metas; consome dados de qualidade pelo Frontend, CLI ou Plugin VS Code |
+| Administrador de organização | Administra uma `Organization` (campo `admin`), gerencia membros e tokens |
+| Pipeline de CI (GitHub Actions) | Ator de sistema — dispara a análise automaticamente ao final do build (`workflow_run`) |
+| Agente de IA (via MCP) | Usuário interagindo por Claude Desktop/Code, consultando dados de qualidade em linguagem natural |
+
+#### Diagrama de casos de uso
+
+```mermaid
+flowchart LR
+    Dev(["👤 Desenvolvedor"])
+    Admin(["👤 Admin de Organização"])
+    CI(["🤖 Pipeline de CI"])
+    AIAgent(["🧠 Agente de IA"])
+
+    subgraph UC1["Autenticação e Organização"]
+        uc1(("Autenticar via GitHub"))
+        uc2(("Gerenciar sessão / logout"))
+        uc3(("Administrar organização e membros"))
+    end
+
+    subgraph UC2["Configuração de Produto"]
+        uc4(("Cadastrar produto e repositório"))
+        uc5(("Definir metas de qualidade"))
+        uc6(("Criar release"))
+    end
+
+    subgraph UC3["Coleta e Cálculo de Qualidade"]
+        uc7(("Executar Action ao final do build"))
+        uc8(("Analisar localmente via CLI"))
+        uc9(("Calcular características / TSQMI"))
+    end
+
+    subgraph UC4["Visualização de Qualidade"]
+        uc10(("Ver badge TSQMI do repositório"))
+        uc11(("Ver dashboards Grafana"))
+        uc12(("Ver painel de qualidade no VS Code"))
+    end
+
+    subgraph UC5["Consulta via IA"]
+        uc13(("Consultar dados de qualidade via MCP"))
+        uc14(("Analisar planejado vs. realizado via IA"))
+    end
+
+    Dev --> uc1
+    Dev --> uc2
+    Dev --> uc4
+    Dev --> uc5
+    Dev --> uc6
+    Dev --> uc8
+    Dev --> uc10
+    Dev --> uc11
+    Dev --> uc12
+    Admin --> uc3
+    CI --> uc7
+    uc7 --> uc9
+    uc8 --> uc9
+    AIAgent --> uc13
+    AIAgent --> uc14
+```
+
+#### Rastreabilidade com o backlog
+
+| Caso de uso | História de usuário / origem |
+| :--- | :--- |
+| Autenticar via GitHub | "Autenticação via GitHub (Front)" — Release Major 2 |
+| Gerenciar sessão / logout | US006 "Gerenciar timeout de sessão"; US007 "Notificação visual ao expirar sessão" (não entregue) |
+| Executar Action ao final do build | US003 "Executar a action localmente e dockerizar o sistema"; US004 "Atualizar a publicação da Action no GitHub Marketplace" |
+| Analisar localmente via CLI | US008 "Melhorar legibilidade dos textos na CLI" |
+| Ver badge TSQMI do repositório | "Alteração do endpoint gerador da badge TSQMI" (Service); "Nova badge TSQMI nas páginas de repositório" (Front) |
+| Ver dashboards Grafana | US06 "Grafana" (`docs/atas/web.md`) — setup/integração e atualização automática dos gráficos |
+| Consultar dados de qualidade via MCP | "Criação do servidor MCP do MeasureSoftGram" — Release Minor 2 e Major 2 |
+| Criptografar senhas e tokens | US005 "Criptografar senhas e tokens do sistema" |
 
 ---
 
