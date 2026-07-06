@@ -114,6 +114,8 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 - **Plugin VS Code** Extensão para o Visual Studio Code (`fga-eps-mds/2026.1-MeasureSoftGram-Plugin`) que leva o painel de qualidade (TSQMI e características), os dashboards do Grafana (embutidos via `iframe`) e a execução local do workflow da `Github Action` (via Docker + `nektos/act`) para dentro do editor. Autentica-se no `Service` via token (`Authorization: Token <token>`), guardado no Secret Storage do VS Code, e nunca chama o Grafana diretamente — sempre por meio dos endpoints de proxy do `Service`.
 
+- **Grafana** Ferramenta de terceiros usada para os dashboards analíticos de qualidade. Roda como container próprio, com dashboards provisionados via arquivos JSON e um datasource que consulta diretamente o mesmo PostgreSQL do `Service` (sem passar pela API Django). O `Service` expõe um app `grafana_proxy` que autoriza o acesso por produto/repositório e resolve as URLs dos dashboards antes de repassá-las ao `Frontend Web` e ao `Plugin VS Code`.
+
 ---
 
 ## Visões Arquiteturais (4+1)
