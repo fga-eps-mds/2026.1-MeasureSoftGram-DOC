@@ -20,6 +20,14 @@ A arquitetura do projeto está documentada seguindo o modelo **4+1 de Philippe K
 
 Além das visões arquiteturais, este documento também apresenta o modelo de dados do sistema e as metas e restrições de arquitetura.
 
+#### Rich Picture
+
+<p align = "justify"> &emsp;&emsp; O rich picture abaixo apresenta, de forma informal, o ecossistema do MeasureSoftGram: quem são os atores (desenvolvedores, gestores de qualidade, pipelines de CI e agentes de IA), quais sistemas eles usam e como esses sistemas se conectam. Ele complementa — sem substituir — o diagrama técnico da seção Visão Lógica, mais abaixo, que detalha componentes e protocolos. </p>
+
+![Rich Picture - Visão Geral do MeasureSoftGram](../assets/images/rich_picture_visao_geral.svg)
+
+<p align = "justify"> &emsp;&emsp; Este desenho é um rascunho produzido internamente pela equipe como ponto de partida; o ideal, como sugerido em revisão, é regerá-lo com apoio de uma ferramenta de geração de imagem por IA para um acabamento mais próximo de um rich picture desenhado à mão. </p>
+
 ## Representação de Arquitetura
 
 ### Linguagens
