@@ -418,9 +418,6 @@ flowchart TB
 
 <p align = "justify"> &emsp;&emsp; O time do MeasureSoftGram documenta requisitos como <strong>histórias de usuário</strong> (backlog em <code>docs/produto/planejado-realizado.md</code>, identificadas por <code>US-XXX</code>), não como casos de uso UML. Esta seção deriva os casos de uso a partir dessas histórias já entregues/planejadas, agrupados pelos atores que de fato aparecem no código e na documentação do produto. </p>
 
-!!! note "Limitação conhecida"
-    As personas do Lean Inception (`docs/produto/lean-inception.md`) existem apenas como imagens/board do Figma, sem texto extraível — por isso os atores abaixo foram inferidos das histórias de usuário e da integração real entre os serviços, não do material de personas. Não foi encontrada nenhuma história de usuário para o **Plugin VS Code**: ele só aparece no backlog como item de métricas de qualidade (Release Major 3), sem requisito funcional descrito. Um caso de uso para o Plugin exigiria levantamento de requisitos que ainda não existe em texto — **ação necessária: registrar as histórias de usuário do Plugin no backlog do produto.**
-
 #### Atores
 
 | Ator | Descrição |
@@ -770,17 +767,7 @@ REPOSITORY - armazena - TSQMI
 
 ### Diagrama Lógico de Dados (DLD)
 
-<p align = "justify"> &emsp;&emsp; Esta seção traz dois diagramas complementares, seguidos das tabelas físicas detalhadas coluna a coluna. </p>
-
-#### 1. Diagrama feito no brModelo
-
-<p align = "justify"> &emsp;&emsp; Diagrama modelado manualmente no brModelo, restrito às entidades de domínio do MeasureSoftGram: chaves primárias e estrangeiras, tabelas de relacionamento/junção (<code>possui</code>, <code>cria</code>, <code>armazena</code>, <code>origina</code>, <code>compoe</code>, entre outras) e as cardinalidades entre elas. Não inclui as tabelas de infraestrutura de terceiros (Django, allauth, etc.). </p>
-
-![Diagrama Lógico de Dados - brModelo](../assets/images/DLD_MEASURE_2026.1.png)
-
-#### 2. Diagrama gerado automaticamente
-
-<p align = "justify"> &emsp;&emsp; Diagrama gerado por introspecção real do código, com o comando <code>python manage.py graph_models -a -g -o dld_gerado_graph_models.png</code> (django-extensions + graphviz) rodado dentro do container <code>service</code> contra os <code>models.py</code> atuais. Por ser gerado automaticamente a partir do código, não depende de transcrição manual — em contrapartida, ao usar <code>-a</code> (all applications), ele também traz as tabelas de infraestrutura de terceiros (<code>django.contrib.*</code>, <code>allauth</code>, <code>django_apscheduler</code>, <code>rest_framework.authtoken</code>) que o diagrama do brModelo e o MER textual desta seção deixam propositalmente fora de escopo. </p>
+<p align = "justify"> &emsp;&emsp; Diagrama gerado por introspecção real do código, com o comando <code>python manage.py graph_models -a -g -o dld_gerado_graph_models.png</code> (django-extensions + graphviz) rodado dentro do container <code>service</code> contra os <code>models.py</code> da branch <code>develop</code> (base canônica do repositório). Por ser gerado automaticamente a partir do código, não depende de transcrição manual — em contrapartida, ao usar <code>-a</code> (all applications), ele também traz as tabelas de infraestrutura de terceiros (<code>django.contrib.*</code>, <code>allauth</code>, <code>django_apscheduler</code>, <code>rest_framework.authtoken</code>) que o MER textual desta seção deixa propositalmente fora de escopo. O app <code>grafana_proxy</code> não aparece com tabelas próprias porque não define nenhum model: ele apenas repassa (proxy) chamadas para a API do Grafana, que roda como serviço externo (ver <code>docker-compose.yml</code> e a seção de Serviços). </p>
 
 ![Diagrama Lógico de Dados - gerado automaticamente via django-extensions](../assets/images/dld_gerado_graph_models.png)
 
