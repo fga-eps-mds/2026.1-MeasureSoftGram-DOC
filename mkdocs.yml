@@ -118,7 +118,7 @@ nav:
       - Manual de Uso: manual-de-instalacao/guia-core.md
       - Guia de Desenvolvimento:
 #          - Arquitetura:
-          - Onboarding: onboarding/actionLocal.md
+          - Onboarding: onboarding/coreLocal.md
           - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Core
 
   - Front:
@@ -132,8 +132,14 @@ nav:
       - Manual de Uso: manual-de-instalacao/guia-parser.md
       - Guia de Desenvolvimento:
 #          - Arquitetura:
-          - Onboarding: onboarding/actionLocal.md
+          - Onboarding: onboarding/parserLocal.md
           - Parser: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Parser
+
+  - Plugin:
+      - Manual de Uso: manual-de-instalacao/guia-plugin.md
+      - Guia de Desenvolvimento:
+          - Onboarding: onboarding/pluginLocal.md
+          - Repositório: https://github.com/fga-eps-mds/2026.1-MeasureSoftGram-Plugin
 
   - Service:
       - Manual de Uso: manual-de-instalacao/guia-service.md

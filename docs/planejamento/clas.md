@@ -17,9 +17,13 @@ No contexto deste projeto, adaptamos a metodologia utilizando o conceito de **Cl
 
 ## Divisão de Clãs
 
-A divisão foi realizada em **3 clãs principais**, a escolha foi realizada principalmente com base na arquitetura do produto, visando uma melhor organização e especialização das equipes. Conforme a figura a seguir:
+A divisão foi realizada em **3 clãs principais**, a escolha foi realizada principalmente com base na arquitetura do produto no inicio do semestre, visando uma melhor organização e especialização das equipes. Conforme a figura a seguir:
 
 ![Diagrama Arquitetural](../assets/images/diagrama_arquitetura.png)
+
+<center>
+Figura 1: Arquitetura do Sistema no Início de 2026.1
+</center>
 
 Cada clã é responsável por uma camada da arquitetura e possui um **líder** responsável pela coordenação interna. Além disso, os integrantes são alocados em repositórios conforme sua função dentro do clã.
 

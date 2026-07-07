@@ -18,6 +18,8 @@ Ao longo do projeto, as seguintes tecnologias foram utilizadas:
 - Sonarcloud
 - Figma
 - Docker
+- MCP
+- Plugin VSCode
 
 <div align="justify">&emsp;&emsp;
 Cada membro da equipe preencheu na tabela Excel a respectiva cor que representa seu nível de conhecimento em cada uma dessas tecnologias.

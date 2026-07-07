@@ -1,9 +1,9 @@
 # Metodologias
 
-## Introdução 
+## Introdução
 
 <div align="justify">&emsp;&emsp;
-O presente documento apresenta metodologias para o desenvolvimento do projeto, com uma breve descrição dos itens utilizados.
+Metodologia é como uma equipe irá utilizar determinado método para o desenvolvimento. O presente documento apresenta as metodologias adotadas no desenvolvimento do projeto, descrevendo não apenas seus conceitos, mas principalmente como cada uma delas é aplicada na prática pela nossa equipe e de que forma contribui para a organização, qualidade e entrega do produto.
 </div>
 
 ## Metodologias
@@ -11,45 +11,44 @@ O presente documento apresenta metodologias para o desenvolvimento do projeto, c
 ### Scrum
 
 <div align="justify">&emsp;&emsp;
-O Scrum é um framework de gerência de equipes, em que os integrantes do desenvolvimento assumem uma abordagem proativa diante da complexidade e da incerteza que são inerentes aos projetos.
+O Scrum é o framework de gerência de equipes que utilizamos como base para organizar o nosso fluxo de trabalho. Ele nos permite assumir uma postura proativa diante da complexidade e das incertezas que surgem ao longo do projeto, dividindo o desenvolvimento em ciclos curtos e recorrentes de entrega.
 </div>
 
-- Sprints: Prazo de trabalho fixo, em nosso projeto de uma semana, em que são desenvolvidos os incrementos do projeto
-- Planning: As reuniões de planing servem para a definição das metas da sprint
-- Revisão e Retrospectiva: Ao final da sprint são realizadas as cerimônias de revisão e retrospectiva, onde é feito uma análise e documentação do que foi realizado além da sugestão de ideias de melhorias 
-- Product Backlog: O backlog de um produto consiste na lista de itens planejados e desenvolvidos pela equipe  
+- **Sprints**: Em nosso projeto, adotamos sprints de uma semana. É dentro desse prazo fixo que a equipe desenvolve os incrementos definidos, permitindo entregas constantes e a validação frequente do progresso do trabalho.
+- **Planning**: No início de cada sprint, realizamos a reunião de planning, momento em que a equipe define em conjunto quais itens do backlog serão trabalhados e quais são as metas daquele ciclo.
+- **Revisão e Retrospectiva**: Ao final de cada sprint, realizamos as cerimônias de revisão e retrospectiva. Na revisão, apresentamos e documentamos o que foi efetivamente realizado; na retrospectiva, discutimos como equipe o que funcionou bem e quais melhorias podem ser aplicadas nas próximas sprints.
+- **Product Backlog**: Mantemos um backlog centralizado com todos os itens planejados para o produto, o que nos permite priorizar e organizar o que será desenvolvido a cada sprint.
 
 ### XP
 
 <div align="justify">&emsp;&emsp;
-O Extreme Programming (XP) é uma metodologia que promove a colaboração, comunicação e adaptabilidade ao longo do ciclo de vida do desenvolvimento por meio de, entre outros aspectos, feedback rápido e entregas pequenas.
+Utilizamos práticas do Extreme Programming (XP) para reforçar a colaboração, a comunicação e a adaptabilidade da equipe ao longo do desenvolvimento, buscando sempre feedback rápido e entregas em pequenos incrementos.
 </div>
 
-- Releases Pequenas: Esse aspecto proporciona a aceitação mais eficiente do cliente onde não é necessário grandes entregas para que o produto seja testado
-- Integração Contínua: A integração contínua consiste na integração frequente de novas funcionalidades ou melhorias no produto 
-- Planning Poker: Técnica utilizada para a mensuração de esforço esperado para determinado item a ser trabalhado 
+- **Releases Pequenas**: Optamos por dividir o produto em entregas pequenas, o que facilita a validação do cliente/orientador em cada etapa, sem a necessidade de aguardar grandes blocos de funcionalidades para testar o que já foi construído.
+- **Integração Contínua**: A equipe integra frequentemente as novas funcionalidades e melhorias ao produto, reduzindo conflitos de código e permitindo identificar problemas mais cedo no processo de desenvolvimento.
+- **Planning Poker**: Utilizamos essa técnica durante as reuniões de planning para estimar, em conjunto, o esforço esperado de cada item do backlog antes de iniciar seu desenvolvimento.
 
 ### Kanban
 
 <div align="justify">&emsp;&emsp;
-O Kanban é uma metodologia que auxilia na visualização do fluxo de trabalho, permitindo identificar possíveis gargalos. Em nosso projeto, utilizamos a ferramenta Zenhub para gerenciar e visualizar as tarefas.
+Utilizamos o Kanban como apoio visual ao nosso fluxo de trabalho, por meio da ferramenta Zenhub. Com ele, a equipe consegue acompanhar em tempo real o status de cada tarefa (a fazer, em andamento, em revisão e concluído), o que facilita a identificação de gargalos e a distribuição de trabalho entre os membros da equipe.
 </div>
 
 ### Lean Inception
 
 <div align="justify">&emsp;&emsp;
-A Lean Inception é um workshop colaborativo, em que o objeto é o alinhamento entre as partes sobre o Produto Mínimo Viável (MVP) a ser desenvolvido. As seguintes atividades compõem o método:
+No início do projeto, utilizamos a Lean Inception como um workshop colaborativo para alinhar toda a equipe sobre qual seria o Produto Mínimo Viável (MVP) a ser desenvolvido. As seguintes atividades foram realizadas com esse objetivo:
 </div>
 
-- Visão do produto: Define uma visão clara e compartilhada do produto.
-- É – Não é – Faz – Não faz: Esclarece as características do produto, identificando o que o produto é, o que não é, o que faz e o que não faz.
-- Personas: Desenvolve personas representando diferentes perfis de usuários, compreendendo suas necessidades e características.
-- Jornada de usuários: Mapeia a jornada dos usuários ao interagir com o produto.
-- Brainstorming: É realizado sessões criativas para gerar ideias de funcionalidades e recursos que agreguem valor ao produto.
-- Revisão Técnica, de UX e de Negócio: Analisa as ideias geradas e avalia sua viabilidade técnica.
-- Sequenciador: Prioriza funcionalidades considerando importância, valor para usuários e viabilidade técnica, criando uma uma sequência para o desenvolvimento.
-- Canvas MVP: Define os elementos essenciais do produto inicial, 
-focando no mínimo necessário para validar o direcionamento do negócio.
+- **Visão do produto**: Construímos, em conjunto, uma visão clara e compartilhada sobre o que o produto deveria entregar.
+- **É – Não é – Faz – Não faz**: Utilizamos essa dinâmica para delimitar o escopo do projeto, deixando claro para toda a equipe o que o produto é, o que não é, o que faz e o que não faz.
+- **Personas**: Criamos personas que representam os diferentes perfis de usuários do produto, o que nos ajudou a compreender melhor suas necessidades e características.
+- **Jornada de usuários**: Mapeamos a jornada dos usuários ao interagir com o produto, identificando pontos de atenção e oportunidades de melhoria.
+- **Brainstorming**: Realizamos sessões criativas em equipe para gerar ideias de funcionalidades e recursos que agregassem valor ao produto.
+- **Revisão Técnica, de UX e de Negócio**: Avaliamos as ideias geradas nas sessões anteriores quanto à sua viabilidade técnica, de experiência do usuário e de negócio.
+- **Sequenciador**: A partir das revisões, priorizamos as funcionalidades considerando importância, valor para os usuários e viabilidade técnica, definindo assim a sequência de desenvolvimento.
+- **Canvas MVP**: Consolidamos os elementos essenciais do produto inicial, focando no mínimo necessário para validar o direcionamento do negócio antes de partirmos para o desenvolvimento completo.
 
 ## Referências
 > O QUE é o Scrum?. [S. l.]. Disponível em: https://aws.amazon.com/pt/what-is/scrum/. Acesso em: 1 ago. 2024.
@@ -64,6 +63,7 @@ focando no mínimo necessário para validar o direcionamento do negócio.
 
 ## Histórico de Versão
 
-| Versao | Data       | Descricao           | Autor           | Revisor                                  |
-|--------|------------|---------------------|-----------------|------------------------------------------|
-| 1.0    | 01/08/2024 | Adição do documento | Brenno Oliveira | [João Antonio](https://github.com/i-JSS) |
+| Versao | Data       | Descricao                                                                      | Autor                                    | Revisor                                  |
+|--------|------------|--------------------------------------------------------------------------------|------------------------------------------|------------------------------------------|
+| 1.0    | 01/08/2024 | Adição do documento                                                            | Brenno Oliveira                          | [João Antonio](https://github.com/i-JSS) |
+| 1.1    | 06/07/2026 | Revisão do documento com foco na aplicação prática das metodologias no projeto | [João Antonio](https://github.com/i-JSS) | -                                        |
