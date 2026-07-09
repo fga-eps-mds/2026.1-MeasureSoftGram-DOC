@@ -24,9 +24,7 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 <p align = "justify"> &emsp;&emsp; O rich picture abaixo apresenta, de forma informal, o ecossistema do MeasureSoftGram: quem são os atores (desenvolvedores, gestores de qualidade, pipelines de CI e agentes de IA), quais sistemas eles usam e como esses sistemas se conectam. Ele complementa — sem substituir — o diagrama técnico da seção Visão Lógica, mais abaixo, que detalha componentes e protocolos. </p>
 
-![Rich Picture - Visão Geral do MeasureSoftGram](../assets/images/rich_picture_visao_geral.svg)
-
-<p align = "justify"> &emsp;&emsp; Este desenho é um rascunho produzido internamente pela equipe como ponto de partida; o ideal, como sugerido em revisão, é regerá-lo com apoio de uma ferramenta de geração de imagem por IA para um acabamento mais próximo de um rich picture desenhado à mão. </p>
+![Rich Picture - Visão Geral do MeasureSoftGram](../assets/images/rich_picture_visao_geral.png)
 
 ## Representação de Arquitetura
 
@@ -122,9 +120,7 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 ### Visão Lógica
 
-<p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
-
-<p align = "justify"> &emsp;&emsp; <strong>Nota de correção:</strong> em versões anteriores este diagrama mostrava <code>Core</code> e <code>Parser</code> como serviços de rede conectados ao <code>Service</code> via HTTP. Isso não reflete o código real: <code>Core</code> (<code>msgram_core</code>) é importado como <strong>biblioteca Python dentro do próprio processo do Service</strong>, e <code>Parser</code> (<code>msgram-parser</code>) é uma biblioteca consumida apenas pela <code>CLI</code> — nenhum dos dois roda como processo de rede próprio. A CLI, por sua vez, não chama o Service pela rede: ela calcula e grava os resultados localmente. </p>
+<p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. <code>Core</code> (<code>msgram_core</code>) é importado como <strong>biblioteca Python dentro do próprio processo do Service</strong>, e <code>Parser</code> (<code>msgram-parser</code>) é uma biblioteca consumida apenas pela <code>CLI</code> — nenhum dos dois roda como processo de rede próprio. A CLI, por sua vez, não chama o Service pela rede: ela calcula e grava os resultados localmente. </p>
 
 ```mermaid
 flowchart TB
@@ -501,7 +497,10 @@ flowchart LR
 
 ### Modelo Entidade-Relacionamento (MER)
 
-<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. Esta versão foi conferida diretamente contra os arquivos <code>models.py</code> do repositório Service (não apenas contra uma versão anterior deste documento), para corrigir divergências encontradas — ver "Divergências corrigidas nesta revisão" logo após os Atributos. </p>
+<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. Esta versão foi conferida diretamente contra os arquivos <code>models.py</code> do repositório Service. </p>
+
+!!! note "Primeira versão, a ser evoluída"
+    Este é o primeiro levantamento completo do MER textual do MeasureSoftGram — cobre o schema atual do Service, mas ainda deve evoluir em revisões futuras (novos atributos, relacionamentos e apps que forem adicionados ao sistema).
 
 !!! note "Fora do escopo deste MER"
     Tabelas de infraestrutura de terceiros também existem fisicamente no banco (`auth_group`, `auth_permission`, `authtoken_token`, tabelas do `django.contrib.sites` e do `allauth`/`allauth.socialaccount`, do `django_apscheduler`), mas não são modelos da aplicação MeasureSoftGram — por isso não são detalhadas aqui.
@@ -641,19 +640,6 @@ id [PK], # name, data, created_at,
 product [FK -> PRODUCT])
 ```
 
-#### Divergências corrigidas nesta revisão
-
-<p align = "justify"> &emsp;&emsp; Comparando a versão anterior deste documento com o código atual (<code>models.py</code> de cada app do Service), foram encontradas e corrigidas as seguintes divergências: </p>
-
-- `ORGANIZATION.admin` é **opcional** (`null=True, blank=True`), não obrigatório como o texto antigo sugeria — cardinalidade corrigida para `(0,N)`.
-- `ORGANIZATION.members` (relação "é_membro_de", M2M com `CUSTOM_USER`) nunca tinha sido modelada como atributo/tabela — só citada como texto solto na seção de relacionamentos. Agora aparece como a tabela `ORGANIZATION_MEMBERS`.
-- Campos de integração com GitHub ausentes do MER antigo: `ORGANIZATION.github_org_id` (único), `github_org_name`, `avatar_url`; `REPOSITORY.github_repo_id`, `github_full_name`; `CUSTOM_USER.github_access_token`.
-- `CUSTOM_USER` não documentava `last_login` (herdado de `AbstractBaseUser`) nem `is_superuser` (herdado de `PermissionsMixin`).
-- As tabelas de junção N:M (`SUPPORTED_MEASURE_METRICS`, `SUPPORTED_SUBCHARACTERISTIC_MEASURES`, `SUPPORTED_CHARACTERISTIC_SUBCHARACTERISTICS`, além de `ORGANIZATION_MEMBERS`) nunca haviam sido listadas como entidades — só citadas como "cardinalidade N,M" no texto.
-- Restrições `UNIQUE`/`UNIQUE_TOGETHER` (`PRODUCT.key`, `REPOSITORY(key, product)`, `CALCULATED_CHARACTERISTIC(repository, release, characteristic)`, `BALANCE_MATRIX(source, target)`) não eram mencionadas.
-- A tabela física de `RELEASE` chama-se `releases` (nome customizado via `Meta.db_table`), não segue a convenção padrão `releases_release`.
-
-
 #### Relacionamentos
 
 ```
@@ -758,12 +744,9 @@ REPOSITORY - armazena - TSQMI
 
 <p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
 
-<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
+<p align = "justify"> &emsp;&emsp; Diferente do DLD (seção seguinte), que é gerado automaticamente por introspecção do código, o Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi <strong>modelado manualmente na ferramenta brModelo</strong>, em notação Peter Chen (entidades em retângulo, relacionamentos em losango, atributos em elipse, chave primária marcada com círculo preenchido). O arquivo-fonte do projeto (<code>diagrama_entidade_relacionamento_eps.brM3</code>) fica versionado em <code>docs/assets/</code>, junto com a imagem exportada abaixo. </p>
 
 ![Diagrama Entidade-Relacionamento](../assets/images/diagrama_entidade_relacionamento.png)
-
-!!! note "Como regerar (garantir fidelidade ao schema atual)"
-    Este PNG é gerado, não desenhado à mão — para conferir se ainda reflete o schema atual (ou regenerá-lo a cada release), rode dentro do container do Service: `python manage.py graph_models -a -g -o diagrama_entidade_relacionamento.png`. Documentar esse comando aqui é o que permite validar, a qualquer momento, se a imagem bate com o MER e o DLD acima.
 
 ### Diagrama Lógico de Dados (DLD)
 
