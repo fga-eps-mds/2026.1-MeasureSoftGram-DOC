@@ -120,9 +120,7 @@ Além das visões arquiteturais, este documento também apresenta o modelo de da
 
 ### Visão Lógica
 
-<p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. </p>
-
-<p align = "justify"> &emsp;&emsp; <strong>Nota de correção:</strong> em versões anteriores este diagrama mostrava <code>Core</code> e <code>Parser</code> como serviços de rede conectados ao <code>Service</code> via HTTP. Isso não reflete o código real: <code>Core</code> (<code>msgram_core</code>) é importado como <strong>biblioteca Python dentro do próprio processo do Service</strong>, e <code>Parser</code> (<code>msgram-parser</code>) é uma biblioteca consumida apenas pela <code>CLI</code> — nenhum dos dois roda como processo de rede próprio. A CLI, por sua vez, não chama o Service pela rede: ela calcula e grava os resultados localmente. </p>
+<p align = "justify"> &emsp;&emsp; A visão lógica descreve os principais componentes do sistema, suas responsabilidades e como se comunicam entre si. O diagrama abaixo apresenta os componentes do MeasureSoftGram, as tecnologias utilizadas em cada um e as relações entre eles. <code>Core</code> (<code>msgram_core</code>) é importado como <strong>biblioteca Python dentro do próprio processo do Service</strong>, e <code>Parser</code> (<code>msgram-parser</code>) é uma biblioteca consumida apenas pela <code>CLI</code> — nenhum dos dois roda como processo de rede próprio. A CLI, por sua vez, não chama o Service pela rede: ela calcula e grava os resultados localmente. </p>
 
 ```mermaid
 flowchart TB
@@ -638,19 +636,6 @@ RELEASE_CONFIGURATION(
 id [PK], # name, data, created_at,
 product [FK -> PRODUCT])
 ```
-
-#### Divergências corrigidas nesta revisão
-
-<p align = "justify"> &emsp;&emsp; Comparando a versão anterior deste documento com o código atual (<code>models.py</code> de cada app do Service), foram encontradas e corrigidas as seguintes divergências: </p>
-
-- `ORGANIZATION.admin` é **opcional** (`null=True, blank=True`), não obrigatório como o texto antigo sugeria — cardinalidade corrigida para `(0,N)`.
-- `ORGANIZATION.members` (relação "é_membro_de", M2M com `CUSTOM_USER`) nunca tinha sido modelada como atributo/tabela — só citada como texto solto na seção de relacionamentos. Agora aparece como a tabela `ORGANIZATION_MEMBERS`.
-- Campos de integração com GitHub ausentes do MER antigo: `ORGANIZATION.github_org_id` (único), `github_org_name`, `avatar_url`; `REPOSITORY.github_repo_id`, `github_full_name`; `CUSTOM_USER.github_access_token`.
-- `CUSTOM_USER` não documentava `last_login` (herdado de `AbstractBaseUser`) nem `is_superuser` (herdado de `PermissionsMixin`).
-- As tabelas de junção N:M (`SUPPORTED_MEASURE_METRICS`, `SUPPORTED_SUBCHARACTERISTIC_MEASURES`, `SUPPORTED_CHARACTERISTIC_SUBCHARACTERISTICS`, além de `ORGANIZATION_MEMBERS`) nunca haviam sido listadas como entidades — só citadas como "cardinalidade N,M" no texto.
-- Restrições `UNIQUE`/`UNIQUE_TOGETHER` (`PRODUCT.key`, `REPOSITORY(key, product)`, `CALCULATED_CHARACTERISTIC(repository, release, characteristic)`, `BALANCE_MATRIX(source, target)`) não eram mencionadas.
-- A tabela física de `RELEASE` chama-se `releases` (nome customizado via `Meta.db_table`), não segue a convenção padrão `releases_release`.
-
 
 #### Relacionamentos
 
