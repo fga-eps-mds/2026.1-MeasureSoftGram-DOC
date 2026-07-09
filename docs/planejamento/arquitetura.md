@@ -497,7 +497,10 @@ flowchart LR
 
 ### Modelo Entidade-Relacionamento (MER)
 
-<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. Esta versão foi conferida diretamente contra os arquivos <code>models.py</code> do repositório Service (não apenas contra uma versão anterior deste documento), para corrigir divergências encontradas — ver "Divergências corrigidas nesta revisão" logo após os Atributos. </p>
+<p align = "justify"> &emsp;&emsp; O MER textual descreve as entidades, seus atributos e os relacionamentos com cardinalidades do banco de dados do MeasureSoftGram Service. O símbolo <code>#</code> antes de um atributo indica que ele é <strong>opcional (nullable)</strong> — corresponde a campos declarados com <code>null=True, blank=True</code> no Django. Esta versão foi conferida diretamente contra os arquivos <code>models.py</code> do repositório Service. </p>
+
+!!! note "Primeira versão, a ser evoluída"
+    Este é o primeiro levantamento completo do MER textual do MeasureSoftGram — cobre o schema atual do Service, mas ainda deve evoluir em revisões futuras (novos atributos, relacionamentos e apps que forem adicionados ao sistema).
 
 !!! note "Fora do escopo deste MER"
     Tabelas de infraestrutura de terceiros também existem fisicamente no banco (`auth_group`, `auth_permission`, `authtoken_token`, tabelas do `django.contrib.sites` e do `allauth`/`allauth.socialaccount`, do `django_apscheduler`), mas não são modelos da aplicação MeasureSoftGram — por isso não são detalhadas aqui.
@@ -741,12 +744,9 @@ REPOSITORY - armazena - TSQMI
 
 <p align = "justify"> &emsp;&emsp; Um Diagrama Entidade-Relacionamento (DER) é uma representação gráfica que descreve as entidades, os relacionamentos e as conexões entre elas em um sistema ou domínio específico. É uma ferramenta fundamental utilizada no projeto de bancos de dados e sistemas de informação para modelar e visualizar a estrutura e interações entre os elementos essenciais de um sistema. </p>
 
-<p align = "justify"> &emsp;&emsp; O Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi criado automaticamente utilizando a coleção do <em>django-extensions</em>, usando o comando <em>graph-models</em>: </p>
+<p align = "justify"> &emsp;&emsp; Diferente do DLD (seção seguinte), que é gerado automaticamente por introspecção do código, o Diagrama Entidade-Relacionamento do projeto MeasureSoftGram foi <strong>modelado manualmente na ferramenta brModelo</strong>, em notação Peter Chen (entidades em retângulo, relacionamentos em losango, atributos em elipse, chave primária marcada com círculo preenchido). O arquivo-fonte do projeto (<code>diagrama_entidade_relacionamento_eps.brM3</code>) fica versionado em <code>docs/assets/</code>, junto com a imagem exportada abaixo. </p>
 
 ![Diagrama Entidade-Relacionamento](../assets/images/diagrama_entidade_relacionamento.png)
-
-!!! note "Como regerar (garantir fidelidade ao schema atual)"
-    Este PNG é gerado, não desenhado à mão — para conferir se ainda reflete o schema atual (ou regenerá-lo a cada release), rode dentro do container do Service: `python manage.py graph_models -a -g -o diagrama_entidade_relacionamento.png`. Documentar esse comando aqui é o que permite validar, a qualquer momento, se a imagem bate com o MER e o DLD acima.
 
 ### Diagrama Lógico de Dados (DLD)
 
