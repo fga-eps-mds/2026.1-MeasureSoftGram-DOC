@@ -412,7 +412,7 @@ flowchart TB
 
 ### Visão de Casos de Uso
 
-<p align = "justify"> &emsp;&emsp; O time do MeasureSoftGram documenta requisitos como <strong>histórias de usuário</strong> (backlog em <code>docs/produto/planejado-realizado.md</code>, identificadas por <code>US-XXX</code>), não como casos de uso UML. Esta seção deriva os casos de uso a partir dessas histórias já entregues/planejadas, agrupados pelos atores que de fato aparecem no código e na documentação do produto. </p>
+<p align = "justify"> &emsp;&emsp; Esta seção apresenta os casos de uso do MeasureSoftGram, agrupados pelos atores que de fato interagem com o sistema. </p>
 
 #### Atores
 
@@ -425,71 +425,9 @@ flowchart TB
 
 #### Diagrama de casos de uso
 
-```mermaid
-flowchart LR
-    Dev(["👤 Desenvolvedor"])
-    Admin(["👤 Admin de Organização"])
-    CI(["🤖 Pipeline de CI"])
-    AIAgent(["🧠 Agente de IA"])
+![Diagrama de casos de uso - Coleta e Cálculo de Qualidade](../assets/images/casos_de_uso.png)
 
-    subgraph UC1["Autenticação e Organização"]
-        uc1(("Autenticar via GitHub"))
-        uc2(("Gerenciar sessão / logout"))
-        uc3(("Administrar organização e membros"))
-    end
-
-    subgraph UC2["Configuração de Produto"]
-        uc4(("Cadastrar produto e repositório"))
-        uc5(("Definir metas de qualidade"))
-        uc6(("Criar release"))
-    end
-
-    subgraph UC3["Coleta e Cálculo de Qualidade"]
-        uc7(("Executar Action ao final do build"))
-        uc8(("Analisar localmente via CLI"))
-        uc9(("Calcular características / TSQMI"))
-    end
-
-    subgraph UC4["Visualização de Qualidade"]
-        uc10(("Ver badge TSQMI do repositório"))
-        uc11(("Ver dashboards Grafana"))
-        uc12(("Ver painel de qualidade no VS Code"))
-    end
-
-    subgraph UC5["Consulta via IA"]
-        uc13(("Consultar dados de qualidade via MCP"))
-        uc14(("Analisar planejado vs. realizado via IA"))
-    end
-
-    Dev --> uc1
-    Dev --> uc2
-    Dev --> uc4
-    Dev --> uc5
-    Dev --> uc6
-    Dev --> uc8
-    Dev --> uc10
-    Dev --> uc11
-    Dev --> uc12
-    Admin --> uc3
-    CI --> uc7
-    uc7 --> uc9
-    uc8 --> uc9
-    AIAgent --> uc13
-    AIAgent --> uc14
-```
-
-#### Rastreabilidade com o backlog
-
-| Caso de uso | História de usuário / origem |
-| :--- | :--- |
-| Autenticar via GitHub | "Autenticação via GitHub (Front)" — Release Major 2 |
-| Gerenciar sessão / logout | US006 "Gerenciar timeout de sessão"; US007 "Notificação visual ao expirar sessão" (não entregue) |
-| Executar Action ao final do build | US003 "Executar a action localmente e dockerizar o sistema"; US004 "Atualizar a publicação da Action no GitHub Marketplace" |
-| Analisar localmente via CLI | US008 "Melhorar legibilidade dos textos na CLI" |
-| Ver badge TSQMI do repositório | "Alteração do endpoint gerador da badge TSQMI" (Service); "Nova badge TSQMI nas páginas de repositório" (Front) |
-| Ver dashboards Grafana | US06 "Grafana" (`docs/atas/web.md`) — setup/integração e atualização automática dos gráficos |
-| Consultar dados de qualidade via MCP | "Criação do servidor MCP do MeasureSoftGram" — Release Minor 2 e Major 2 |
-| Criptografar senhas e tokens | US005 "Criptografar senhas e tokens do sistema" |
+<p align = "justify"> &emsp;&emsp; O diagrama acima detalha o subfluxo de coleta e cálculo de qualidade: a <code>Pipeline de CI (GitHub Actions)</code> dispara a extração dos dados de análise, que alimenta em cadeia (<code>&lt;&lt;include&gt;&gt;</code>) o cálculo de medida, subcaracterística, característica e TSQMI, até o <code>Desenvolvedor</code> visualizar o resultado final. </p>
 
 ---
 
@@ -1036,10 +974,6 @@ REPOSITORY - armazena - TSQMI
 
 |Data|Autor|Descrição|Versão|
 |:--:|:--:|:---:|:---:|
-|01/08/2024| Gabriel Moretti | Adicionando documento |1.0|
-|13/09/2024| Christian Siqueira | Atualizando o diagrama de banco de dados |1.1|
-|13/09/2024| Christian Siqueira | Adicionando diagrama de implantação |1.2|
-|13/09/2024| Christian Siqueira | Atualizando o diagrama de arquitetura|1.3|
 |27/04/2026| Giovanni A. C. Giampauli | Revisão R1 2026.1: registra decisões de stack do semestre — PostgreSQL 18, uv (Python), pnpm (JS), Python 3.12, Node 20 LTS, versões pinadas no Docker, Compose v2 com `compose watch`. Diagramas permanecem vigentes (sem mudança topológica). |1.4|
 |03/05/2026| Giovanni A. C. Giampauli | Adiciona MCP Server e migra diagrama arquitetural para Mermaid. |1.5|
 |09/06/2026| Anacleto | Reestrutura documento com modelo de visões 4+1 (Kruchten). Adiciona placeholders para Visão de Processo, Visão de Casos de Uso, MER e DLD. Corrige prazo para 2026.1. |1.6|
