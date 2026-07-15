@@ -412,7 +412,7 @@ flowchart TB
 
 ### Visão de Casos de Uso
 
-<p align = "justify"> &emsp;&emsp; O time do MeasureSoftGram documenta requisitos como <strong>histórias de usuário</strong> (backlog em <code>docs/produto/planejado-realizado.md</code>, identificadas por <code>US-XXX</code>), não como casos de uso UML. Esta seção deriva os casos de uso a partir dessas histórias já entregues/planejadas, agrupados pelos atores que de fato aparecem no código e na documentação do produto. </p>
+<p align = "justify"> &emsp;&emsp; Esta seção apresenta os casos de uso do MeasureSoftGram, agrupados pelos atores que de fato interagem com o sistema. </p>
 
 #### Atores
 
@@ -427,20 +427,7 @@ flowchart TB
 
 ![Diagrama de casos de uso - Coleta e Cálculo de Qualidade](../assets/images/casos_de_uso.png)
 
-<p align = "justify"> &emsp;&emsp; O diagrama acima detalha o subfluxo de coleta e cálculo de qualidade (equivalente a UC3 desta visão): a <code>Pipeline de CI (GitHub Actions)</code> dispara a extração dos dados de análise, que alimenta em cadeia (<code>&lt;&lt;include&gt;&gt;</code>) o cálculo de medida, subcaracterística, característica e TSQMI, até o <code>Desenvolvedor</code> visualizar o resultado final. Os demais casos de uso desta visão (UC1, UC2, UC4 e UC5) seguem descritos nas tabelas de Atores e de Rastreabilidade abaixo. </p>
-
-#### Rastreabilidade com o backlog
-
-| Caso de uso | História de usuário / origem |
-| :--- | :--- |
-| Autenticar via GitHub | "Autenticação via GitHub (Front)" — Release Major 2 |
-| Gerenciar sessão / logout | US006 "Gerenciar timeout de sessão"; US007 "Notificação visual ao expirar sessão" (não entregue) |
-| Executar Action ao final do build | US003 "Executar a action localmente e dockerizar o sistema"; US004 "Atualizar a publicação da Action no GitHub Marketplace" |
-| Analisar localmente via CLI | US008 "Melhorar legibilidade dos textos na CLI" |
-| Ver badge TSQMI do repositório | "Alteração do endpoint gerador da badge TSQMI" (Service); "Nova badge TSQMI nas páginas de repositório" (Front) |
-| Ver dashboards Grafana | US06 "Grafana" (`docs/atas/web.md`) — setup/integração e atualização automática dos gráficos |
-| Consultar dados de qualidade via MCP | "Criação do servidor MCP do MeasureSoftGram" — Release Minor 2 e Major 2 |
-| Criptografar senhas e tokens | US005 "Criptografar senhas e tokens do sistema" |
+<p align = "justify"> &emsp;&emsp; O diagrama acima detalha o subfluxo de coleta e cálculo de qualidade: a <code>Pipeline de CI (GitHub Actions)</code> dispara a extração dos dados de análise, que alimenta em cadeia (<code>&lt;&lt;include&gt;&gt;</code>) o cálculo de medida, subcaracterística, característica e TSQMI, até o <code>Desenvolvedor</code> visualizar o resultado final. </p>
 
 ---
 
