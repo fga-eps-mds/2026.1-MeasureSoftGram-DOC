@@ -66,4 +66,3 @@ As métricas de qualidade definidas para o software são:
 
 |Data|Autor|Descrição|Versão|
 |:--:|:--:|:---:|:---:|
-|01/08/2024| Gabriel Moretti | Adicionando documento |0.1|
